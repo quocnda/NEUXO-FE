@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "sale tool",
+      "script": "npm run start-prod"
+    }
+  ]
+}
