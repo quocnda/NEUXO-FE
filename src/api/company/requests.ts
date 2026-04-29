@@ -94,7 +94,7 @@ export const listLinkedinJob = async (params: IParamsMatchingCompaniesList): Pro
 
 export const getDetailCompanyById = async (id: string): Promise<ICompanyDetails> => {
   const { data } = await request({
-    url: `/data/companies/${id}/`,
+    url: `/data/companies/${id}`,
     method: 'GET',
   });
   return data.data;
@@ -105,7 +105,7 @@ export const getTriggerCompanyById = async (params: {
   start_date?: string;
 }): Promise<IResponsiveTrigger> => {
   const { data } = await request({
-    url: `/data/getTriggerByCompanyID/${params.id}/`,
+    url: `/data/getTriggerByCompanyID/${params.id}`,
     method: 'GET',
     params,
   });
