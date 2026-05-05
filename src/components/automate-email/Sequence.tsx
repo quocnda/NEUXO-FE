@@ -11,15 +11,12 @@ import { Icons } from '@/assets/icons';
 import { onMutateError } from '@/lib/common';
 import { cn } from '@/lib/utils';
 import ModalSignature from '@/modules/EmailTemplate/components/ModalSignature';
-import { condition_dropdown } from '@/utils/const';
 
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { FormWrapper } from '../ui/form';
 import { SwitchField, TextField } from '../ui/FormField';
 import { HStack, Show, VStack } from '../ui/Utilities';
-import HotTriggerConditionDropDown from './HotTriggerConditionDropDown';
-import UnresponsiveHandling from './UnresponsiveHandling';
 
 const getOrdinalSuffix = (index: number) => {
   const j = index % 10;
@@ -53,7 +50,6 @@ const Sequence = ({
 }: IProps) => {
   const { control, getValues, setValue } = form;
   const { fields, append, remove, update } = useFieldArray({ control, name: 'sequence' });
-  const [valueHotTrigger, setValueHotTrigger] = useState<string[]>([]);
   const { data: dataSignature, refetch: refetchSignature } = useEmailSignature();
   const [openSignature, setOpenSignature] = useState(false);
 
@@ -91,10 +87,6 @@ const Sequence = ({
       list_email: listEmailAction || [],
       custom_sequence: formData.sequence.map((item: any) => Number(item.day)),
       source: source || 'company',
-      enable_bimonthly: formData.bimonthly_follow_up,
-      max_email_bimonthly: Number(formData.maximum_follow_up),
-      user_hot_trigger: formData.hot_trigger_prompt,
-      hot_trigger_condition: valueHotTrigger.length > 0 ? valueHotTrigger : [],
     });
   };
 
@@ -229,70 +221,6 @@ const Sequence = ({
             </div>
           </VStack>
 
-          <span className="text-xs font-bold">Customize Bimonthly Follow-up Sequence</span>
-          <SwitchField
-            control={control}
-            name="bimonthly_follow_up"
-            className="h-5"
-            classNameThumb="h-4"
-            label="Enable Bimonthly Follow-up"
-            description="If the recipient doesn’t reply to the initial email sequence, they will receive follow-up emails every two months"
-          />
-
-          <span className="text-xs font-bold">Follow-up settings</span>
-          <p className="text-xs font-medium text-black">Maximum follow-up emails</p>
-          <div className="flex h-9 items-center">
-            <button
-              type="button"
-              onClick={() => {
-                const newVal = Math.max(Number(getValues('maximum_follow_up') || 1) - 1, 1);
-                setValue('maximum_follow_up', String(newVal), { shouldDirty: true, shouldValidate: true });
-              }}
-              className="h-full rounded-l-sm bg-gray-100 px-2 text-lg font-bold hover:bg-gray-300"
-            >
-              -
-            </button>
-            <TextField
-              control={control}
-              name="maximum_follow_up"
-              inputSize="xs"
-              variant="outline"
-              defaultValue="1"
-              className="w-16 rounded-none text-center"
-              onChange={(evt) => {
-                const reGex = /[^0-9]/g;
-                let value = evt.target.value.replace(reGex, '');
-                if (value !== '') {
-                  value = String(Math.max(Number(value), 1));
-                }
-                form.setValue('maximum_follow_up', value, { shouldDirty: true, shouldValidate: true });
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const newVal = Number(getValues('maximum_follow_up') || 1) + 1;
-                setValue('maximum_follow_up', String(newVal), { shouldDirty: true, shouldValidate: true });
-              }}
-              className="h-full rounded-r-sm bg-gray-100 px-2 text-lg font-bold hover:bg-gray-300"
-            >
-              +
-            </button>
-          </div>
-          <SwitchField
-            control={control}
-            name="hot_trigger_prompt"
-            className="h-5"
-            classNameThumb="h-4"
-            label="Use a hot trigger prompt when available"
-            description="Send a contextual follow-up when recipient activity is detected"
-          />
-          <HotTriggerConditionDropDown
-            data={condition_dropdown.map((item: any) => ({ label: item, value: item }))}
-            setValueHotTrigger={setValueHotTrigger}
-            valueHotTrigger={valueHotTrigger}
-          />
-          <UnresponsiveHandling />
           <HStack pos={'right'}>
             <Button
               className="w-fit"

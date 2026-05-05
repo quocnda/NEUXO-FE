@@ -9,32 +9,26 @@ export const listSideBar = [
         title: 'Companies',
         route: '/matching-companies',
         Icon: Icons.companySidebar,
-      },
-      {
-        key: '2',
-        title: 'Contact',
-        route: '/contact-page',
-        Icon: Icons.contact,
-      },
+      }
     ],
   },
   {
     group: 'Sales Signals',
     items: [
       {
-        key: '3',
+        key: '2',
         title: 'Luma Events',
         route: '/luma-events',
         Icon: Icons.calendardays,
       },
       {
-        key: '4',
+        key: '3',
         title: 'Funding',
         route: '/funding',
         Icon: Icons.filter,
       },
       {
-        key: '5',
+        key: '4',
         title: 'Linkedin Job',
         route: '/linkedin-job',
         Icon: Icons.job,
@@ -75,24 +69,7 @@ export const listSideBar = [
         Icon: Icons.campaign,
       },
     ],
-  },
-  {
-    group: 'Database',
-    items: [
-      {
-        key: '9',
-        title: 'Storage',
-        route: '/storage',
-        Icon: Icons.storage,
-      },
-      {
-        key: '10',
-        title: 'Contacts',
-        route: '/contact-database',
-        Icon: Icons.contact,
-      },
-    ],
-  },
+  }
 ];
 
 export const pageTitles = {

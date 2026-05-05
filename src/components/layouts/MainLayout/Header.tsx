@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { useLayoutStore } from '@/stores';
 
 import AuthProfile from './Profile';
-import SheetNews from './SheetNews';
+// import SheetNews from './SheetNews';
 
 const AuthHeader = () => {
   const { fullSidebar, toggleSidebar } = useLayoutStore();
@@ -36,7 +36,7 @@ const AuthHeader = () => {
 
         <HStack spacing={24} align="center">
           <HStack spacing={24}>
-            <SheetNews />
+            {/* <SheetNews /> */}
             <EmailNotification />
           </HStack>{' '}
           <span className="h-7 border border-r-[0px] border-[#6F767E]"></span>
