@@ -65,19 +65,24 @@ const ModalViewDetailEmail: FCC<IModalViewDetailEmailProps> = ({ children, isMai
         <Show when={!isFetchingToRender && dataDetailToRender?.length !== 0}>
           <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
             <VStack spacing={4} className="bg-neutral-10 max-h-[80vh] overflow-auto rounded-lg">
-              {dataDetailToRender?.map((item: IResponseEmailDetail, index: number) => (
+              {dataDetailToRender?.map((item: IResponseEmailDetail, index: number) => {
+                const sender = (item as unknown as { from?: string }).from || item?.mail_send;
+                const recipient = (item as unknown as { to?: string }).to || item?.mail_recieve;
+                const subject = (item as unknown as { subject?: string }).subject || item?.title;
+
+                return (
                 <Wrapper key={index} className={cn('cursor-pointer', emailRecord === item && 'bg-gray-100')}>
                   <VStack spacing={0} onClick={() => setEmailRecord(item)}>
                     <HStack spacing={4} pos={'apart'}>
                       <div>
                         <p className="text-sm font-bold text-[#33383F]">
-                          {item?.title}{' '}
+                          {subject}{' '}
                           <span className="text-xs font-normal">
-                            from <span className="font-semibold text-[#33383F]">{item?.mail_send}</span>
+                            from <span className="font-semibold text-[#33383F]">{sender}</span>
                           </span>
                         </p>
                         <span className="text-xs font-normal">
-                          to <span className="font-semibold text-[#33383F]">{item?.mail_recieve}</span>
+                          to <span className="font-semibold text-[#33383F]">{recipient}</span>
                         </span>
                       </div>
                     </HStack>
@@ -93,20 +98,27 @@ const ModalViewDetailEmail: FCC<IModalViewDetailEmailProps> = ({ children, isMai
                     </HStack>
                   </VStack>
                 </Wrapper>
-              ))}
+                );
+              })}
             </VStack>
 
             <VStack className="max-h-[80vh] overflow-auto rounded-lg border-2 border-gray-200 bg-white p-3">
               <HStack spacing={4} pos={'apart'} align={'start'}>
                 <div>
                   <p className="text-sm font-bold text-[#33383F]">
-                    {emailRecord?.title}{' '}
+                    {(emailRecord as unknown as { subject?: string })?.subject || emailRecord?.title}{' '}
                     <span className="text-xs font-normal text-[#6F767E]">
-                      from <span className="font-semibold text-[#33383F]">{emailRecord?.mail_send}</span>
+                      from{' '}
+                      <span className="font-semibold text-[#33383F]">
+                        {(emailRecord as unknown as { from?: string })?.from || emailRecord?.mail_send}
+                      </span>
                     </span>
                   </p>
                   <span className="text-xs font-normal">
-                    to <span className="font-semibold text-[#33383F]">{emailRecord?.mail_recieve}</span>
+                    to{' '}
+                    <span className="font-semibold text-[#33383F]">
+                      {(emailRecord as unknown as { to?: string })?.to || emailRecord?.mail_recieve}
+                    </span>
                   </span>
                 </div>
                 <span className="whitespace-nowrap text-xs">
@@ -117,9 +129,9 @@ const ModalViewDetailEmail: FCC<IModalViewDetailEmailProps> = ({ children, isMai
                 className="mb-4 whitespace-pre-wrap text-xs font-medium text-gray-600"
                 dangerouslySetInnerHTML={{ __html: emailRecord?.html_content || '' }}
               />
-              <Show when={emailRecord?.attachments.length !== 0}>
+              <Show when={(emailRecord?.attachments?.length ?? 0) !== 0}>
                 <div className="grid grid-cols-2 gap-4">
-                  {emailRecord?.attachments.map((file: any, file_index: number) => {
+                  {(emailRecord?.attachments ?? []).map((file: any, file_index: number) => {
                     const extension = file?.file_name.split('.').pop()?.toLowerCase();
                     const contentType = MIME[extension as keyof typeof MIME] || 'application/octet-stream';
 

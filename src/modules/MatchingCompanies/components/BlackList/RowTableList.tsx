@@ -82,9 +82,16 @@ const RowTableList = ({
             </div>
           );
         case 'label':
+          const labels = Array.isArray(item?.label)
+            ? item?.label
+            : Array.isArray((item as any)?.labels)
+              ? (item as any)?.labels
+              : item?.label
+                ? [item?.label]
+                : [];
           return (
             <div className="flex items-center gap-3">
-              {item?.label?.slice(0, 2).map((label, index) => (
+              {labels.slice(0, 2).map((label, index) => (
                 <Tooltip
                   key={index}
                   hidden={!(label && label.length > 20)}
@@ -105,16 +112,16 @@ const RowTableList = ({
                 </Tooltip>
               ))}
 
-              {item?.label?.length > 2 && (
+              {labels.length > 2 && (
                 <Tooltip
                   label={
                     <div className="text-grey-600 max-w-[200px] whitespace-pre-wrap rounded-sm px-1.5 text-xs">
-                      {item?.label.slice(2).join(', ')}
+                      {labels.slice(2).join(', ')}
                     </div>
                   }
                 >
                   <div className="text-grey-500 text-neutral-40 flex h-[24px] items-center justify-center rounded-[6px] border border-[#6F767E66] px-2 text-xs font-medium">
-                    + {(item?.label?.length || 0) - 2}
+                    + {(labels.length || 0) - 2}
                   </div>
                 </Tooltip>
               )}
