@@ -1,3 +1,3 @@
-import StoragePage from '@/modules/StoragePage';
+import StoragePage from '@/features/storage';
 
 export default StoragePage;

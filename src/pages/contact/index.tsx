@@ -1,3 +1,3 @@
-import ContactPage from '@/modules/ContactPage';
+import ContactPage from '@/features/contact';
 
 export default ContactPage;

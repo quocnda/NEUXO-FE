@@ -1,3 +1,3 @@
-import SignUpPage from '@/modules/SignUpPage';
+import SignUpPage from '@/features/sign-up';
 
 export default SignUpPage;

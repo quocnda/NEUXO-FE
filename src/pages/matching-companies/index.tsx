@@ -1,3 +1,3 @@
-import MatchingCompanies from '@/modules/MatchingCompanies';
+import MatchingCompanies from '@/features/matching-companies';
 
 export default MatchingCompanies;

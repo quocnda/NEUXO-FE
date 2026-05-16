@@ -13,8 +13,8 @@ import { Icons } from '@/assets/icons';
 import { onMutateError } from '@/lib/common';
 import { MIME } from '@/lib/mime';
 import { cn } from '@/lib/utils';
-import ModalSignature from '@/modules/EmailTemplate/components/ModalSignature';
-import { valueVariables } from '@/modules/EmailTracking/utils/const';
+import ModalSignature from '@/features/email-template/components/ModalSignature';
+import { valueVariables } from '@/features/email-tracking/utils/const';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 import Caption3 from './ui/typography/caption3';

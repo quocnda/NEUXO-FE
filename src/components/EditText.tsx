@@ -16,7 +16,7 @@ import { HStack, Show } from '@/components/ui/Utilities';
 import { onMutateError } from '@/lib/common';
 import { MIME } from '@/lib/mime';
 import { cn } from '@/lib/utils';
-import { valueVariables } from '@/modules/EmailTracking/utils/const';
+import { valueVariables } from '@/features/email-tracking/utils/const';
 
 import Caption3 from './ui/typography/caption3';
 

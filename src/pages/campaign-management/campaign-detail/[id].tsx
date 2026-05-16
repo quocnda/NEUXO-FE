@@ -1,3 +1,3 @@
-import CampaignDetail from '@/modules/CampaignDetail';
+import CampaignDetail from '@/features/campaign-detail';
 
 export default CampaignDetail;

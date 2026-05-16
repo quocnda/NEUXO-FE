@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Show } from '@/components/ui/Utilities';
 import Wrapper from '@/components/Wrapper';
-import { tabNewsWatchList } from '@/modules/WatchListAll/utils/const';
+import { tabNewsWatchList } from '@/features/watchlist-all/utils/const';
 
 import CompanyNews from './CompanyNews';
 import ContactNews from './ContactNews';

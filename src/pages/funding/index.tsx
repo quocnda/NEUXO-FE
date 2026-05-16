@@ -1,3 +1,3 @@
-import Funding from '@/modules/Funding';
+import Funding from '@/features/funding';
 
 export default Funding;

@@ -1,3 +1,3 @@
-import LumaEvents from '@/modules/LumaEvents';
+import LumaEvents from '@/features/luma-events';
 
 export default LumaEvents;

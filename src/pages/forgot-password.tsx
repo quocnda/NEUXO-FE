@@ -1,3 +1,3 @@
-import ForgotPassword from '@/modules/ForgotPassword';
+import ForgotPassword from '@/features/forgot-password';
 
 export default ForgotPassword;

@@ -1,3 +1,3 @@
-import EmailTemplate from '@/modules/EmailTemplate';
+import EmailTemplate from '@/features/email-template';
 
 export default EmailTemplate;

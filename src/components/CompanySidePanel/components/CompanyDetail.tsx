@@ -7,7 +7,7 @@ import ModalBlackList from '@/components/Modal/Account-Management/ModalBlackList
 import ModalConfirmWatchList from '@/components/Modal/Contact/ModalConfirmWatchList';
 import { Tooltip } from '@/components/ui/tooltip';
 import { HStack, Show, VStack } from '@/components/ui/Utilities';
-import StepAddWatchList from '@/modules/MatchingCompanies/components/Companies/Components/AddToWatchlist/StepAddWatchList';
+import StepAddWatchList from '@/features/matching-companies/components/Companies/Components/AddToWatchlist/StepAddWatchList';
 
 import ContactsCompany from './components/ContactsCompany';
 import DetailCompany from './components/DetailCompany';

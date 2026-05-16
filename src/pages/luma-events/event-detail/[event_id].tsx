@@ -1,3 +1,3 @@
-import EventDetail from '@/modules/EventDetail';
+import EventDetail from '@/features/event-detail';
 
 export default EventDetail;

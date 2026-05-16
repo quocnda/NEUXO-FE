@@ -10,7 +10,7 @@ import { useEmailSignature } from '@/api/email-template';
 import { Icons } from '@/assets/icons';
 import { onMutateError } from '@/lib/common';
 import { cn } from '@/lib/utils';
-import ModalSignature from '@/modules/EmailTemplate/components/ModalSignature';
+import ModalSignature from '@/features/email-template/components/ModalSignature';
 
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';

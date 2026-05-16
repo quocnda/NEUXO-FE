@@ -1,3 +1,3 @@
-import WatchListPage from '@/modules/WatchListPage';
+import WatchListPage from '@/features/watchlist';
 
 export default WatchListPage;

@@ -1,3 +1,3 @@
-import CampaignReport from '@/modules/CampaignReport';
+import CampaignReport from '@/features/campaign-report';
 
 export default CampaignReport;

@@ -1,3 +1,3 @@
-import WatchListAll from '@/modules/WatchListAll';
+import WatchListAll from '@/features/watchlist-all';
 
 export default WatchListAll;

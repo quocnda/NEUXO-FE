@@ -1,3 +1,3 @@
-import AccountManagement from '@/modules/AccountManagement';
+import AccountManagement from '@/features/account-management';
 
 export default AccountManagement;

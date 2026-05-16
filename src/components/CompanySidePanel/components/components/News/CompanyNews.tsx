@@ -8,7 +8,7 @@ import { Button, LoadingIcon } from '@/components/ui/button';
 import Caption3 from '@/components/ui/typography/caption3';
 import { HStack, Show, VStack } from '@/components/ui/Utilities';
 import { cn } from '@/lib/utils';
-import { dataTags } from '@/modules/WatchListPage/utils/const';
+import { dataTags } from '@/features/watchlist/utils/const';
 
 const CompanyNews = ({ id }: { id?: string }) => {
   const lastItemRef = useRef<HTMLDivElement>(null);

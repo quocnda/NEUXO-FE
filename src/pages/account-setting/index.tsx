@@ -1,3 +1,3 @@
-import AccountSetting from '@/modules/AccountSetting';
+import AccountSetting from '@/features/account-setting';
 
 export default AccountSetting;

@@ -1,3 +1,3 @@
-import WatchListByUserPage from '@/modules/WatchListByUserPage';
+import WatchListByUserPage from '@/features/watchlist-by-user';
 
 export default WatchListByUserPage;

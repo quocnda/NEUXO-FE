@@ -1,3 +1,3 @@
-import LandingPage from '@/modules/LandingPage';
+import LandingPage from '@/features/landing';
 
 export default LandingPage;

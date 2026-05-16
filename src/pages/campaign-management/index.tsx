@@ -1,3 +1,3 @@
-import CampaignManagement from '@/modules/CampaignManagement';
+import CampaignManagement from '@/features/campaign-management';
 
 export default CampaignManagement;

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Caption3 from '@/components/ui/typography/caption3';
 import { HStack, Show } from '@/components/ui/Utilities';
 import { cn } from '@/lib/utils';
-import { tabNewsWatchList } from '@/modules/WatchListAll/utils/const';
+import { tabNewsWatchList } from '@/features/watchlist-all/utils/const';
 
 const HeaderNews = ({
   tab,

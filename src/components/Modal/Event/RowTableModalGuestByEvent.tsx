@@ -20,7 +20,7 @@ import TextBody1 from '@/components/ui/typography/TextBody1';
 import { HStack, Show, VStack } from '@/components/ui/Utilities';
 import { onMutateError, shortenName } from '@/lib/common';
 import { cn } from '@/lib/utils';
-import { colorStatus } from '@/modules/EmailTracking/utils/getStatus';
+import { colorStatus } from '@/features/email-tracking/utils/getStatus';
 import type { TypeItemTable } from '@/types/common.type';
 
 import ModalAddNoteGuest from './ModalAddNoteGuest';

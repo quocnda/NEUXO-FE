@@ -11,7 +11,7 @@ import { Tooltip } from '@/components/ui/tooltip';
 import Base3 from '@/components/ui/typography/base3';
 import { HStack, Show, VStack } from '@/components/ui/Utilities';
 import { cn } from '@/lib/utils';
-import { tabNewsWatchList } from '@/modules/WatchListAll/utils/const';
+import { tabNewsWatchList } from '@/features/watchlist-all/utils/const';
 
 import BoxChatContact from './BoxChatContact';
 import History from './History';

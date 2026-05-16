@@ -8,8 +8,8 @@ import Base3 from '@/components/ui/typography/base3';
 import Title1 from '@/components/ui/typography/title1';
 import { HStack, Show, VStack } from '@/components/ui/Utilities';
 import { cn } from '@/lib/utils';
-import News from '@/modules/CompanyDetail/components/News';
-import { tabNewsWatchList } from '@/modules/WatchListAll/utils/const';
+import News from '@/features/company-detail/components/News';
+import { tabNewsWatchList } from '@/features/watchlist-all/utils/const';
 import type { FCC } from '@/types';
 
 import GenIdealCompany from './GenIdealCompany/GenIdealCompany';

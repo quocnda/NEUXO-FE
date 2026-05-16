@@ -16,7 +16,7 @@ import { HStack, Show, VStack } from '@/components/ui/Utilities';
 import Wrapper from '@/components/Wrapper';
 import { onMutateError, shortenName } from '@/lib/common';
 import { cn } from '@/lib/utils';
-import ModalSentMail from '@/modules/EmailTracking/components/EmailTracking/ModalSentMail';
+import ModalSentMail from '@/features/email-tracking/components/EmailTracking/ModalSentMail';
 import { useUserStore } from '@/stores';
 import type { FCC } from '@/types';
 import { listHeaderGuestByEvent } from '@/utils/const';
