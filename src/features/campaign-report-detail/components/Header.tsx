@@ -18,10 +18,10 @@ interface IProps {
 }
 const Header = (props: IProps) => {
   const { tab, setTab, data, isFetching, campaign_name } = props;
-  const [isCampaignName, setIsCampaignName] = useState(campaign_name || '');
+  const [campaignName, setCampaignName] = useState(campaign_name || '');
 
   useEffect(() => {
-    if (setIsCampaignName) setIsCampaignName(campaign_name || '');
+    if (setCampaignName) setCampaignName(campaign_name || '');
   }, [campaign_name]);
 
   return (
@@ -29,7 +29,7 @@ const Header = (props: IProps) => {
       <HStack spacing={12}>
         <SkeletonWrapper loading={isFetching}>{getColorStatus(data?.campaign_status || '')}</SkeletonWrapper>
         <SkeletonWrapper loading={isFetching}>
-          <Title2>{isCampaignName}</Title2>
+          <Title2>{campaignName}</Title2>
         </SkeletonWrapper>
       </HStack>
       <HStack>

@@ -28,14 +28,15 @@ interface IModalAddEmailTemplateProps {
 }
 const ModalAddEmailTemplate: FCC<IModalAddEmailTemplateProps> = ({ children, refetch, templateInfo }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [sendFile, setSendFile] = useState<{ file_path: string; file_name: string }[]>([]);
+  const [attachments, setAttachments] = useState<{ file_path: string; file_name: string }[]>([]);
+  const defaultValues: IEmailTemplate = {
+    template_content: '',
+    template_name: '',
+    template_subject: '',
+  };
   const form = useForm<IEmailTemplate>({
     resolver: zodResolver(emailTemplateSchema),
-    defaultValues: {
-      template_content: '',
-      template_name: '',
-      template_subject: '',
-    },
+    defaultValues,
   });
 
   const { data: detailTemplate } = useDetailEmailTemplate({
@@ -60,24 +61,24 @@ const ModalAddEmailTemplate: FCC<IModalAddEmailTemplateProps> = ({ children, ref
       setIsOpen(false);
       form.reset();
       refetch?.();
-      setSendFile([]);
+      setAttachments([]);
     },
     onError: onMutateError,
   });
 
   const handleToggle = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
   };
   const handleSubmit: SubmitHandler<IEmailTemplate> = (formData) => {
     if (templateInfo?.templateId) {
       mutateUpdate({
         id: String(templateInfo?.templateId),
-        attachments: sendFile,
+        attachments,
         ...formData,
       });
     } else {
       mutate({
-        attachments: sendFile,
+        attachments,
         ...formData,
       });
     }
@@ -95,7 +96,7 @@ const ModalAddEmailTemplate: FCC<IModalAddEmailTemplateProps> = ({ children, ref
         template_name: detailTemplate?.template_name,
         template_subject: detailTemplate?.template_subject,
       });
-      setSendFile((prev) => [...prev, ...(detailTemplate?.attachments || [])]);
+      setAttachments((prev) => [...prev, ...(detailTemplate?.attachments || [])]);
     }
   }, [detailTemplate]);
 
@@ -146,8 +147,8 @@ const ModalAddEmailTemplate: FCC<IModalAddEmailTemplateProps> = ({ children, ref
                 name="template_content"
                 render={({ field: { onChange, value } }) => (
                   <LetterheadEditor
-                    setSendFile={setSendFile}
-                    sendFile={sendFile}
+                    setSendFile={setAttachments}
+                    sendFile={attachments}
                     onChange={onChange}
                     value={value}
                     handleInsertSignature={handleInsertSignature}

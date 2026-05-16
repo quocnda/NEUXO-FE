@@ -31,6 +31,10 @@ const TableEmailTracking = ({ tabs }: { tabs: string | number }) => {
   const { user_id } = router.query;
   const [isDownloadAll, setIsDownloadAll] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<any[]>([]);
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
   const { data, isFetching, refetch } = useListEmailTracking({
     variables: { ...paramsQuery, source: String(tabs) },
     refetchOnMount: true,
@@ -51,17 +55,12 @@ const TableEmailTracking = ({ tabs }: { tabs: string | number }) => {
   const refetchData = user_id ? refetchUser : refetch;
 
   useEffect(() => {
-    const temp: any[] = [];
-
-    const isValidEmail = (email: string) => {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      return emailRegex.test(email);
-    };
+    const nextSelectedIds: any[] = [];
 
     if (isDownloadAll) {
       data?.data?.forEach((s: IResponseEmailTracking) => {
         if (isValidEmail(s.email)) {
-          temp.push({
+          nextSelectedIds.push({
             email: s.email,
             company_id: s.id,
           });
@@ -70,19 +69,14 @@ const TableEmailTracking = ({ tabs }: { tabs: string | number }) => {
     } else {
       selectedIds.forEach((s: any) => {
         if (isValidEmail(s.email)) {
-          temp.push(s);
+          nextSelectedIds.push(s);
         }
       });
     }
 
-    setSelectedIds(temp);
+    setSelectedIds(nextSelectedIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDownloadAll, data]);
-
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-  };
 
   const getDataFilter = [
     {

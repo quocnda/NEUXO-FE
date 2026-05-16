@@ -1,5 +1,7 @@
 import { typeHeaderTable } from '@/utils/const';
 
+const stickyPinClass = 'sticky left-0';
+
 export const listHeaderEmailReport = [
   {
     title: 'user_name',
@@ -7,7 +9,7 @@ export const listHeaderEmailReport = [
     type: typeHeaderTable.DATA,
     canFilter: true,
     filter_type: 'CHECKBOX',
-    pin: 'sticky left-0',
+    pin: stickyPinClass,
   },
   {
     title: 'unique_domain_sent',

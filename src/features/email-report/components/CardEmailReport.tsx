@@ -6,19 +6,22 @@ import { VStack } from '@/components/ui/Utilities';
 import Wrapper from '@/components/Wrapper';
 import { cn } from '@/lib/utils';
 
-interface IProps {
+interface CardEmailReportProps {
   icon: LucideIcon;
   title: string;
   value: string;
   className?: string;
   isFetching?: boolean;
 }
-const CardEmailReport = ({ icon, title, value, className, isFetching }: IProps) => {
+const CardEmailReport = ({ icon, title, value, className, isFetching }: CardEmailReportProps) => {
   const Icon = icon as LucideIcon;
+  const wrapperClassName = cn('flex h-[90px] items-center gap-4 rounded-md bg-white p-4', className);
+  const iconWrapperClassName = 'bg-secondary-yellow flex h-10 w-10 items-center justify-center rounded-full';
+
   return (
-    <Wrapper className={cn('flex h-[90px] items-center gap-4 rounded-md bg-white p-4', className)}>
+    <Wrapper className={wrapperClassName}>
       <SkeletonWrapper loading={isFetching} className="rounded-full">
-        <div className="bg-secondary-yellow flex h-10 w-10 items-center justify-center rounded-full">
+        <div className={iconWrapperClassName}>
           <Icon width={24} height={24} />
         </div>
       </SkeletonWrapper>

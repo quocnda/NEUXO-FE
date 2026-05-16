@@ -7,6 +7,11 @@ import { HStack, VStack } from '@/components/ui/Utilities';
 import { data_overview } from '../utils/const';
 
 const Overview = ({ data, isFetching }: { data: ICampaignDetailDataReport | undefined; isFetching: boolean }) => {
+  const getMetricValue = (metricKey: string) => {
+    const rawValue = data && (data as any)[metricKey];
+    return rawValue ? rawValue : 0;
+  };
+
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
       {data_overview.map((item, index) => {
@@ -20,7 +25,7 @@ const Overview = ({ data, isFetching }: { data: ICampaignDetailDataReport | unde
               <p className="text-neutral-40 text-sm font-semibold">{item?.label}</p>
               <SkeletonWrapper loading={isFetching} className="h-7 w-12">
                 <p className="text-2xl font-semibold text-black">
-                  {data && (data as any)[item.key] ? (data as any)[item.key] : 0} {item?.suffix}
+                  {getMetricValue(item.key)} {item?.suffix}
                 </p>
               </SkeletonWrapper>
             </VStack>

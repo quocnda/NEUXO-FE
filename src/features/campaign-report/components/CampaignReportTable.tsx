@@ -18,16 +18,16 @@ import { listHeaderEmailReport } from '../utils/const';
 import RowTableList from './RowTableList';
 
 const CampaignReportTable = () => {
-  const [paramsQuery, setParamsQuery] = useState<IParamsCampaignReport>({
+  const [queryParams, setQueryParams] = useState<IParamsCampaignReport>({
     page: 1,
     limit: 50,
     orderByVal: 'DESC',
   });
 
-  const { data, isFetching, refetch } = useListCampaignlReport({ variables: paramsQuery, refetchOnMount: true });
-  const { data: dataAdmin } = useListAdmin();
+  const { data, isFetching, refetch } = useListCampaignlReport({ variables: queryParams, refetchOnMount: true });
+  const { data: adminData } = useListAdmin();
 
-  const dataUser = dataAdmin
+  const focusedUsers = adminData
     ?.filter((item) => listEmailFocus.includes(item.email))
     .map((item) => ({
       email: item.email,
@@ -40,7 +40,7 @@ const CampaignReportTable = () => {
       name: 'list_user_id',
       value:
         (
-          dataUser as
+          focusedUsers as
             | {
                 email: string;
                 user_name: string;
@@ -85,7 +85,7 @@ const CampaignReportTable = () => {
   });
 
   const updateParamsQuery = (newParams: Partial<IParamsCampaignReport>) => {
-    setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
+    setQueryParams((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
 
   const handleInputChange = debounceV2((e: any) => {
@@ -93,13 +93,13 @@ const CampaignReportTable = () => {
   }, 500);
 
   useEffect(() => {
-    if (!paramsQuery?.list_user_id && dataUser && dataUser.length > 0) {
-      setParamsQuery((prev) => ({
+    if (!queryParams?.list_user_id && focusedUsers && focusedUsers.length > 0) {
+      setQueryParams((prev) => ({
         ...prev,
-        list_user_id: dataUser.map((user) => user.user_id).join(','),
+        list_user_id: focusedUsers.map((user) => user.user_id).join(','),
       }));
     }
-  }, [dataUser, paramsQuery?.list_user_id]);
+  }, [focusedUsers, queryParams?.list_user_id]);
 
   return (
     <Wrapper>
@@ -118,8 +118,8 @@ const CampaignReportTable = () => {
       <VStack spacing={0} className="my-4">
         <CommonTable
           listHeader={columnsCustom}
-          paramsQuery={paramsQuery}
-          setParamsQuery={setParamsQuery}
+          paramsQuery={queryParams}
+          setParamsQuery={setQueryParams}
           bodyComponent={
             <>
               <TableSkeleton loading={isFetching} col={columnsCustom.length} />
@@ -132,7 +132,7 @@ const CampaignReportTable = () => {
                       key={index}
                       item={item}
                       refetch={refetch}
-                      paramsQuery={paramsQuery}
+                      paramsQuery={queryParams}
                     />
                   );
                 })}

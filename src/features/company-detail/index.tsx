@@ -20,9 +20,9 @@ import News from './components/News';
 const CompanyDetail = () => {
   const router = useRouter();
   const { id, page, user_id, user_name, start_date, end_date, value_date, filter } = router.query;
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isStepOpen, setIsStepOpen] = useState<boolean>(false);
 
-  const BREADCRUMB_FROM_OTHER_PAGE = useMemo(() => {
+  const breadcrumbFromOtherPage = useMemo(() => {
     const baseBreadcrumb = [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: formatItem(String(page)), type: breadcrumbTypes.link, href: `/${page}` },
@@ -37,19 +37,7 @@ const CompanyDetail = () => {
     return baseBreadcrumb;
   }, [page, user_id, user_name]);
 
-  const BREADCRUMB = useMemo(() => {
-    // const queryParams = {
-    //   start_date,
-    //   end_date,
-    //   value_date,
-    //   filter,
-    // };
-
-    // const filteredParams = Object.entries(queryParams)
-    //   .filter(([_, value]) => value !== undefined)
-    //   .map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`)
-    //   .join('&');
-
+  const breadcrumbDefault = useMemo(() => {
     return [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: 'Companies', type: breadcrumbTypes.link, href: '/matching-companies' },
@@ -105,25 +93,35 @@ const CompanyDetail = () => {
     };
   }, [router, page, start_date, end_date, value_date, filter, user_id, user_name]);
 
+  const companyData = user_id ? companyDetailByUserId : data;
+  const isCompanyFetching = user_id ? isFetchingCompanyDetailByUserId : isFetching;
+  const refetchCompany = user_id ? refetchCompanyDetailByUserId : refetch;
+  const breadcrumbData = !page || page !== 'matching-companies' ? breadcrumbFromOtherPage : breadcrumbDefault;
+
+  const handleOpenAddWatchlist = () => {
+    setIsStepOpen(true);
+  };
+
+  const isAddedToTeamWatchlist = !data?.watchlist && data?.is_in_watchlist !== 0;
+  const isAddableToWatchlist = !data?.watchlist && data?.is_in_watchlist === 0;
+  const isAddedToOwnWatchlist = data?.watchlist && data?.is_in_watchlist === 1;
+  const isAddedToBothWatchlists = data?.watchlist && data?.is_in_watchlist > 1;
+
   return (
-    <BreadcrumbLayout data={!page || page !== 'matching-companies' ? BREADCRUMB_FROM_OTHER_PAGE : BREADCRUMB}>
+    <BreadcrumbLayout data={breadcrumbData}>
       <HStack noWrap align={'start'} className="gap-[14px]">
         <div className="grid w-full grid-cols-1 gap-[14px] lg:grid-cols-5">
-          <DetailCompany
-            data={user_id ? companyDetailByUserId : data}
-            isFetching={user_id ? isFetchingCompanyDetailByUserId : isFetching}
-            refetch={user_id ? refetchCompanyDetailByUserId : refetch}
-          />
+          <DetailCompany data={companyData} isFetching={isCompanyFetching} refetch={refetchCompany} />
           <VStack className="relative w-full gap-[23px] lg:col-span-3">
             <ContactsCompany />
             <News />
           </VStack>
         </div>
         <VStack className="w-12 transform transition-all">
-          <Show when={!data?.watchlist && data?.is_in_watchlist !== 0}>
+          <Show when={isAddedToTeamWatchlist}>
             <Tooltip label="Added to your team member's watchlist">
               <div>
-                <ModalConfirmWatchList companyId={String(id)} refetch={refetch} setIsStepOpen={setIsOpen}>
+                <ModalConfirmWatchList companyId={String(id)} refetch={refetch} setIsStepOpen={setIsStepOpen}>
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
                     <Icons.stars fill="#6B7280" width={20} height={20} color="#FFC800" />
                   </div>
@@ -131,26 +129,24 @@ const CompanyDetail = () => {
               </div>
             </Tooltip>
           </Show>
-          <Show when={!data?.watchlist && data?.is_in_watchlist === 0}>
+          <Show when={isAddableToWatchlist}>
             <Tooltip label="Add to watchlist">
               <div
                 className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white"
-                onClick={() => {
-                  setIsOpen(true);
-                }}
+                onClick={handleOpenAddWatchlist}
               >
                 <Icons.watchlistCompany width={20} height={20} color="#6F767E" />
               </div>
             </Tooltip>
           </Show>
-          <Show when={data?.watchlist && data?.is_in_watchlist === 1}>
+          <Show when={isAddedToOwnWatchlist}>
             <Tooltip label="Added to your watchlist">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
                 <Icons.watchlistCompany color="#FFC800" width={20} height={20} />
               </div>
             </Tooltip>
           </Show>
-          <Show when={data?.watchlist && data?.is_in_watchlist > 1}>
+          <Show when={isAddedToBothWatchlists}>
             <Tooltip label="Added to both your watchlist and other teammates">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
                 <Icons.stars fill="#FFC800" width={20} height={20} />
@@ -171,7 +167,7 @@ const CompanyDetail = () => {
           </Show>
         </VStack>
       </HStack>
-      <StepAddWatchList companyId={String(id)} isOpen={isOpen} setIsOpen={setIsOpen} refetch={refetch} />
+      <StepAddWatchList companyId={String(id)} isOpen={isStepOpen} setIsOpen={setIsStepOpen} refetch={refetch} />
     </BreadcrumbLayout>
   );
 };

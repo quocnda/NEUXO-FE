@@ -12,47 +12,48 @@ import { VStack } from '@/components/ui/Utilities';
 import { onMutateError } from '@/lib/common';
 
 const NoteCompany = ({ note, refetch }: { note?: string | null; refetch?: () => void }) => {
-  const [value, setValue] = useState(note || '');
+  const [noteValue, setNoteValue] = useState(note || '');
   const router = useRouter();
   const { id, user_id } = router.query;
 
-  const { mutate: addNote } = useMutation(addNoteWatchMatching, {
+  const { mutate: saveNote } = useMutation(addNoteWatchMatching, {
     onError: onMutateError,
     onSuccess: () => {
       toast.success('Save note successfully!');
       refetch?.();
     },
   });
-  const handleAddNote = () =>
-    addNote([
+
+  const handleSaveNote = () =>
+    saveNote([
       {
         company_id: String(id),
-        note: value,
+        note: noteValue,
       },
     ]);
 
   useEffect(() => {
     if (note) {
-      setValue(note);
+      setNoteValue(note);
     }
   }, [note]);
 
   return (
     <VStack spacing={12}>
       <Base3 className="text-neutral-50">Private note</Base3>
-      <Tooltip label={value} className="max-w-[500px] text-xs" hidden={!value}>
+      <Tooltip label={noteValue} className="max-w-[500px] text-xs" hidden={!noteValue}>
         <div className="bg-neutral-20 flex min-h-[112px] w-full flex-col gap-4 rounded-md border-2 border-[#9A9FA540] p-3">
           <TextArea
             variant={'unstyled'}
-            value={value}
+            value={noteValue}
             placeholder="Add notes..."
             disabled={!!user_id}
             className="bg-neutral-20 max-h-[70px] p-0"
             onChange={(e) => {
-              setValue(e.target.value);
+              setNoteValue(e.target.value);
             }}
           />
-          <Button variant={'outline'} disabled={!!user_id} className="h-10 w-fit p-3" onClick={handleAddNote}>
+          <Button variant={'outline'} disabled={!!user_id} className="h-10 w-fit p-3" onClick={handleSaveNote}>
             Save
           </Button>
         </div>

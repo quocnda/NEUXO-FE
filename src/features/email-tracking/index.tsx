@@ -19,10 +19,10 @@ const EmailTracking = () => {
   const { user } = useUserStore.getState();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const [tabs, setTabs] = useState<string | number>(tabs_email_tracking[0].value);
+  const [activeTab, setActiveTab] = useState<string | number>(tabs_email_tracking[0].value);
   const { user_id, user_name, start_date, end_date, value_date } = router.query;
 
-  const BREADCRUMB = useMemo(() => {
+  const breadcrumbItems = useMemo(() => {
     const queryParams = {
       start_date,
       end_date,
@@ -73,7 +73,7 @@ const EmailTracking = () => {
   return (
     <>
       <Show when={!!user_id}>
-        <BreadcrumbLayout data={BREADCRUMB} className="mb-2" />
+        <BreadcrumbLayout data={breadcrumbItems} className="mb-2" />
       </Show>
       <Wrapper>
         <HStack pos={'apart'} spacing={8}>
@@ -84,10 +84,10 @@ const EmailTracking = () => {
                 <div
                   className={cn(
                     'text-neutral-40 flex h-8 cursor-pointer items-center justify-center gap-2 rounded-sm px-4 text-xs font-semibold hover:opacity-50',
-                    tabs === item.value && 'bg-main text-white'
+                    activeTab === item.value && 'bg-main text-white'
                   )}
                   key={index}
-                  onClick={() => setTabs(item.value)}
+                  onClick={() => setActiveTab(item.value)}
                 >
                   {item.label}
                 </div>
@@ -95,7 +95,7 @@ const EmailTracking = () => {
             })}
           </HStack>
         </HStack>
-        <TableEmailTracking tabs={tabs} />
+        <TableEmailTracking tabs={activeTab} />
       </Wrapper>
     </>
   );

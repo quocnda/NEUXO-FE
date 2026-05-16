@@ -28,29 +28,29 @@ interface IModalAddNoteProps {
 }
 const ModalAddNote: FCC<IModalAddNoteProps> = ({ children, addNote, email, valueNote, onSuccess }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState<string>('');
+  const [noteValue, setNoteValue] = useState<string>('');
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    setValue('');
+    setNoteValue('');
   };
   const handleAddNote = () =>
     addNote(
       {
         email: String(email),
-        note: value,
+        note: noteValue,
       },
       {
         onSuccess: () => {
           toast.success('Save note successfully!');
           handleToggle();
-          onSuccess?.(value);
+          onSuccess?.(noteValue);
         },
       }
     );
 
   useEffect(() => {
     if (valueNote) {
-      setValue(valueNote);
+      setNoteValue(valueNote);
     }
   }, [valueNote, isOpen]);
 
@@ -70,10 +70,10 @@ const ModalAddNote: FCC<IModalAddNoteProps> = ({ children, addNote, email, value
           <TextArea
             variant={'default'}
             placeholder="Add notes here..."
-            value={value}
+            value={noteValue}
             maxLength={500}
             onChange={(e) => {
-              setValue(e.target.value);
+              setNoteValue(e.target.value);
             }}
           />
         </VStack>
@@ -82,7 +82,7 @@ const ModalAddNote: FCC<IModalAddNoteProps> = ({ children, addNote, email, value
           <Button variant={'outline'} onClick={handleToggle} type="button" fullWidth>
             Cancel
           </Button>
-          <Button fullWidth onClick={handleAddNote} disabled={!value.trim() && !valueNote}>
+          <Button fullWidth onClick={handleAddNote} disabled={!noteValue.trim() && !valueNote}>
             Save
           </Button>
         </HStack>

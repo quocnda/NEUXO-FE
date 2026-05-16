@@ -21,42 +21,43 @@ const BREADCRUMB = [
   { label: 'Campaign Details', type: breadcrumbTypes.page },
 ];
 const CampaignReportDetail = () => {
-  const defaultQuery: IParamsCampaignDetail = {
+  const defaultParams: IParamsCampaignDetail = {
     page: 1,
     limit: 50,
   };
-  const [paramsQuery, setParamsQuery] = useState<IParamsCampaignDetail>(defaultQuery);
+  const [queryParams, setQueryParams] = useState<IParamsCampaignDetail>(defaultParams);
   const { id } = useRouter().query;
+  const campaignId = String(id);
 
-  const { data: dataAbout } = useAboutCampaign({ variables: { id: String(id) }, enabled: !!id });
+  const { data: aboutData } = useAboutCampaign({ variables: { id: campaignId }, enabled: !!id });
 
-  const { data, isFetching, refetch } = useDetailCampaign({
-    variables: { ...paramsQuery, id: String(id) },
+  const { data: detailData, isFetching, refetch } = useDetailCampaign({
+    variables: { ...queryParams, id: campaignId },
     enabled: !!id,
   });
-  const [tab, setTab] = useState<string | number>(tabs[0].value);
+  const [activeTab, setActiveTab] = useState<string | number>(tabs[0].value);
   return (
     <BreadcrumbLayout data={BREADCRUMB}>
       <Wrapper className="flex flex-col gap-3">
         <Header
-          tab={tab}
-          setTab={setTab}
-          data={data?.data_status}
+          tab={activeTab}
+          setTab={setActiveTab}
+          data={detailData?.data_status}
           isFetching={isFetching}
-          campaign_name={dataAbout?.campaign_name}
+          campaign_name={aboutData?.campaign_name}
         />
-        <Show when={tab === tabs[0].value}>
-          <Overview data={data?.data_report} isFetching={isFetching} />
+        <Show when={activeTab === tabs[0].value}>
+          <Overview data={detailData?.data_report} isFetching={isFetching} />
           <CampaignTable
-            data={data?.data}
-            paramsQuery={paramsQuery}
-            setParamsQuery={setParamsQuery}
+            data={detailData?.data}
+            paramsQuery={queryParams}
+            setParamsQuery={setQueryParams}
             isFetching={isFetching}
-            pagination={data?.pagination}
+            pagination={detailData?.pagination}
           />
         </Show>
-        <Show when={tab === tabs[1].value}>
-          <AboutComponent data={dataAbout} />
+        <Show when={activeTab === tabs[1].value}>
+          <AboutComponent data={aboutData} />
         </Show>
       </Wrapper>
     </BreadcrumbLayout>

@@ -26,15 +26,33 @@ interface IProps {
 }
 const CardCampaign = ({ item, loading, refetch }: IProps) => {
   const router = useRouter();
-  const [valueName, setValueName] = useState<string>('');
-  const [closeModal, setCloseModal] = useState(false);
+  const [campaignName, setCampaignName] = useState<string>('');
+  const [shouldCloseModal, setShouldCloseModal] = useState(false);
   const { mutate, isLoading } = useMutation(updateStatusCampaign, {
     onSuccess: () => {
       refetch?.();
-      setCloseModal(true);
+      setShouldCloseModal(true);
     },
     onError: onMutateError,
   });
+
+  const handleRenameClick = () => {
+    setCampaignName(item?.campaign_name || '');
+  };
+
+  const handleRenameChange = (name: string) => {
+    if (item) {
+      item.campaign_name = name;
+    }
+    setCampaignName(name);
+  };
+
+  const handleAction = (status: string) => {
+    mutate(
+      { id: String(item?.campaign_id), status_campaign: status },
+      { onSuccess: () => toast.success(`${status} campaign successfully!`) }
+    );
+  };
 
   return (
     <div className="flex max-w-md flex-col justify-between gap-3 overflow-hidden rounded-lg border border-gray-300 bg-white p-2">
@@ -84,18 +102,13 @@ const CardCampaign = ({ item, loading, refetch }: IProps) => {
                           className="w-full"
                           loading={isLoading}
                           variant={buttonVariant as any}
-                          onClick={() =>
-                            mutate(
-                              { id: String(item?.campaign_id), status_campaign: buttonText },
-                              { onSuccess: () => toast.success(`${buttonText} campaign successfully!`) }
-                            )
-                          }
+                          onClick={() => handleAction(buttonText)}
                         >
                           {buttonText}
                         </Button>
                       }
-                      closeModal={closeModal}
-                      setCloseModal={setCloseModal}
+                      closeModal={shouldCloseModal}
+                      setCloseModal={setShouldCloseModal}
                     >
                       <HStack spacing={8} className="hover:bg-neutral-30 cursor-pointer rounded-sm p-2">
                         {icon}
@@ -104,21 +117,14 @@ const CardCampaign = ({ item, loading, refetch }: IProps) => {
                     </ModalActionCampaign>
                   ))}
                 <ModalRenameCampagn
-                  valueName={valueName}
-                  onNameChange={(name) => {
-                    if (item) {
-                      item.campaign_name = name;
-                    }
-                    setValueName(name);
-                  }}
+                  valueName={campaignName}
+                  onNameChange={handleRenameChange}
                   campaignId={item?.campaign_id}
                 >
                   <HStack
                     spacing={8}
                     className="hover:bg-neutral-30 cursor-pointer rounded-sm p-2"
-                    onClick={() => {
-                      setValueName(item?.campaign_name || '');
-                    }}
+                    onClick={handleRenameClick}
                   >
                     <Edit size={18} color="#6F767E" />
                     <span className="text-neutral-40 text-xs font-semibold">Rename</span>

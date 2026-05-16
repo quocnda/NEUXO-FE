@@ -9,12 +9,13 @@ interface IProps {
 }
 const HeaderComponent = (props: IProps) => {
   const { isDataEmailTemplate } = props;
+  const titleLabel = isDataEmailTemplate?.label || 'New Email';
 
   return (
     <>
       <Tag className="bg-neutral-0">
         <HStack spacing={4} noWrap className="text-lg font-semibold text-white">
-          <span>{isDataEmailTemplate?.label || 'New Email'}</span>
+          <span>{titleLabel}</span>
         </HStack>
       </Tag>
     </>

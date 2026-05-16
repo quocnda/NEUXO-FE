@@ -30,8 +30,8 @@ const CampaignTable = ({
   pagination: IPagination | undefined;
   refetch: () => void;
 }) => {
-  const [selectedIds, setSelectedIds] = useState<any[]>([]);
-  const [isDownloadAll, setIsDownloadAll] = useState<boolean>(false);
+  const [selectedEmails, setSelectedEmails] = useState<any[]>([]);
+  const [isSelectAll, setIsSelectAll] = useState<boolean>(false);
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -47,25 +47,25 @@ const CampaignTable = ({
   }, 300);
 
   useEffect(() => {
-    const temp: any[] = [];
+    const nextSelected: any[] = [];
 
-    if (isDownloadAll) {
+    if (isSelectAll) {
       data?.forEach((s: ICampaignDetailDataResponse) => {
         if (isValidEmail(s.email)) {
-          temp.push(s.email);
+          nextSelected.push(s.email);
         }
       });
     } else {
-      selectedIds.forEach((s: any) => {
+      selectedEmails.forEach((s: any) => {
         if (isValidEmail(s)) {
-          temp.push(s);
+          nextSelected.push(s);
         }
       });
     }
 
-    setSelectedIds(temp);
+    setSelectedEmails(nextSelected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDownloadAll, data]);
+  }, [isSelectAll, data]);
 
   const getDataFilter = [
     {
@@ -108,13 +108,13 @@ const CampaignTable = ({
           isPinCheckbox
           checkBox={
             <Checkbox
-              checked={isDownloadAll}
+              checked={isSelectAll}
               onCheckedChange={(e) => {
                 if (e) {
-                  setIsDownloadAll(true);
+                  setIsSelectAll(true);
                 } else {
-                  setIsDownloadAll(false);
-                  setSelectedIds([]);
+                  setIsSelectAll(false);
+                  setSelectedEmails([]);
                 }
               }}
             />
@@ -125,7 +125,7 @@ const CampaignTable = ({
               <TableSkeleton loading={isFetching} col={(columns?.length || 0) + 1} />
               <Show when={data && data?.length !== 0 && !isFetching}>
                 {data?.map((item: ICampaignDetailDataResponse, index: number) => {
-                  const checkExist = selectedIds.some((selected: any) => selected === item?.email);
+                  const checkExist = selectedEmails.some((selected: any) => selected === item?.email);
                   const isEmailValid = isValidEmail(item?.email || '');
                   return (
                     <RowTableList
@@ -135,9 +135,9 @@ const CampaignTable = ({
                       item={item}
                       checkExist={checkExist}
                       isEmailValid={isEmailValid}
-                      isDownloadAll={isDownloadAll}
-                      setSelectedIds={setSelectedIds}
-                      setIsDownloadAll={setIsDownloadAll}
+                      isDownloadAll={isSelectAll}
+                      setSelectedIds={setSelectedEmails}
+                      setIsDownloadAll={setIsSelectAll}
                       refetch={refetch}
                     />
                   );

@@ -10,6 +10,7 @@ import ModalSentMail from '@/features/email-tracking/components/EmailTracking/Mo
 
 const ActionBar = ({ selectedIds, refetch }: { selectedIds: any[]; refetch: () => void }) => {
   const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
+  const selectedCount = selectedIds.length || 0;
 
   return (
     <motion.div
@@ -22,7 +23,7 @@ const ActionBar = ({ selectedIds, refetch }: { selectedIds: any[]; refetch: () =
         <HStack spacing={12}>
           <Icons.checked width={14} height={14} />
           <Caption1 className="text-neutral-40 text-xs">
-            {selectedIds.length || 0} {`${selectedIds.length < 2 ? 'Account' : 'Accounts'}`} selected
+            {selectedCount} {`${selectedCount < 2 ? 'Account' : 'Accounts'}`} selected
           </Caption1>
         </HStack>
         <HStack spacing={8}>

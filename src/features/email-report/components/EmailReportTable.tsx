@@ -19,75 +19,72 @@ import FilterEmailReport from './FilterEmailReport';
 import RowTableList from './RowTableList';
 
 const EmailReportTable = () => {
-  const [paramsQuery, setParamsQuery] = useState<IParamsEmailReport>();
-
-  const [valueDate, setValueDate] = useState<string>('');
+  const [queryParams, setQueryParams] = useState<IParamsEmailReport>();
+  const [datePreset, setDatePreset] = useState<string>('');
   const router = useRouter();
   const { start_date, end_date, value_date } = router.query;
 
-  const { data, isFetching, refetch } = useListEmailReport({ variables: paramsQuery, refetchOnMount: true });
-  const { data: dataAdmin } = useListAdmin();
+  const { data, isFetching, refetch } = useListEmailReport({ variables: queryParams, refetchOnMount: true });
+  const { data: adminUsers } = useListAdmin();
 
-  const dataUser = dataAdmin
-    ?.filter((item) => listEmailFocus.includes(item.email))
-    .map((item) => ({
-      email: item.email,
-      user_name: item.user_name,
-      user_id: item.id,
+  const focusUsers = adminUsers
+    ?.filter((user) => listEmailFocus.includes(user.email))
+    .map((user) => ({
+      email: user.email,
+      user_name: user.user_name,
+      user_id: user.id,
     }));
 
-  const getDataFilter = [
+  const filterOptions = [
     {
       name: 'list_user_id',
       value:
         (
-          dataUser as
+          focusUsers as
             | {
                 email: string;
                 user_name: string;
                 user_id: string;
               }[]
             | undefined
-        )?.map((c: { user_name: string; user_id: string }) => ({
-          label: c.user_name,
-          value: String(c.user_id),
+        )?.map((user: { user_name: string; user_id: string }) => ({
+          label: user.user_name,
+          value: String(user.user_id),
         })) || [],
     },
   ];
 
-  const columnsCustom = listHeaderEmailReport?.map((item: any) => {
-    return {
-      title: item.title,
-      key: item.key,
-      pin: item.pin,
-      type: item?.type || '',
-      canFilter: item?.canFilter,
-      filter_type: item?.filter_type,
-      dataFilter: getDataFilter.find((s) => s.name === item.key)?.value,
-      name_filter: item?.name_filter,
-    };
-  });
+  const tableColumns = listHeaderEmailReport?.map((item: any) => ({
+    title: item.title,
+    key: item.key,
+    pin: item.pin,
+    type: item?.type || '',
+    canFilter: item?.canFilter,
+    filter_type: item?.filter_type,
+    dataFilter: filterOptions.find((s) => s.name === item.key)?.value,
+    name_filter: item?.name_filter,
+  }));
 
   useEffect(() => {
-    if (!paramsQuery?.list_user_id && dataUser && dataUser.length > 0) {
-      setParamsQuery((prev) => ({
+    if (!queryParams?.list_user_id && focusUsers && focusUsers.length > 0) {
+      setQueryParams((prev) => ({
         ...prev,
-        list_user_id: dataUser.map((user) => user.user_id).join(','),
+        list_user_id: focusUsers.map((user) => user.user_id).join(','),
       }));
     }
-  }, [dataUser, paramsQuery?.list_user_id]);
+  }, [focusUsers, queryParams?.list_user_id]);
 
   useEffect(() => {
     if (value_date) {
-      setValueDate(String(value_date));
-      setParamsQuery((prev) => ({
+      setDatePreset(String(value_date));
+      setQueryParams((prev) => ({
         ...prev,
         start_date: start_date ? String(start_date) : undefined,
         end_date: end_date ? String(end_date) : undefined,
       }));
     } else {
-      setValueDate('yesterday');
-      setParamsQuery((prev) => ({
+      setDatePreset('yesterday');
+      setQueryParams((prev) => ({
         ...prev,
         start_date: undefined,
         end_date: undefined,
@@ -95,15 +92,17 @@ const EmailReportTable = () => {
     }
   }, [value_date, start_date, end_date]);
 
+  const reportRows = data?.report_data || [];
+
   return (
     <Wrapper>
       <HStack pos={'apart'} spacing={8}>
         <Tag className="bg-secondary-purple">Email Report</Tag>
         <FilterEmailReport
-          paramsQuery={paramsQuery}
-          setParamsQuery={setParamsQuery}
-          setValueDate={setValueDate}
-          valueDate={valueDate}
+          paramsQuery={queryParams}
+          setParamsQuery={setQueryParams}
+          setValueDate={setDatePreset}
+          valueDate={datePreset}
         />
       </HStack>
       <div className="bg-neutral-20 my-4 grid grid-cols-1 items-center justify-center gap-2 rounded-md p-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
@@ -129,23 +128,23 @@ const EmailReportTable = () => {
       </div>
       <VStack spacing={0}>
         <CommonTable
-          listHeader={columnsCustom}
-          paramsQuery={paramsQuery}
-          setParamsQuery={setParamsQuery}
+          listHeader={tableColumns}
+          paramsQuery={queryParams}
+          setParamsQuery={setQueryParams}
           bodyComponent={
             <>
-              <TableSkeleton loading={isFetching} col={columnsCustom.length} />
-              <Show when={data && data?.report_data?.length !== 0 && !isFetching}>
-                {data?.report_data?.map((item: IResponseEmailReport, index: number) => {
+              <TableSkeleton loading={isFetching} col={tableColumns.length} />
+              <Show when={data && reportRows.length !== 0 && !isFetching}>
+                {reportRows.map((item: IResponseEmailReport, index: number) => {
                   return (
                     <RowTableList
                       indexRow={index}
-                      tableLength={data?.report_data?.length}
+                      tableLength={reportRows.length}
                       key={index}
                       item={item}
                       refetch={refetch}
-                      paramsQuery={paramsQuery}
-                      valueDate={valueDate}
+                      paramsQuery={queryParams}
+                      valueDate={datePreset}
                     />
                   );
                 })}
@@ -155,7 +154,7 @@ const EmailReportTable = () => {
           footerComponent={<></>}
         />
 
-        <Show when={!isFetching && (data?.report_data?.length === 0 || !data)}>
+        <Show when={!isFetching && (reportRows.length === 0 || !data)}>
           <Empty />
         </Show>
       </VStack>

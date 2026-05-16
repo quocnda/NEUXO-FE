@@ -18,6 +18,7 @@ interface IProps {
   isFetching: boolean;
   refetch?: () => void;
 }
+
 const DetailCompany = ({ data, isFetching, refetch }: IProps) => {
   const router = useRouter();
   const { page } = router.query;
@@ -29,7 +30,7 @@ const DetailCompany = ({ data, isFetching, refetch }: IProps) => {
     onError: onMutateError,
   });
 
-  const viewNote = page === 'watch-list-all' || page === 'watch-list' || page === 'watch-list-other-user';
+  const showNote = page === 'watch-list-all' || page === 'watch-list' || page === 'watch-list-other-user';
 
   return (
     <div className="relative w-full lg:col-span-2">
@@ -43,7 +44,7 @@ const DetailCompany = ({ data, isFetching, refetch }: IProps) => {
           </div>
         </Show>
         <CompanyDescription data={data!} mutate={mutate} refetch={refetch} />
-        {viewNote && <NoteCompany note={data?.note_watchlist} refetch={refetch} />}
+        {showNote && <NoteCompany note={data?.note_watchlist} refetch={refetch} />}
       </Wrapper>
     </div>
   );

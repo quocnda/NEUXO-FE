@@ -54,6 +54,11 @@ const ContactNews = () => {
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  const handleLoadMore = () => {
+    fetchNextPage();
+    setIsInitialLoad(false);
+  };
+
   return (
     <VStack className="max-h-[400px] gap-[23px] overflow-auto pb-2">
       <VStack spacing={8}>
@@ -78,14 +83,7 @@ const ContactNews = () => {
       )}
       {isInitialLoad && hasNextPage && (
         <div className="flex w-full items-center justify-center">
-          <Button
-            variant={'outline'}
-            fullWidth
-            onClick={() => {
-              fetchNextPage();
-              setIsInitialLoad(false);
-            }}
-          >
+          <Button variant={'outline'} fullWidth onClick={handleLoadMore}>
             See previous news
           </Button>
         </div>

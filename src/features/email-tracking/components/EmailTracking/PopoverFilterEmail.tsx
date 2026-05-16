@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 import { dataOpenStatus, dataReplyStatus } from '../../utils/const';
 
-interface IProps {
+interface PopoverFilterEmailProps {
   updateParamsQuery: (newParams: Partial<IParamsEmailTracking>) => void;
 }
 
@@ -80,11 +80,11 @@ const FilterOption = ({
   </VStack>
 );
 
-const PopoverFilterEmail = (props: IProps) => {
+const PopoverFilterEmail = (props: PopoverFilterEmailProps) => {
   const { updateParamsQuery } = props;
   const [isOpen, setIsOpen] = useState(false);
-  const [valueOpenStatus, setValueOpenStatus] = useState<string | undefined>(undefined);
-  const [valueReplyStatus, setValueReplyStatus] = useState<string | undefined>(undefined);
+  const [openStatus, setOpenStatus] = useState<string | undefined>(undefined);
+  const [replyStatus, setReplyStatus] = useState<string | undefined>(undefined);
   const [minValue, setMinValue] = useState<number | null>(null);
   const [maxValue, setMaxValue] = useState<number | null>(null);
   const handleToggle = () => setIsOpen(!isOpen);
@@ -92,8 +92,8 @@ const PopoverFilterEmail = (props: IProps) => {
   const handleReset = () => {
     setMinValue(null);
     setMaxValue(null);
-    setValueOpenStatus(undefined);
-    setValueReplyStatus(undefined);
+    setOpenStatus(undefined);
+    setReplyStatus(undefined);
     updateParamsQuery({
       email_sent: undefined,
       open_status: undefined,
@@ -118,8 +118,8 @@ const PopoverFilterEmail = (props: IProps) => {
     };
   const handleFilter = () => {
     updateParamsQuery({
-      open_status: valueOpenStatus,
-      reply_status: valueReplyStatus,
+      open_status: openStatus,
+      reply_status: replyStatus,
       email_count_end: maxValue || undefined,
       email_count_start: minValue || undefined,
     });
@@ -141,7 +141,7 @@ const PopoverFilterEmail = (props: IProps) => {
     <Popover open={isOpen} onOpenChange={handleToggle}>
       <PopoverTrigger asChild>
         <div className="flex h-9 w-fit cursor-pointer items-center rounded-sm border border-gray-300 px-2 py-1">
-          <Show when={!minValue || !maxValue || (!!valueOpenStatus && !valueReplyStatus)}>
+          <Show when={!minValue || !maxValue || (!!openStatus && !replyStatus)}>
             <p className="text-xs text-[#828282]">Filter</p>
           </Show>
           <HStack spacing={8}>
@@ -159,16 +159,16 @@ const PopoverFilterEmail = (props: IProps) => {
                 }}
               />
             </Show>
-            <Show when={!!valueOpenStatus}>
+            <Show when={!!openStatus}>
               <FilterBadge
-                label={getLabelFromData(dataOpenStatus, valueOpenStatus)}
-                onClear={clearSelection(setValueOpenStatus, 'open_status', valueOpenStatus)}
+                label={getLabelFromData(dataOpenStatus, openStatus)}
+                onClear={clearSelection(setOpenStatus, 'open_status', openStatus)}
               />
             </Show>
-            <Show when={!!valueReplyStatus}>
+            <Show when={!!replyStatus}>
               <FilterBadge
-                label={getLabelFromData(dataReplyStatus, valueReplyStatus)}
-                onClear={clearSelection(setValueReplyStatus, 'reply_status', valueReplyStatus)}
+                label={getLabelFromData(dataReplyStatus, replyStatus)}
+                onClear={clearSelection(setReplyStatus, 'reply_status', replyStatus)}
               />
             </Show>
           </HStack>
@@ -205,8 +205,8 @@ const PopoverFilterEmail = (props: IProps) => {
           <FilterOption
             label="Reply status"
             data={dataReplyStatus}
-            selectedValue={valueReplyStatus}
-            onSelect={(value) => setValueReplyStatus(value === valueReplyStatus ? undefined : value)}
+            selectedValue={replyStatus}
+            onSelect={(value) => setReplyStatus(value === replyStatus ? undefined : value)}
           />
           <Button className="h-7 text-xs" onClick={handleFilter}>
             Apply

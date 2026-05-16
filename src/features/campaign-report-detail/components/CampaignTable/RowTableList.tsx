@@ -12,25 +12,23 @@ interface Props extends TypeItemTable {
 }
 const RowTableList = ({ indexRow, tableLength, item }: Props) => {
   return (
-    <>
-      <RowTable>
-        <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-          <TextBody1>{item?.contact_name}</TextBody1>
-        </ItemRowTable>
-        <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-          <TextBody1>{item?.email}</TextBody1>
-        </ItemRowTable>
-        <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-          <TextBody1>{item?.company_name}</TextBody1>
-        </ItemRowTable>
-        <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-          <TextBody1>{item?.email_sent}</TextBody1>
-        </ItemRowTable>
-        <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-          {colorStatus(item?.email_status)}
-        </ItemRowTable>
-      </RowTable>
-    </>
+    <RowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.contact_name}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.email}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.company_name}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.email_sent}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        {colorStatus(item?.email_status)}
+      </ItemRowTable>
+    </RowTable>
   );
 };
 

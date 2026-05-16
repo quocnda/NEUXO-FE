@@ -13,18 +13,18 @@ import Filter from './components/Filter';
 import WarningCreateNewEmailCampaign from './components/WarningCreateNewEmailCampaign';
 
 const CampaignManagement = () => {
-  const [isOpenWarning, setIsOpenWarning] = useState(false);
-  const [paramsQuery, setParamsQuery] = useState<IParamsCampaignList>({
+  const [isWarningOpen, setIsWarningOpen] = useState(false);
+  const [queryParams, setQueryParams] = useState<IParamsCampaignList>({
     page: 1,
     limit: 50,
   });
-  const { data, isFetching, refetch } = useListCampaign({ variables: paramsQuery, refetchOnMount: true });
+  const { data, isFetching, refetch } = useListCampaign({ variables: queryParams, refetchOnMount: true });
 
   useEffect(() => {
     const isOpenWarningLocal = localStorage.getItem('isOpenWarning');
     if (isOpenWarningLocal) {
-      setIsOpenWarning(JSON.parse(isOpenWarningLocal));
-    } else setIsOpenWarning(true);
+      setIsWarningOpen(JSON.parse(isOpenWarningLocal));
+    } else setIsWarningOpen(true);
   }, []);
 
   return (
@@ -33,10 +33,10 @@ const CampaignManagement = () => {
         <HStack pos="apart">
           <Tag className="bg-secondary-purple">Automated Campaign Management </Tag>
         </HStack>
-        <Show when={isOpenWarning}>
-          <WarningCreateNewEmailCampaign setIsOpenWarning={setIsOpenWarning} />
+        <Show when={isWarningOpen}>
+          <WarningCreateNewEmailCampaign setIsOpenWarning={setIsWarningOpen} />
         </Show>
-        <Filter paramsQuery={paramsQuery} setParamsQuery={setParamsQuery} />
+        <Filter paramsQuery={queryParams} setParamsQuery={setQueryParams} />
         <Show when={!isFetching}>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {data?.data?.map((item, index) => (
@@ -58,12 +58,12 @@ const CampaignManagement = () => {
         <Show when={!isFetching && data?.data?.length !== 0 && !!data}>
           <div className="sticky bottom-0 bg-white">
             <TablePagination
-              onPageChange={(page) => setParamsQuery({ ...paramsQuery, page })}
-              onPageSizeChange={(limit) => setParamsQuery({ ...paramsQuery, limit: Number(limit) })}
+              onPageChange={(page) => setQueryParams({ ...queryParams, page })}
+              onPageSizeChange={(limit) => setQueryParams({ ...queryParams, limit: Number(limit) })}
               pagination={{
                 ...data?.pagination,
-                current_page: paramsQuery.page,
-                limit: paramsQuery.limit,
+                current_page: queryParams.page,
+                limit: queryParams.limit,
               }}
             />
           </div>

@@ -20,9 +20,9 @@ interface IProps {
   paramsQuery: IParamsCampaignList;
 }
 const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
-  const [valueDate, setValueDate] = useState<string>('today');
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<string[]>([]);
+  const [selectedDatePreset, setSelectedDatePreset] = useState<string>('today');
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const updateParamsQuery = (newParams: Partial<IParamsCampaignList>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
@@ -30,9 +30,13 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
     updateParamsQuery({ search_key: e.target.value, page: 1 });
   }, 500);
 
+  const clearDateFilters = () => {
+    updateParamsQuery({ start_date: '', end_date: '', page: 1 });
+  };
+
   const handleSelectDateToday = () => {
     const today = new Date();
-    setValueDate('today');
+    setSelectedDatePreset('today');
     updateParamsQuery({
       start_date: dayjs(today).format('YYYY-MM-DD'),
       end_date: dayjs(today).format('YYYY-MM-DD'),
@@ -41,7 +45,7 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
   };
 
   const handleSelectThisWeek = () => {
-    setValueDate('week');
+    setSelectedDatePreset('week');
     const today = new Date();
     const dayOfWeek = today.getDay();
     const startOfWeek = new Date(today);
@@ -56,7 +60,7 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
   };
 
   const handleSelectThisMonth = () => {
-    setValueDate('month');
+    setSelectedDatePreset('month');
     const today = new Date();
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const endOfMonth = new Date(today);
@@ -93,14 +97,14 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
       <HStack>
         <CustomPopover
           data={campaignStatus?.map((item: any) => ({ label: item.label, value: item.value }))}
-          value={status}
-          setValue={setStatus}
+          value={selectedStatuses}
+          setValue={setSelectedStatuses}
           paramsQuery={paramsQuery}
           setParamsQuery={setParamsQuery}
           name="campaign_status"
           icon={Gavel}
         />
-        <Show when={valueDate !== 'date_range'}>
+        <Show when={selectedDatePreset !== 'date_range'}>
           <Select
             key={dateOptions?.[0]?.value}
             defaultValue={dateOptions?.[0]?.value}
@@ -116,21 +120,13 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
                   handleSelectThisMonth();
                   break;
                 case 'date_range':
-                  updateParamsQuery({
-                    start_date: '',
-                    end_date: '',
-                    page: 1,
-                  });
-                  setValueDate('date_range');
-                  setOpen(true);
+                  clearDateFilters();
+                  setSelectedDatePreset('date_range');
+                  setIsDatePickerOpen(true);
                   break;
                 default:
-                  setValueDate('');
-                  updateParamsQuery({
-                    start_date: '',
-                    end_date: '',
-                    page: 1,
-                  });
+                  setSelectedDatePreset('');
+                  clearDateFilters();
                   break;
               }
             }}
@@ -152,7 +148,7 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
             </SelectContent>
           </Select>
         </Show>
-        <Show when={valueDate === 'date_range'}>
+        <Show when={selectedDatePreset === 'date_range'}>
           <div className="relative min-w-[180px]">
             <DateRangePicker
               from={paramsQuery?.start_date}
@@ -161,18 +157,18 @@ const Filter = ({ setParamsQuery, paramsQuery }: IProps) => {
               placeholder="Select date range"
               className="cursor-pointer rounded-full text-xs"
               onReset={() => {
-                setValueDate('');
+                setSelectedDatePreset('');
                 updateParamsQuery({ start_date: undefined, end_date: undefined, page: 1 });
               }}
-              open={open}
-              setOpen={setOpen}
+              open={isDatePickerOpen}
+              setOpen={setIsDatePickerOpen}
             />
             <Show when={!paramsQuery?.start_date || !paramsQuery?.end_date}>
               <div className="absolute right-2 top-[10px] cursor-pointer hover:opacity-60">
                 <X
                   size={16}
                   onClick={() => {
-                    setValueDate('');
+                    setSelectedDatePreset('');
                     updateParamsQuery({ start_date: undefined, end_date: undefined, page: 1 });
                   }}
                 />

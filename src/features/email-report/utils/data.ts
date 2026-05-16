@@ -8,4 +8,4 @@ export const listEmailFocus = [
   'helenngo@var-meta.com',
   'tommyphung@var-meta.com',
   'haleynguyen@var-meta.com',
-];
+] as const;

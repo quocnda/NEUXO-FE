@@ -14,6 +14,14 @@ const getOrdinalSuffix = (index: number) => {
   return 'th';
 };
 const AboutComponent = ({ data }: { data: ICampaignDetailAbout | undefined }) => {
+  const renderScheduleItem = (schedule: any, index: number) => (
+    <div key={index} className="border-neutral-30 bg-neutral-10 rounded-md border-2 p-3 text-xs font-normal">
+      Send the {index + 1}
+      <sup>{getOrdinalSuffix(index + 1)}</sup> email after <span className="font-bold">{schedule}</span>{' '}
+      <span>{index === 0 ? 'days from present' : 'days from the previous email'}</span>
+    </div>
+  );
+
   return (
     <Wrapper className="mx-auto flex w-full max-w-[800px] flex-col gap-5 px-3 py-5 shadow-lg md:px-10">
       <HStack pos={'apart'}>
@@ -35,13 +43,7 @@ const AboutComponent = ({ data }: { data: ICampaignDetailAbout | undefined }) =>
       <VStack spacing={24}>
         <p className="text-sm font-semibold">Campaign Schedule:</p>
         <VStack spacing={16}>
-          {data?.campaign_schedule?.map((item: any, index: number) => (
-            <div key={index} className="border-neutral-30 bg-neutral-10 rounded-md border-2 p-3 text-xs font-normal">
-              Send the {index + 1}
-              <sup>{getOrdinalSuffix(index + 1)}</sup> email after <span className="font-bold">{item}</span>{' '}
-              <span>{index === 0 ? 'days from present' : 'days from the previous email'}</span>
-            </div>
-          ))}
+          {data?.campaign_schedule?.map(renderScheduleItem)}
         </VStack>
       </VStack>
     </Wrapper>

@@ -38,9 +38,13 @@ const CompanyDescription = ({
   >;
   refetch?: () => void;
 }) => {
-  const [isView, setIsView] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(true);
   const router = useRouter();
   const { id } = router.query;
+
+  const handleToggleExpand = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   return (
     <VStack className="gap-[23px]">
@@ -48,11 +52,11 @@ const CompanyDescription = ({
         <Tag className="bg-secondary-blue h-6 w-3" classNameContent="text-lg">
           Overview
         </Tag>
-        <div className="cursor-pointer" onClick={() => setIsView(!isView)}>
-          {isView ? <ChevronDown size={20} /> : <ChevronLeft size={20} />}
+        <div className="cursor-pointer" onClick={handleToggleExpand}>
+          {isExpanded ? <ChevronDown size={20} /> : <ChevronLeft size={20} />}
         </div>
       </HStack>
-      <Show when={isView}>
+      <Show when={isExpanded}>
         <VStack spacing={20}>
           <Body1 className="text-sm text-neutral-50">{data?.short_description}</Body1>
           <div className="grid grid-cols-2 gap-5">

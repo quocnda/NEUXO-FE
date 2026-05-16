@@ -57,10 +57,13 @@ const RowTableList = ({
   const router = useRouter();
   const { user_id } = router.query;
 
-  const [isMail, setIsMail] = useState<{ contactName: string; email: string }>({ contactName: '', email: '' });
+  const [mailPreview, setMailPreview] = useState<{ contactName: string; email: string }>({
+    contactName: '',
+    email: '',
+  });
   const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
-  const [contactEmail, setContactEmail] = useState<string>('');
-  const [valueNote, setValueNote] = useState<string>('');
+  const [selectedContactEmail, setSelectedContactEmail] = useState<string>('');
+  const [noteValue, setNoteValue] = useState<string>('');
   const [currentPriority, setCurrentPriority] = useState<string>(item?.priority || '-');
   const [currentFollowUpDate, setCurrentFollowUpDate] = useState<string>(item?.follow_up_date);
   const [currentFollowUpStatus, setCurrentFollowUpStatus] = useState<string>(item?.follow_up_status);
@@ -237,16 +240,16 @@ const RowTableList = ({
                 <ModalAddNote
                   addNote={mutateAddNote}
                   email={item?.email}
-                  valueNote={valueNote}
+                  valueNote={noteValue}
                   onSuccess={(newNote) => {
                     item.user_note = newNote;
-                    setValueNote(newNote);
+                    setNoteValue(newNote);
                   }}
                 >
                   <TextBody1
                     className="cursor-pointer"
                     onClick={() => {
-                      setValueNote(item?.user_note);
+                      setNoteValue(item?.user_note);
                     }}
                   >
                     {shortenName(item?.user_note, 30) || '-'}
@@ -298,12 +301,12 @@ const RowTableList = ({
         </Show>
         <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
           <div className="flex items-center gap-3">
-            <ModalViewDetailEmail isMail={isMail.email} contactName={isMail.contactName}>
+            <ModalViewDetailEmail isMail={mailPreview.email} contactName={mailPreview.contactName}>
               <div>
                 <Tooltip label="View email record">
                   <HStack
                     spacing={8}
-                    onClick={() => setIsMail({ contactName: item?.contact_name, email: item?.email })}
+                    onClick={() => setMailPreview({ contactName: item?.contact_name, email: item?.email })}
                     className={cn(
                       'bg-neutral-20 flex h-6 w-6 cursor-pointer justify-center rounded-full hover:opacity-50'
                     )}
@@ -320,12 +323,12 @@ const RowTableList = ({
                     refetch={refetch}
                     setIsOpenSendEmail={setIsOpenSendEmail}
                     isOpenSendEmail={isOpenSendEmail}
-                    contact_email={[contactEmail]}
+                    contact_email={[selectedContactEmail]}
                     event_id={[item?.company_id]}
                   >
                     <HStack
                       spacing={8}
-                      onClick={() => setContactEmail(item?.email)}
+                      onClick={() => setSelectedContactEmail(item?.email)}
                       className={cn('bg-neutral-20 flex h-6 w-6 justify-center rounded-full hover:opacity-50')}
                     >
                       <Mail size={12} color="#6F767E" />

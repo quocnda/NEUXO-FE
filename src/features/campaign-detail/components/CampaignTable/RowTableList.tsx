@@ -34,16 +34,20 @@ const RowTableList = ({
   setIsDownloadAll,
   refetch,
 }: Props) => {
-  const [isMail, setIsMail] = useState<{ contactName: string; email: string }>({ contactName: '', email: '' });
-  const [contactEmail, setContactEmail] = useState<string>('');
-  const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
+  const [selectedMail, setSelectedMail] = useState<{ contactName: string; email: string }>({
+    contactName: '',
+    email: '',
+  });
+  const [selectedEmail, setSelectedEmail] = useState<string>('');
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const router = useRouter();
   const { id } = router.query;
+  const campaignId = String(id);
 
   const handleCheckboxChange = useCallback(
-    (isChecked: boolean) => {
+    (checked: boolean) => {
       setIsDownloadAll(false);
-      if (isChecked && isEmailValid) {
+      if (checked && isEmailValid) {
         setSelectedIds((prev) => [...prev, item.email]);
       } else {
         setSelectedIds((prev) => prev.filter((s) => s !== item.email));
@@ -82,12 +86,16 @@ const RowTableList = ({
 
         <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
           <HStack spacing={4}>
-            <ModalViewDetailEmail isMail={isMail.email} contactName={isMail.contactName} campaign_id={String(id)}>
+            <ModalViewDetailEmail
+              isMail={selectedMail.email}
+              contactName={selectedMail.contactName}
+              campaign_id={campaignId}
+            >
               <div>
                 <Tooltip label="View email record">
                   <HStack
                     spacing={8}
-                    onClick={() => setIsMail({ contactName: item?.contact_name, email: item?.email })}
+                    onClick={() => setSelectedMail({ contactName: item?.contact_name, email: item?.email })}
                     className={cn(
                       'bg-neutral-20 flex h-6 w-6 cursor-pointer justify-center rounded-full hover:opacity-50'
                     )}
@@ -101,13 +109,13 @@ const RowTableList = ({
               <div>
                 <ModalSentMail
                   refetch={refetch}
-                  setIsOpenSendEmail={setIsOpenSendEmail}
-                  isOpenSendEmail={isOpenSendEmail}
-                  contact_email={[contactEmail]}
+                  setIsOpenSendEmail={setIsSendModalOpen}
+                  isOpenSendEmail={isSendModalOpen}
+                  contact_email={[selectedEmail]}
                 >
                   <HStack
                     spacing={8}
-                    onClick={() => setContactEmail(item?.email)}
+                    onClick={() => setSelectedEmail(item?.email)}
                     className={cn('bg-neutral-20 flex h-6 w-6 justify-center rounded-full hover:opacity-50')}
                   >
                     <Mail size={12} color="#6F767E" />

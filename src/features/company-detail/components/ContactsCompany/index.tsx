@@ -17,16 +17,17 @@ import HeaderContact from './HeaderContact';
 const ContactsCompany = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [visibleContacts, setVisibleContacts] = useState<{ [key: number]: boolean }>({});
-  const toggleVisibility = (index: number) => {
-    setVisibleContacts((prev) => ({
+  const [expandedByIndex, setExpandedByIndex] = useState<{ [key: number]: boolean }>({});
+
+  const toggleExpanded = (index: number) => {
+    setExpandedByIndex((prev) => ({
       [index]: !prev[index],
     }));
   };
 
   const { data, refetch } = useContactDetailCompany({ variables: String(id), enabled: !!id });
 
-  const { mutate: mutateUpdate, isLoading: isLoadingUpdate } = useMutation(updateContact, {
+  const { mutate: updateContactInfo, isLoading: isUpdatingContact } = useMutation(updateContact, {
     onSuccess: () => {
       toast.success('Successfully!');
       refetch?.();
@@ -44,10 +45,10 @@ const ContactsCompany = () => {
               <ContactItem
                 key={index}
                 item={item}
-                visibleContacts={visibleContacts[index]}
-                toggleVisibility={() => toggleVisibility(index)}
-                mutateUpdate={mutateUpdate}
-                isLoadingUpdate={isLoadingUpdate}
+                visibleContacts={expandedByIndex[index]}
+                toggleVisibility={() => toggleExpanded(index)}
+                mutateUpdate={updateContactInfo}
+                isLoadingUpdate={isUpdatingContact}
                 refetch={refetch}
               />
             ))}

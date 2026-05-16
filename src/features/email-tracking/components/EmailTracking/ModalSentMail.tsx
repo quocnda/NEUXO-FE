@@ -37,6 +37,7 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
   contact_email,
   event_id,
 }) => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const form = useForm<IFormValues>({
     defaultValues: {
       email: '',
@@ -50,30 +51,30 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [showCC, setShowCC] = useState(false);
   const [showBCC, setShowBCC] = useState(false);
-  const [sendFile, setSendFile] = useState<{ file_name: any; file_path: string }[]>([]);
-  const [valueSendTo, setValueSendTo] = useState<string[]>([]);
-  const [valueSendCC, setValueSendCC] = useState<string[]>([]);
-  const [valueSendBCC, setValueSendBCC] = useState<string[]>([]);
+  const [attachments, setAttachments] = useState<{ file_name: any; file_path: string }[]>([]);
+  const [recipientTo, setRecipientTo] = useState<string[]>([]);
+  const [recipientCC, setRecipientCC] = useState<string[]>([]);
+  const [recipientBCC, setRecipientBCC] = useState<string[]>([]);
   const [emailTo, setEmailTo] = useState('');
   const [emailCC, setEmailCC] = useState('');
   const [emailBCC, setEmailBCC] = useState('');
-  const [isDataEmailTemplate, setIsDataEmailTemplate] = useState<{ value: string; label: string }>();
-  const [dataEmailTemplate, setDataEmailTemplate] = useState<{ template_content: string; template_subject: string }>({
+  const [selectedTemplate, setSelectedTemplate] = useState<{ value: string; label: string }>();
+  const [templateData, setTemplateData] = useState<{ template_content: string; template_subject: string }>({
     template_content: '',
     template_subject: '',
   });
   const { data: listEmailTemplate } = useServices();
 
   const { data: detailTemplate } = useDetailEmailTemplate({
-    variables: { id: String(isDataEmailTemplate?.value) },
-    enabled: !!isDataEmailTemplate?.value && isDataEmailTemplate?.value !== 'ai_generate_email',
+    variables: { id: String(selectedTemplate?.value) },
+    enabled: !!selectedTemplate?.value && selectedTemplate?.value !== 'ai_generate_email',
   });
 
   useEffect(() => {
-    if (dataEmailTemplate) {
+    if (templateData) {
       form.reset({
-        content: dataEmailTemplate?.template_content,
-        title: dataEmailTemplate?.template_subject,
+        content: templateData?.template_content,
+        title: templateData?.template_subject,
       });
     } else {
       form.reset({
@@ -82,24 +83,24 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataEmailTemplate]);
+  }, [templateData]);
 
   useEffect(() => {
-    if (isDataEmailTemplate?.value && detailTemplate) {
-      setDataEmailTemplate({
+    if (selectedTemplate?.value && detailTemplate) {
+      setTemplateData({
         template_content: detailTemplate?.template_content,
         template_subject: detailTemplate?.template_subject,
       });
-      setSendFile((prev) => [...prev, ...(detailTemplate?.attachments || [])]);
+      setAttachments((prev) => [...prev, ...(detailTemplate?.attachments || [])]);
     } else {
-      setDataEmailTemplate({
+      setTemplateData({
         template_content: '',
         template_subject: '',
       });
-      setSendFile([]);
+      setAttachments([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [detailTemplate, isDataEmailTemplate?.value]);
+  }, [detailTemplate, selectedTemplate?.value]);
 
   const { mutate } = useMutation(sendEmail, {
     onSuccess: () => {
@@ -109,8 +110,8 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
         form.reset();
         refetch?.();
         setIsSending(false);
-        setValueSendTo([]);
-        setSendFile([]);
+        setRecipientTo([]);
+        setAttachments([]);
       }, 3000);
     },
     onError: (err) => {
@@ -121,10 +122,10 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
 
   const handleToggle = () => {
     setIsOpenSendEmail?.(!isOpenSendEmail);
-    setValueSendBCC([]);
-    setValueSendCC([]);
-    setIsDataEmailTemplate(undefined);
-    setSendFile([]);
+    setRecipientBCC([]);
+    setRecipientCC([]);
+    setSelectedTemplate(undefined);
+    setAttachments([]);
   };
 
   const handleAddEmail = (
@@ -134,7 +135,7 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
     setInputValue: React.Dispatch<React.SetStateAction<string>>
   ) => {
     if (email.trim() !== '') {
-      if (validateEmail(email)) {
+      if (emailPattern.test(email)) {
         setEmailList((prev) => [...prev, email]);
         setInputValue('');
       } else {
@@ -145,19 +146,19 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
 
   const handleAddEmailTo = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleAddEmail(emailTo, setValueSendTo, valueSendTo, setEmailTo);
+      handleAddEmail(emailTo, setRecipientTo, recipientTo, setEmailTo);
     }
   };
 
   const handleAddEmailCC = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleAddEmail(emailCC, setValueSendCC, valueSendCC, setEmailCC);
+      handleAddEmail(emailCC, setRecipientCC, recipientCC, setEmailCC);
     }
   };
 
   const handleAddEmailBCC = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleAddEmail(emailBCC, setValueSendBCC, valueSendBCC, setEmailBCC);
+      handleAddEmail(emailBCC, setRecipientBCC, recipientBCC, setEmailBCC);
     }
   };
 
@@ -168,20 +169,16 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
   ) => {
     setEmailList(emailList.filter((_, i) => i !== index));
   };
-  const validateEmail = (i: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(i);
-  };
 
   const handleSubmit = (formData: IFormValues) => {
     setIsSending(true);
     mutate({
-      list_email: valueSendTo.join(','),
-      list_email_cc: valueSendCC.join(','),
-      list_email_bcc: valueSendBCC.join(','),
+      list_email: recipientTo.join(','),
+      list_email_cc: recipientCC.join(','),
+      list_email_bcc: recipientBCC.join(','),
       title: formData.title,
       content: replaceBorderStyles(formData.content),
-      attachments: sendFile.map((file) => ({ name_file: file.file_name, file_path: file.file_path })),
+      attachments: attachments.map((file) => ({ name_file: file.file_name, file_path: file.file_path })),
     });
   };
 
@@ -193,7 +190,7 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
 
   useEffect(() => {
     if (contact_email?.length > 0) {
-      setValueSendTo(contact_email);
+      setRecipientTo(contact_email);
     }
   }, [contact_email]);
 
@@ -204,14 +201,14 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] max-w-screen-lg gap-0 overflow-auto bg-white p-0">
         <DialogHeader classNameHeader="bg-main px-4 py-3 max-h-[63px]">
-          <HeaderComponent setIsDataEmailTemplate={setIsDataEmailTemplate} isDataEmailTemplate={isDataEmailTemplate} />
+          <HeaderComponent setIsDataEmailTemplate={setSelectedTemplate} isDataEmailTemplate={selectedTemplate} />
         </DialogHeader>
         <TemplateSelect
           data={listEmailTemplate}
-          setIsDataEmailTemplate={setIsDataEmailTemplate}
-          isDataEmailTemplate={isDataEmailTemplate}
+          setIsDataEmailTemplate={setSelectedTemplate}
+          isDataEmailTemplate={selectedTemplate}
           event_id={event_id}
-          setDataEmailTemplate={setDataEmailTemplate}
+          setDataEmailTemplate={setTemplateData}
         />
         <VStack spacing={8} className="px-4 py-3">
           <div className="relative">
@@ -219,8 +216,8 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
               Recipients
             </p>
             <EmailRender
-              data={valueSendTo}
-              removeEmail={(index) => removeEmail(index, setValueSendTo, valueSendTo)}
+              data={recipientTo}
+              removeEmail={(index) => removeEmail(index, setRecipientTo, recipientTo)}
               handleAddEmail={handleAddEmailTo}
               value={emailTo}
               className="ml-10"
@@ -239,8 +236,8 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
             <div className="text-neutral-40 relative text-xs font-medium sm:sm:text-sm">
               <p className="absolute bottom-[10px] left-2 z-[9999] flex items-center gap-2">CC</p>
               <EmailRender
-                data={valueSendCC}
-                removeEmail={(index) => removeEmail(index, setValueSendCC, valueSendCC)}
+                data={recipientCC}
+                removeEmail={(index) => removeEmail(index, setRecipientCC, recipientCC)}
                 handleAddEmail={handleAddEmailCC}
                 value={emailCC}
                 setValue={setEmailCC}
@@ -250,7 +247,7 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
                 className="absolute right-2 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-red-500"
                 onClick={() => {
                   setShowCC(false);
-                  setValueSendCC([]);
+                  setRecipientCC([]);
                 }}
               >
                 <X className="h-4 w-4" />
@@ -261,8 +258,8 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
             <div className="text-neutral-40 relative text-xs font-medium sm:text-sm">
               <p className="absolute bottom-[10px] left-2 z-[9999] flex items-center gap-2">BCC</p>
               <EmailRender
-                data={valueSendBCC}
-                removeEmail={(index) => removeEmail(index, setValueSendBCC, valueSendBCC)}
+                data={recipientBCC}
+                removeEmail={(index) => removeEmail(index, setRecipientBCC, recipientBCC)}
                 handleAddEmail={handleAddEmailBCC}
                 value={emailBCC}
                 setValue={setEmailBCC}
@@ -272,7 +269,7 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
                 className="absolute right-2 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-red-500"
                 onClick={() => {
                   setShowBCC(false);
-                  setValueSendBCC([]);
+                  setRecipientBCC([]);
                 }}
               >
                 <X className="h-4 w-4" />
@@ -292,8 +289,8 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
               name="content"
               render={({ field: { onChange, value } }) => (
                 <LetterheadEditor
-                  setSendFile={setSendFile}
-                  sendFile={sendFile}
+                  setSendFile={setAttachments}
+                  sendFile={attachments}
                   onChange={onChange}
                   value={value}
                   handleInsertSignature={handleInsertSignature}
@@ -305,7 +302,7 @@ const ModalSentMail: FCC<IModalSentMailProps> = ({
               type="submit"
               className="h-10 w-fit text-xs sm:text-sm"
               disabled={
-                valueSendTo.length === 0 ||
+                recipientTo.length === 0 ||
                 !form.watch('content') ||
                 form.watch('content') === '<p><br></p>' ||
                 isSending

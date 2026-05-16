@@ -46,7 +46,7 @@ const CampaignTable = ({
     },
   ];
 
-  const columns = listHeader?.map((item: any) => {
+  const columnDefs = listHeader?.map((item: any) => {
     return {
       title: item.title,
       key: item.key,
@@ -71,12 +71,12 @@ const CampaignTable = ({
           />
         </div>
         <CommonTable
-          listHeader={columns}
+          listHeader={columnDefs}
           paramsQuery={paramsQuery}
           setParamsQuery={setParamsQuery}
           bodyComponent={
             <>
-              <TableSkeleton loading={isFetching} col={(columns?.length || 0) + 1} />
+              <TableSkeleton loading={isFetching} col={(columnDefs?.length || 0) + 1} />
               <Show when={data && data?.length !== 0 && !isFetching}>
                 {data?.map((item: ICampaignDetailDataResponse, index: number) => {
                   return <RowTableList indexRow={index} tableLength={data?.length} key={index} item={item} />;

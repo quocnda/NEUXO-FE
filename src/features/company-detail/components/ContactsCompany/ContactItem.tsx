@@ -49,14 +49,19 @@ const ContactItem = ({
   const { user } = useUserStore.getState();
   const { id } = router.query;
   const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
-  const [contactEmail, setContactEmail] = useState<string[]>([]);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
   const [isOpenModalLoginEmail, setIsOpenModalLoginEmail] = useState(false);
   const [isImageVisible, setIsImageVisible] = useState(true);
+
+  const handleStopPropagation = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
 
   const handleImageError = () => {
     setIsImageVisible(false);
   };
-  const { mutate: mutateAddEmail } = useMutation(addEmailContact, {
+
+  const { mutate: addEmail } = useMutation(addEmailContact, {
     onSuccess() {
       refetch?.();
       toast.success('Add email successfully!');
@@ -64,7 +69,7 @@ const ContactItem = ({
     onError: onMutateError,
   });
 
-  const { mutate: mutateRemoveEmail } = useMutation(removeEmailContact, {
+  const { mutate: removeEmail } = useMutation(removeEmailContact, {
     onSuccess() {
       refetch?.();
       toast.success('Remove email successfully!');
@@ -72,7 +77,7 @@ const ContactItem = ({
     onError: onMutateError,
   });
 
-  const { mutate: mutateUpdateEmail } = useMutation(updateEmailContact, {
+  const { mutate: updateEmail } = useMutation(updateEmailContact, {
     onSuccess() {
       refetch?.();
       toast.success('Update email successfully!');
@@ -80,17 +85,23 @@ const ContactItem = ({
     onError: onMutateError,
   });
 
-  const onAdd = (id_contact: string, email: string) => {
-    mutateAddEmail({ id: id_contact, email });
+  const handleAddEmail = (contactId: string, email: string) => {
+    addEmail({ id: contactId, email });
   };
 
-  const onDelete = (id_email: string) => {
-    mutateRemoveEmail(id_email);
+  const handleRemoveEmail = (emailId: string) => {
+    removeEmail(emailId);
   };
 
-  const onUpdate = (id_email: string, id_contact: string, email: string) => {
-    mutateUpdateEmail({ id: id_email, contact_id: id_contact, email });
+  const handleUpdateEmail = (emailId: string, contactId: string, email: string) => {
+    updateEmail({ id: emailId, contact_id: contactId, email });
   };
+
+  const handleOpenTwitter = () => window.open(item?.twitter_url, '_blank');
+  const handleOpenLinkedin = () => window.open(item?.linkedin_url, '_blank');
+  const handleSelectEmails = () => setSelectedEmails(item?.emails?.map((emailObj) => emailObj.email) || []);
+
+  const validEmails = selectedEmails.filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
 
   return (
     <div onClick={toggleVisibility}>
@@ -104,7 +115,7 @@ const ContactItem = ({
                 alt=""
                 width={44}
                 height={44}
-                onClick={(e) => e.stopPropagation()}
+                onClick={handleStopPropagation}
                 onError={handleImageError}
               />
             </Show>
@@ -115,23 +126,23 @@ const ContactItem = ({
                 alt=""
                 width={44}
                 height={44}
-                onClick={(e) => e.stopPropagation()}
+                onClick={handleStopPropagation}
               />
             </Show>
             <VStack className="gap-[3.61px]">
-              <span className="text-neutral-80 text-sm font-semibold" onClick={(e) => e.stopPropagation()}>
+              <span className="text-neutral-80 text-sm font-semibold" onClick={handleStopPropagation}>
                 {item?.name || '-'}
               </span>
-              <span className="text-neutral-40 text-xs font-medium" onClick={(e) => e.stopPropagation()}>
+              <span className="text-neutral-40 text-xs font-medium" onClick={handleStopPropagation}>
                 {item?.role || '-'}
               </span>
             </VStack>
           </HStack>
-          <HStack spacing={8} onClick={(e) => e.stopPropagation()}>
+          <HStack spacing={8} onClick={handleStopPropagation}>
             <Show when={!!item?.twitter_url}>
               <div
                 className="bg-neutral-30 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full hover:opacity-50"
-                onClick={() => window.open(item?.twitter_url, '_blank')}
+                onClick={handleOpenTwitter}
               >
                 <Icons.xTwitter color="#6F767E" width={14} height={14} />
               </div>
@@ -140,7 +151,7 @@ const ContactItem = ({
             <Show when={!!item?.linkedin_url}>
               <div
                 className="bg-neutral-30 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full hover:opacity-50"
-                onClick={() => window.open(item?.linkedin_url, '_blank')}
+                onClick={handleOpenLinkedin}
               >
                 <Icons.linkedin color="#6F767E" width={14} height={14} />
               </div>
@@ -151,7 +162,7 @@ const ContactItem = ({
                 refetch={refetch}
                 setIsOpenSendEmail={setIsOpenSendEmail}
                 isOpenSendEmail={isOpenSendEmail}
-                contact_email={contactEmail.filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))}
+                contact_email={validEmails}
                 event_id={[String(id)]}
               >
                 <HStack
@@ -159,7 +170,7 @@ const ContactItem = ({
                     'bg-neutral-30 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full',
                     item?.emails.length === 0 && 'pointer-events-none cursor-not-allowed opacity-50'
                   )}
-                  onClick={() => setContactEmail(item?.emails?.map((emailObj) => emailObj.email) || [])}
+                  onClick={handleSelectEmails}
                 >
                   <Mail size={16} color="gray" />
                 </HStack>
@@ -190,7 +201,7 @@ const ContactItem = ({
         <VStack
           spacing={0}
           className="cursor-default"
-          onClick={(e) => e.stopPropagation()}
+          onClick={handleStopPropagation}
           style={{
             maxHeight: visibleContacts ? '500px' : '0',
             opacity: visibleContacts ? 1 : 0,
@@ -200,7 +211,7 @@ const ContactItem = ({
         >
           <Separator className="my-[10.82px]" />
           <div className="flex flex-col items-center gap-[10.82px] px-[10.82px]">
-            <ContactEmail item={item} onAdd={onAdd} onDelete={onDelete} onUpdate={onUpdate} />
+            <ContactEmail item={item} onAdd={handleAddEmail} onDelete={handleRemoveEmail} onUpdate={handleUpdateEmail} />
             <ContactLinks item={item} mutateUpdate={mutateUpdate} />
           </div>
           <Show when={item?.experiences?.length !== 0}>

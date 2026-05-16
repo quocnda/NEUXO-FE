@@ -7,7 +7,7 @@ import BreadcrumbLayout from '@/components/breadscrumb-custom/BreadcrumbLayout';
 import CampaignReportTable from './components/CampaignReportTable';
 
 const CampaignReport = () => {
-  const BREADCRUMB = useMemo(
+  const breadcrumbItems = useMemo(
     () => [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: 'Account Management', type: breadcrumbTypes.link, href: '/account-management' },
@@ -16,7 +16,7 @@ const CampaignReport = () => {
     []
   );
   return (
-    <BreadcrumbLayout data={BREADCRUMB}>
+    <BreadcrumbLayout data={breadcrumbItems}>
       <CampaignReportTable />
     </BreadcrumbLayout>
   );

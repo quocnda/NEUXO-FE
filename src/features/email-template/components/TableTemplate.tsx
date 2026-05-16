@@ -31,7 +31,7 @@ import ModalSignature from './ModalSignature';
 
 const TableTemplate = () => {
   const [isDownloadAll, setIsDownloadAll] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isSignatureOpen, setIsSignatureOpen] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<any[]>([]);
   const [isRemove, setIsRemove] = useState<boolean>(false);
   const [templateInfo, setTemplateInfo] = useState<{ templateName: string; templateId: string }>({
@@ -42,18 +42,31 @@ const TableTemplate = () => {
   const { data, isFetching, paramsQuery, refetch, setParamsQuery, removeTemplate, isLoading } =
     useServices(setIsRemove);
 
-  const handleInputChange = debounceV2((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = debounceV2((e: React.ChangeEvent<HTMLInputElement>) => {
     setParamsQuery({ ...paramsQuery, search: e.target.value });
   }, 300);
 
-  useEffect(() => {
-    const temp: any[] = [];
-    if (isDownloadAll) {
-      data?.map((s: IResponseEmailTemplate) => temp.push(s.id));
+  const handleToggleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setIsDownloadAll(true);
     } else {
-      selectedIds.map((s: any) => temp.push(s));
+      setIsDownloadAll(false);
+      setSelectedIds([]);
     }
-    setSelectedIds(temp);
+  };
+
+  const handleSelectTemplate = (item: IResponseEmailTemplate) => {
+    setTemplateInfo({ templateName: item?.template_name, templateId: item?.id });
+  };
+
+  useEffect(() => {
+    const nextSelectedIds: any[] = [];
+    if (isDownloadAll) {
+      data?.forEach((item: IResponseEmailTemplate) => nextSelectedIds.push(item.id));
+    } else {
+      selectedIds.forEach((item: any) => nextSelectedIds.push(item));
+    }
+    setSelectedIds(nextSelectedIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDownloadAll, data]);
 
@@ -66,11 +79,11 @@ const TableTemplate = () => {
             name="search"
             className="border-neutral-30 h-8 border-2 text-xs"
             suffix={<Search size={16} color="#808080" />}
-            onChange={handleInputChange}
+            onChange={handleSearchChange}
           />
         </div>
         <HStack>
-          <ModalSignature refetch={refetch} isOpen={isOpen} setIsOpen={setIsOpen}>
+          <ModalSignature refetch={refetch} isOpen={isSignatureOpen} setIsOpen={setIsSignatureOpen}>
             <Button variant={'outline'} className="flex h-8 items-center gap-2 rounded-md px-3 text-xs font-normal">
               <PenBox size={14} />
               Signature
@@ -91,12 +104,7 @@ const TableTemplate = () => {
             <Checkbox
               checked={isDownloadAll}
               onCheckedChange={(e) => {
-                if (e) {
-                  setIsDownloadAll(true);
-                } else {
-                  setIsDownloadAll(false);
-                  setSelectedIds([]);
-                }
+                handleToggleSelectAll(!!e);
               }}
             />
           }
@@ -145,9 +153,7 @@ const TableTemplate = () => {
                             <Edit3
                               size={14}
                               color="green"
-                              onClick={() =>
-                                setTemplateInfo({ templateName: item?.template_name, templateId: item?.id })
-                              }
+                              onClick={() => handleSelectTemplate(item)}
                             />
                           </ModalAddEmailTemplate>
                           <AlertDialog open={isRemove} onOpenChange={() => setIsRemove(!isRemove)}>
@@ -156,9 +162,7 @@ const TableTemplate = () => {
                                 className="cursor-pointer"
                                 size={14}
                                 color="#FF0000"
-                                onClick={() =>
-                                  setTemplateInfo({ templateName: item?.template_name, templateId: item?.id })
-                                }
+                                onClick={() => handleSelectTemplate(item)}
                               />
                             </AlertDialogTrigger>
 

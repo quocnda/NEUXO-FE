@@ -37,7 +37,7 @@ const TemplateSelect = (props: IProps) => {
     onError: onMutateError,
   });
 
-  const dataCustom = [
+  const templateOptions = [
     {
       value: '',
       label: 'New Email',
@@ -51,6 +51,16 @@ const TemplateSelect = (props: IProps) => {
       label: item.template_name,
     })) as { value: string; label: string }[]),
   ];
+
+  const handleSelectTemplate = (option: { value: string; label: string }) => {
+    setIsDataEmailTemplate({ value: option.value, label: option.label });
+    if (option.value === 'ai_generate_email' && event_id) {
+      mutate({
+        event_id: typeof event_id === 'string' ? String(event_id) : undefined,
+        company_id: typeof event_id !== 'string' ? event_id : undefined,
+      });
+    }
+  };
 
   return (
     <>
@@ -68,19 +78,11 @@ const TemplateSelect = (props: IProps) => {
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="border-neutral-30 z-[100] mr-5 w-fit border">
-          {dataCustom?.map((option: { value: string; label: string }, index: number) => (
+          {templateOptions?.map((option: { value: string; label: string }, index: number) => (
             <DropdownMenuItem
               className="cursor-pointer text-xs font-normal hover:bg-[#E5E4E4]"
               key={index}
-              onClick={() => {
-                setIsDataEmailTemplate({ value: option.value, label: option.label });
-                if (option.value === 'ai_generate_email' && event_id) {
-                  mutate({
-                    event_id: typeof event_id === 'string' ? String(event_id) : undefined,
-                    company_id: typeof event_id !== 'string' ? event_id : undefined,
-                  });
-                }
-              }}
+              onClick={() => handleSelectTemplate(option)}
             >
               {option.label}
             </DropdownMenuItem>

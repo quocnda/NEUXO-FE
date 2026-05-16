@@ -15,11 +15,11 @@ const CompanyNews = () => {
   const router = useRouter();
   const { id } = router.query;
   const lastItemRef = useRef<HTMLDivElement>(null);
-  const [paramsQuery, setParamsQuery] = useState<{ filter: string | undefined }>();
-  const [valueTag, setValueTag] = useState<string[]>([]);
+  const [queryParams, setQueryParams] = useState<{ filter: string | undefined }>();
+  const [activeTags, setActiveTags] = useState<string[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [offset, setOffset] = useState<Number | null>(null);
 
-  const [isOffset, setIsOffset] = useState<Number | null>(null);
   const {
     data: dataNews,
     hasNextPage,
@@ -27,10 +27,10 @@ const CompanyNews = () => {
     isFetchingNextPage,
   } = useListNewsCompany({
     variables: {
-      ...paramsQuery,
+      ...queryParams,
       id: String(id),
       limit: 200,
-      offset: isOffset as number,
+      offset: offset as number,
     },
     refetchOnMount: true,
     staleTime: 0,
@@ -66,22 +66,23 @@ const CompanyNews = () => {
     fetchNextPage({ pageParam: dataNews?.pages?.[0]?.pagination?.total_item ?? 0 });
   };
 
-  const handleSetValueTag = (value: string) => {
-    if (valueTag.includes(value)) {
-      setValueTag((prevState) => prevState.filter((item) => item !== value));
+  const handleToggleTag = (value: string) => {
+    if (activeTags.includes(value)) {
+      setActiveTags((prevState) => prevState.filter((item) => item !== value));
     } else {
-      setValueTag((prevState) => [...prevState, value]);
+      setActiveTags((prevState) => [...prevState, value]);
     }
   };
+
   useEffect(() => {
     if (!isInitialLoad) {
-      setIsOffset(0);
+      setOffset(0);
     }
-    setParamsQuery((prev) => ({
+    setQueryParams((prev) => ({
       ...prev,
-      filter: valueTag.length > 0 ? valueTag.join(',') : '',
+      filter: activeTags.length > 0 ? activeTags.join(',') : '',
     }));
-  }, [valueTag]);
+  }, [activeTags]);
 
   return (
     <>
@@ -91,9 +92,9 @@ const CompanyNews = () => {
             key={index}
             className={cn(
               'bg-neutral-20 text-neutral-40 flex h-8 cursor-pointer items-center justify-center rounded-md px-2',
-              valueTag.includes(item.value) && 'bg-main text-white'
+              activeTags.includes(item.value) && 'bg-main text-white'
             )}
-            onClick={() => handleSetValueTag(item.value)}
+            onClick={() => handleToggleTag(item.value)}
           >
             <Caption3>{item.label}</Caption3>
           </div>

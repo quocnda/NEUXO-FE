@@ -81,7 +81,7 @@ export const dataOpenStatus = [
     label: 'Unopened',
     value: 'NO',
   },
-];
+] as const;
 
 export const dataReplyStatus = [
   {
@@ -92,7 +92,7 @@ export const dataReplyStatus = [
     label: 'Unreplied',
     value: 'NO',
   },
-];
+] as const;
 
 export const valueVariables = [
   {
@@ -107,7 +107,7 @@ export const valueVariables = [
     label: '{{company_name}}',
     value: '{{company_name}}',
   },
-];
+] as const;
 
 export const dataEmailStatus = [
   {
@@ -126,7 +126,7 @@ export const dataEmailStatus = [
     label: 'Error',
     value: 'ERROR',
   },
-];
+] as const;
 
 export const dataFollowUpStatus = [
   {
@@ -141,7 +141,7 @@ export const dataFollowUpStatus = [
     label: 'Upcoming',
     value: 'Upcoming',
   },
-];
+] as const;
 
 export const dataPriority = [
   {
@@ -162,4 +162,4 @@ export const tabs_email_tracking = [
   { label: 'Prospected', value: 'prospected' },
   { label: 'Replied', value: 'replied' },
   { label: 'Unresponsive', value: 'unresponsive' },
-];
+] as const;

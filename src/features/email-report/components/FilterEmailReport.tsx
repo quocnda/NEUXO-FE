@@ -22,6 +22,7 @@ const FilterEmailReport = ({ paramsQuery, setParamsQuery, setValueDate, valueDat
   const updateParamsQuery = (newParams: Partial<IParamsEmailReport>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
+
   const handleSelectDateToday = () => {
     const today = new Date();
 
@@ -76,39 +77,41 @@ const FilterEmailReport = ({ paramsQuery, setParamsQuery, setValueDate, valueDat
     });
   };
 
+  const handleSelectValueDate = (value: string) => {
+    switch (value) {
+      case 'today':
+        handleSelectDateToday();
+        break;
+      case 'yesterday':
+        handleSelectDateYesterday();
+        break;
+      case 'week':
+        handleSelectThisWeek();
+        break;
+      case 'month':
+        handleSelectThisMonth();
+        break;
+      case 'date_range':
+        setValueDate('date_range');
+        setOpen(true);
+        break;
+      default:
+        setValueDate('');
+        updateParamsQuery({
+          start_date: undefined,
+          end_date: undefined,
+        });
+        break;
+    }
+  };
+
   return (
     <HStack>
       <Show when={valueDate !== 'date_range'}>
         <Select
           key={dateOptions?.[1]?.value}
           value={valueDate}
-          onValueChange={(value) => {
-            switch (value) {
-              case 'today':
-                handleSelectDateToday();
-                break;
-              case 'yesterday':
-                handleSelectDateYesterday();
-                break;
-              case 'week':
-                handleSelectThisWeek();
-                break;
-              case 'month':
-                handleSelectThisMonth();
-                break;
-              case 'date_range':
-                setValueDate('date_range');
-                setOpen(true);
-                break;
-              default:
-                setValueDate('');
-                updateParamsQuery({
-                  start_date: undefined,
-                  end_date: undefined,
-                });
-                break;
-            }
-          }}
+          onValueChange={handleSelectValueDate}
         >
           <SelectTrigger
             className={cn(

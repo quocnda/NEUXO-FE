@@ -18,43 +18,39 @@ interface Props extends TypeItemTable {
 }
 const RowTableList = ({ indexRow, tableLength, item }: Props) => {
   const router = useRouter();
+  const handleNavigateDetail = () => {
+    router.push(`/campaign-report/campaign-detail/${item?.campaign_id}`);
+  };
   return (
-    <>
-      <React.Fragment>
-        <RowTable>
-          <ItemRowTable
-            indexRow={indexRow}
-            tableLength={tableLength}
-            className="bg-neutral-10 sticky left-0 z-10 border-l-0 border-r-0 before:absolute before:right-0 before:top-0 before:h-full before:w-[8px] before:shadow-[3px_0px_4.1px_0px_#0000000F]"
-          >
-            <TextBody1
-              className="cursor-pointer"
-              onClick={() => router.push(`/campaign-report/campaign-detail/${item?.campaign_id}`)}
-            >
-              {item?.campaign_name}
-            </TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>{item?.user_send}</TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>{formatStatus(item?.campaign_status)}</TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>{dayjs(item?.day_created).format('DD MMM, YYYY')}</TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>{item?.total_email_sent}</TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>{item?.total_email_opened}</TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>{item?.total_email_replied}</TextBody1>
-          </ItemRowTable>
-        </RowTable>
-      </React.Fragment>
-    </>
+    <RowTable>
+      <ItemRowTable
+        indexRow={indexRow}
+        tableLength={tableLength}
+        className="bg-neutral-10 sticky left-0 z-10 border-l-0 border-r-0 before:absolute before:right-0 before:top-0 before:h-full before:w-[8px] before:shadow-[3px_0px_4.1px_0px_#0000000F]"
+      >
+        <TextBody1 className="cursor-pointer" onClick={handleNavigateDetail}>
+          {item?.campaign_name}
+        </TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.user_send}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{formatStatus(item?.campaign_status)}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{dayjs(item?.day_created).format('DD MMM, YYYY')}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.total_email_sent}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.total_email_opened}</TextBody1>
+      </ItemRowTable>
+      <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
+        <TextBody1>{item?.total_email_replied}</TextBody1>
+      </ItemRowTable>
+    </RowTable>
   );
 };
 export default RowTableList;

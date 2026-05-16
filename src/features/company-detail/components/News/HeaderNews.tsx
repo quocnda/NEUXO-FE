@@ -21,22 +21,18 @@ const HeaderNews = ({
 }) => {
   const router = useRouter();
   const { page } = router.query;
-  const viewGenIdeal = page === 'watch-list-all' || page === 'watch-list' || page === 'watch-list-other-user';
+  const canShowGenIdeal = page === 'watch-list-all' || page === 'watch-list' || page === 'watch-list-other-user';
+  const showGenIdeal = canShowGenIdeal && !isHidden;
+
   return (
     <div
-      className={cn(
-        'flex w-full items-center',
-        viewGenIdeal && !isHidden ? 'flex-col gap-3' : 'flex-row justify-between border-b pb-3'
-      )}
+      className={cn('flex w-full items-center', showGenIdeal ? 'flex-col gap-3' : 'flex-row justify-between border-b pb-3')}
     >
-      <HStack
-        pos={'apart'}
-        className={cn('border-[#9A9FA536]', viewGenIdeal && !isHidden ? 'w-full border-b pb-3' : '')}
-      >
+      <HStack pos={'apart'} className={cn('border-[#9A9FA536]', showGenIdeal ? 'w-full border-b pb-3' : '')}>
         <Tag className="bg-secondary-purple h-6 w-3" classNameContent="text-lg">
           News
         </Tag>
-        <Show when={viewGenIdeal && !isHidden}>
+        <Show when={showGenIdeal}>
           <ModalGenIdeal>
             <Button size={'sm'} className="flex items-center gap-2">
               <Icons.genideal width={20} height={20} />
@@ -45,14 +41,16 @@ const HeaderNews = ({
           </ModalGenIdeal>
         </Show>
       </HStack>
-      <HStack noWrap spacing={8} className={cn(viewGenIdeal && !isHidden ? 'w-full' : '')}>
+      <HStack noWrap spacing={8} className={cn(showGenIdeal ? 'w-full' : '')}>
         {tabNewsWatchList.map((item, index) => {
           const IconTab = item?.icon as Icon;
+          const isActive = tab === item.value;
+
           return (
             <div
               className={cn(
                 'bg-neutral-10 text-neutral-40 flex h-8 cursor-pointer items-center justify-center gap-2 rounded-md px-2 hover:opacity-50',
-                tab === item.value && 'bg-main text-white'
+                isActive && 'bg-main text-white'
               )}
               key={index}
               onClick={() => setTab(item.value)}

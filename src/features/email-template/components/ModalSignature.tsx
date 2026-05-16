@@ -28,7 +28,7 @@ interface IModalSignatureProps {
 }
 const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, setIsOpen }) => {
   const { data: dataSignature, refetch: refetchSignature } = useEmailSignature();
-  const [sendFile, setSendFile] = useState<{ file_name: any; file_path: string }[]>([]);
+  const [attachments, setAttachments] = useState<{ file_name: any; file_path: string }[]>([]);
   const form = useForm<ISignature>({
     resolver: zodResolver(signatureSchema),
     defaultValues: {
@@ -36,7 +36,7 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
       signature_name: '',
     },
   });
-  const [isDataSignature, setIsDataSignature] = useState<{
+  const [selectedSignature, setSelectedSignature] = useState<{
     id: string;
     signature_html: string;
     signature_name: string;
@@ -48,10 +48,10 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
 
   const { mutate } = useMutation(createMailSignature, {
     onSuccess: () => {
-      toast.success(isDataSignature.id ? 'Update signature successfully!' : 'Create signature successfully!');
+      toast.success(selectedSignature.id ? 'Update signature successfully!' : 'Create signature successfully!');
       refetchSignature();
       form.reset();
-      setIsDataSignature({
+      setSelectedSignature({
         id: '',
         signature_html: '',
         signature_name: '',
@@ -65,7 +65,7 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
       toast.success('Remove signature successfully!');
       refetchSignature();
       form.reset();
-      setIsDataSignature({
+      setSelectedSignature({
         id: '',
         signature_html: '',
         signature_name: '',
@@ -77,17 +77,17 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
   const handleToggle = () => {
     setIsOpen(!isOpen);
     form.reset();
-    setIsDataSignature({
+    setSelectedSignature({
       id: '',
       signature_html: '',
       signature_name: '',
     });
   };
   const handleSubmit: SubmitHandler<ISignature> = (formData) => {
-    if (isDataSignature.id) {
+    if (selectedSignature.id) {
       mutate({
         ...formData,
-        id: isDataSignature.id,
+        id: selectedSignature.id,
       });
       return;
     }
@@ -97,10 +97,10 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
   };
 
   useEffect(() => {
-    if (isDataSignature.id) {
+    if (selectedSignature.id) {
       form.reset({
-        signature_html: isDataSignature.signature_html,
-        signature_name: isDataSignature.signature_name,
+        signature_html: selectedSignature.signature_html,
+        signature_name: selectedSignature.signature_name,
       });
     } else {
       form.reset({
@@ -108,7 +108,7 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
         signature_name: '',
       });
     }
-  }, [isDataSignature]);
+  }, [selectedSignature]);
   return (
     <Dialog open={isOpen} onOpenChange={handleToggle}>
       <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
@@ -124,8 +124,8 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
           <div className="flex h-fit flex-col items-start rounded-lg lg:w-1/5 lg:border-gray-300 lg:bg-[#FCFCFC]">
             <HeaderSignature
               dataSignature={dataSignature}
-              setIsDataSignature={setIsDataSignature}
-              isDataSignature={isDataSignature}
+              setIsDataSignature={setSelectedSignature}
+              isDataSignature={selectedSignature}
               deleteSignature={deleteSignature}
               isLoading={isLoading}
             />
@@ -154,8 +154,8 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
                     name="signature_html"
                     render={({ field: { onChange, value }, fieldState }) => (
                       <LetterheadEditor
-                        setSendFile={setSendFile}
-                        sendFile={sendFile}
+                        setSendFile={setAttachments}
+                        sendFile={attachments}
                         value={value}
                         onChange={onChange}
                         noAction
@@ -165,7 +165,7 @@ const ModalSignature: FCC<IModalSignatureProps> = ({ children, refetch, isOpen, 
                 </VStack>
               </VStack>
               <Button type="button" onClick={() => handleSubmit(form.getValues())} disabled={!form.formState.isValid}>
-                {isDataSignature.id ? 'Update' : 'Add'}
+                {selectedSignature.id ? 'Update' : 'Add'}
               </Button>
             </FormWrapper>
           </div>

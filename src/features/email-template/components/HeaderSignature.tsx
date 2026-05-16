@@ -8,15 +8,26 @@ import Base1 from '@/components/ui/typography/base1';
 import { HStack, VStack } from '@/components/ui/Utilities';
 import { cn } from '@/lib/utils';
 
-interface IHeaderSignatureProps {
+interface HeaderSignatureProps {
   dataSignature: any;
   setIsDataSignature: React.Dispatch<React.SetStateAction<any>>;
   isDataSignature: any;
   deleteSignature: UseMutateFunction<any, any, string, unknown>;
   isLoading: boolean;
 }
-const HeaderSignature = (props: IHeaderSignatureProps) => {
+const HeaderSignature = (props: HeaderSignatureProps) => {
   const { dataSignature, setIsDataSignature, isDataSignature, deleteSignature, isLoading } = props;
+
+  const handleSelectSignature = (item: any) => {
+    setIsDataSignature(item);
+  };
+
+  const handleCreateNew = () =>
+    setIsDataSignature({
+      id: '',
+      signature_html: '',
+      signature_name: '',
+    });
 
   return (
     <VStack spacing={12} className="w-full">
@@ -24,7 +35,7 @@ const HeaderSignature = (props: IHeaderSignatureProps) => {
         {dataSignature?.list_signatures?.map((item: any, index: number) => (
           <div
             key={item.id}
-            onClick={() => setIsDataSignature(item)}
+            onClick={() => handleSelectSignature(item)}
             className={cn(
               'border-neutral-30 flex h-10 cursor-pointer items-center justify-between rounded-md border-2 px-2 py-3 hover:opacity-50',
               isDataSignature?.id === item?.id && 'bg-blue-500 text-white'
@@ -51,13 +62,7 @@ const HeaderSignature = (props: IHeaderSignatureProps) => {
           </div>
         ))}
         <div
-          onClick={() =>
-            setIsDataSignature({
-              id: '',
-              signature_html: '',
-              signature_name: '',
-            })
-          }
+          onClick={handleCreateNew}
           className={cn(
             'border-neutral-30 flex h-10 cursor-pointer items-center justify-between rounded-md border-2 px-2 py-3 hover:opacity-50'
           )}

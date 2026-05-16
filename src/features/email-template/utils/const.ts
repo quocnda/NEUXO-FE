@@ -17,4 +17,4 @@ export const listHeaderTemplateEmail = [
     title: 'action',
     type: typeHeaderTable.BUTTON,
   },
-];
+] as const;

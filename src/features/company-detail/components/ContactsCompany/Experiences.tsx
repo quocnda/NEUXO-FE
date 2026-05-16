@@ -7,12 +7,15 @@ import { HStack, VStack } from '@/components/ui/Utilities';
 interface IProps {
   experiences: any;
 }
+
 const Experiences = ({ experiences }: IProps) => {
+  const items = experiences || [];
+
   return (
     <VStack spacing={12} className="px-3">
       <Body2 className="text-sm">Experiences</Body2>
       <VStack spacing={20} className="max-h-[300px] overflow-auto">
-        {experiences?.map((item: any, index: number) => (
+        {items.map((item: any, index: number) => (
           <HStack key={index} spacing={8} align={'start'}>
             <img src={item?.linkedin_company_logo ?? '/images/expreriences.png'} className="h-10 w-10 rounded-full" />
             <VStack spacing={4}>

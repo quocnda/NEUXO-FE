@@ -10,6 +10,11 @@ const WarningCreateNewEmailCampaign = ({
 }: {
   setIsOpenWarning: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const handleClose = () => {
+    setIsOpenWarning(false);
+    localStorage.setItem('isOpenWarning', 'false');
+  };
+
   return (
     <div className="relative flex flex-col items-start justify-start gap-3 rounded-md bg-[#FFE9BF] px-3 py-2 sm:flex-row sm:items-center sm:justify-center">
       <HStack pos={'apart'} noWrap className="w-full sm:w-fit">
@@ -19,12 +24,7 @@ const WarningCreateNewEmailCampaign = ({
           </div>
           <span>Learn how to create a new automated email campaign ?</span>
         </HStack>
-        <div
-          onClick={() => {
-            setIsOpenWarning(false);
-            localStorage.setItem('isOpenWarning', 'false');
-          }}
-        >
+        <div onClick={handleClose}>
           <X className="right-2 top-[10px] cursor-pointer sm:absolute" />
         </div>
       </HStack>

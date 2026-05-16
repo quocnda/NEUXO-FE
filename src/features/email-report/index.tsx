@@ -8,7 +8,7 @@ import withAuth from '@/lib/withAuth';
 import EmailReportTable from './components/EmailReportTable';
 
 const EmailReport = () => {
-  const BREADCRUMB = useMemo(
+  const breadcrumbItems = useMemo(
     () => [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: 'Account Management', type: breadcrumbTypes.link, href: '/account-management' },
@@ -17,7 +17,7 @@ const EmailReport = () => {
     []
   );
   return (
-    <BreadcrumbLayout data={BREADCRUMB}>
+    <BreadcrumbLayout data={breadcrumbItems}>
       <EmailReportTable />
     </BreadcrumbLayout>
   );
