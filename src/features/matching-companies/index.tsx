@@ -12,22 +12,27 @@ import TabelCompanyBlackList from './components/BlackList/TabelCompanyBlackList'
 import TableMatching from './components/Companies/TableMatching';
 
 const MatchingCompanies = () => {
-  const [tab, setTab] = useState<string | number>(tabs[0].value);
+  const [activeTab, setActiveTab] = useState<string | number>(tabs[0].value);
+
+  const handleTabChange = (value: string | number) => {
+    setActiveTab(value);
+  };
+
   return (
     <>
       <Wrapper>
         <HStack pos={'apart'}>
-          <Tag className="bg-secondary-purple">{formatItem(tab as string)}</Tag>
+          <Tag className="bg-secondary-purple">{formatItem(activeTab as string)}</Tag>
           <HStack>
-            {tabs.map((item, index) => {
+            {tabs.map((item) => {
               return (
                 <div
                   className={cn(
                     'text-neutral-40 flex h-8 cursor-pointer items-center justify-center gap-2 rounded-sm px-4 text-xs font-semibold hover:opacity-50',
-                    tab === item.value && 'bg-main text-white'
+                    activeTab === item.value && 'bg-main text-white'
                   )}
-                  key={index}
-                  onClick={() => setTab(item.value)}
+                  key={item.value}
+                  onClick={() => handleTabChange(item.value)}
                 >
                   {item.label}
                 </div>
@@ -36,10 +41,10 @@ const MatchingCompanies = () => {
           </HStack>
         </HStack>
         <VStack spacing={0}>
-          <Show when={tab === 'company'}>
+          <Show when={activeTab === 'company'}>
             <TableMatching />
           </Show>
-          <Show when={tab === 'blacklist'}>
+          <Show when={activeTab === 'blacklist'}>
             <TabelCompanyBlackList />
           </Show>
         </VStack>

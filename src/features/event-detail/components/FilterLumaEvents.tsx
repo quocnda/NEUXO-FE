@@ -20,6 +20,20 @@ interface IProps {
   tabs: string | number;
   setTabs: React.Dispatch<React.SetStateAction<string | number>>;
 }
+const TAB_BUTTON_CLASS =
+  'text-neutral-40 flex h-8 cursor-pointer items-center justify-center gap-2 rounded-sm px-2 text-xs font-semibold hover:opacity-50';
+const SELECT_TRIGGER_CLASS =
+  'border-neutral-30 text-neutral-40 flex h-8 items-center gap-2 rounded-md border-2 text-xs font-medium hover:opacity-50';
+
+const getWeekStartDate = (today: Date) => {
+  const dayOfWeek = today.getDay();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+  return startOfWeek;
+};
+
+const getMonthStartDate = (today: Date) => new Date(today.getFullYear(), today.getMonth(), 1);
+
 const FilterLumaEvents = (props: IProps) => {
   const { paramsQuery, setParamsQuery, tabs, setTabs } = props;
   const [open, setOpen] = useState(false);
@@ -29,11 +43,11 @@ const FilterLumaEvents = (props: IProps) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
 
-  const handleInputChange = debounceV2((e: any) => {
-    updateParamsQuery({ search_key: e.target.value, page: 1 });
+  const handleSearchChange = debounceV2((event: React.ChangeEvent<HTMLInputElement>) => {
+    updateParamsQuery({ search_key: event.target.value, page: 1 });
   }, 500);
 
-  const handleSelectDateToday = () => {
+  const handleSelectToday = () => {
     const today = new Date();
     setValueDate('today');
     updateParamsQuery({
@@ -46,14 +60,11 @@ const FilterLumaEvents = (props: IProps) => {
   const handleSelectThisWeek = () => {
     setValueDate('week');
     const today = new Date();
-    const dayOfWeek = today.getDay();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-    const endOfWeek = new Date(today);
+    const startOfWeek = getWeekStartDate(today);
 
     updateParamsQuery({
       start_date: dayjs(startOfWeek).format('YYYY-MM-DD'),
-      end_date: dayjs(endOfWeek).format('YYYY-MM-DD'),
+      end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
@@ -61,15 +72,15 @@ const FilterLumaEvents = (props: IProps) => {
   const handleSelectThisMonth = () => {
     setValueDate('month');
     const today = new Date();
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const endOfMonth = new Date(today);
+    const startOfMonth = getMonthStartDate(today);
 
     updateParamsQuery({
       start_date: dayjs(startOfMonth).format('YYYY-MM-DD'),
-      end_date: dayjs(endOfMonth).format('YYYY-MM-DD'),
+      end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
+
   const handleDateRangeChange = (dateRange: DateRange) => {
     const { from, to } = dateRange;
 
@@ -83,12 +94,10 @@ const FilterLumaEvents = (props: IProps) => {
       <HStack spacing={8} pos={'apart'}>
         <HStack spacing={0}>
           {dataTabs.map((item, index) => {
+            const isActive = tabs === item.value;
             return (
               <div
-                className={cn(
-                  'text-neutral-40 flex h-8 cursor-pointer items-center justify-center gap-2 rounded-sm px-2 text-xs font-semibold hover:opacity-50',
-                  tabs === item.value && 'bg-main text-white'
-                )}
+                className={cn(TAB_BUTTON_CLASS, isActive && 'bg-main text-white')}
                 key={index}
                 onClick={() => {
                   setTabs(item.value);
@@ -103,11 +112,11 @@ const FilterLumaEvents = (props: IProps) => {
         <HStack>
           <div className="max-w-[250px]">
             <Input
-              placeholder={'Search Side Event Name'}
+              placeholder="Search Side Event Name"
               name="search"
               className="border-neutral-30 h-8 border-2 text-xs"
               suffix={<Search size={16} />}
-              onChange={handleInputChange}
+              onChange={handleSearchChange}
             />
           </div>
           <Show when={valueDate !== 'date_range'}>
@@ -117,7 +126,7 @@ const FilterLumaEvents = (props: IProps) => {
               onValueChange={(value) => {
                 switch (value) {
                   case 'today':
-                    handleSelectDateToday();
+                    handleSelectToday();
                     break;
                   case 'week':
                     handleSelectThisWeek();
@@ -145,11 +154,7 @@ const FilterLumaEvents = (props: IProps) => {
                 }
               }}
             >
-              <SelectTrigger
-                className={cn(
-                  'border-neutral-30 text-neutral-40 flex h-8 items-center gap-2 rounded-md border-2 text-xs font-medium hover:opacity-50'
-                )}
-              >
+              <SelectTrigger className={cn(SELECT_TRIGGER_CLASS)}>
                 <Calendar size={14} />
                 <SelectValue className="" />
               </SelectTrigger>

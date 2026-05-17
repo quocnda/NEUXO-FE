@@ -25,67 +25,97 @@ interface IProps {
 }
 const FilterLumaEvents = (props: IProps) => {
   const { paramsQuery, setParamsQuery, tabs, setTabs } = props;
-  const [countryValue, setCountryValue] = useState<string[]>([]);
-  const [eventValue, setEventValue] = useState<string[]>([]);
-  const [valueDate, setValueDate] = useState<string>('');
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedMainEvents, setSelectedMainEvents] = useState<string[]>([]);
+  const [selectedDatePreset, setSelectedDatePreset] = useState<string>('');
   const { data: listCountryAndEvent } = useListCountryAndParentEvent();
-  const [open, setOpen] = useState(false);
-  const updateParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  const mergeParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
-  const handleInputChange = debounceV2((e: any) => {
-    updateParamsQuery({ search_key: e.target.value, page: 1 });
+  const handleSearchChange = debounceV2((e: any) => {
+    mergeParamsQuery({ search_key: e.target.value, page: 1 });
   }, 500);
 
   useEffect(() => {
-    updateParamsQuery({ country: countryValue.length > 0 ? countryValue.join(',') : '', page: 1 });
+    mergeParamsQuery({ country: selectedCountries.length > 0 ? selectedCountries.join(',') : '', page: 1 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [countryValue]);
+  }, [selectedCountries]);
 
-  const handleSelectDateToday = () => {
+  const applyTodayDate = () => {
     const today = new Date();
-    setValueDate('today');
-    updateParamsQuery({
+    setSelectedDatePreset('today');
+    mergeParamsQuery({
       start_date: dayjs(today).format('YYYY-MM-DD'),
       end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
 
-  const handleSelectThisWeek = () => {
-    setValueDate('week');
+  const applyThisWeek = () => {
+    setSelectedDatePreset('week');
     const today = new Date();
     const dayOfWeek = today.getDay();
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
     const endOfWeek = new Date(today);
 
-    updateParamsQuery({
+    mergeParamsQuery({
       start_date: dayjs(startOfWeek).format('YYYY-MM-DD'),
       end_date: dayjs(endOfWeek).format('YYYY-MM-DD'),
       page: 1,
     });
   };
 
-  const handleSelectThisMonth = () => {
-    setValueDate('month');
+  const applyThisMonth = () => {
+    setSelectedDatePreset('month');
     const today = new Date();
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const endOfMonth = new Date(today);
 
-    updateParamsQuery({
+    mergeParamsQuery({
       start_date: dayjs(startOfMonth).format('YYYY-MM-DD'),
       end_date: dayjs(endOfMonth).format('YYYY-MM-DD'),
       page: 1,
     });
   };
+
   const handleDateRangeChange = (dateRange: DateRange) => {
     const { from, to } = dateRange;
 
-    updateParamsQuery({
+    mergeParamsQuery({
       start_date: from ? formatDate(from, DATETIME_FORMAT.DATE_TIME) : undefined,
       end_date: to ? formatDate(to, DATETIME_FORMAT.DATE_TIME) : undefined,
     });
+  };
+
+  const handleTabSelect = (value: string | number) => {
+    setTabs(value);
+    mergeParamsQuery({ page: 1, status: value === '' ? undefined : String(value) });
+  };
+
+  const handleDatePresetChange = (value: string) => {
+    switch (value) {
+      case 'today':
+        applyTodayDate();
+        break;
+      case 'week':
+        applyThisWeek();
+        break;
+      case 'month':
+        applyThisMonth();
+        break;
+      case 'date_range':
+        mergeParamsQuery({ start_date: '', end_date: '', page: 1 });
+        setSelectedDatePreset('date_range');
+        setIsDatePickerOpen(true);
+        break;
+      default:
+        setSelectedDatePreset('');
+        mergeParamsQuery({ start_date: '', end_date: '', page: 1 });
+        break;
+    }
   };
 
   return (
@@ -93,18 +123,15 @@ const FilterLumaEvents = (props: IProps) => {
       <HStack pos={'apart'} spacing={8}>
         <Tag>Events</Tag>
         <HStack spacing={0}>
-          {dataTabs.map((item, index) => {
+          {dataTabs.map((item) => {
             return (
               <div
                 className={cn(
                   'text-neutral-40 flex h-8 cursor-pointer items-center justify-center gap-2 rounded-sm px-2 text-xs font-semibold hover:opacity-50',
                   tabs === item.value && 'bg-main text-white'
                 )}
-                key={index}
-                onClick={() => {
-                  setTabs(item.value);
-                  updateParamsQuery({ page: 1, status: item.value === '' ? undefined : String(item.value) });
-                }}
+                key={item.value}
+                onClick={() => handleTabSelect(item.value)}
               >
                 {item.label}
               </div>
@@ -119,15 +146,15 @@ const FilterLumaEvents = (props: IProps) => {
             className="border-neutral-30 h-8 border-2 text-xs"
             name="search"
             suffix={<Search size={16} color="#808080" />}
-            onChange={handleInputChange}
+            onChange={handleSearchChange}
           />
         </div>
 
         <HStack>
           <CustomPopover
             data={listCountryAndEvent?.main_events.map((item: any) => ({ label: item.name, value: item.id }))}
-            value={eventValue}
-            setValue={setEventValue}
+            value={selectedMainEvents}
+            setValue={setSelectedMainEvents}
             paramsQuery={paramsQuery}
             setParamsQuery={setParamsQuery}
             name="main_event"
@@ -135,47 +162,18 @@ const FilterLumaEvents = (props: IProps) => {
           />
           <CustomPopover
             data={listCountryAndEvent?.list_country?.map((item: any) => ({ label: item, value: item }))}
-            value={countryValue}
-            setValue={setCountryValue}
+            value={selectedCountries}
+            setValue={setSelectedCountries}
             paramsQuery={paramsQuery}
             setParamsQuery={setParamsQuery}
             name="country"
             icon={MapPin}
           />
-          <Show when={valueDate !== 'date_range'}>
+          <Show when={selectedDatePreset !== 'date_range'}>
             <Select
               key={dateOptions?.[0]?.value}
               defaultValue={dateOptions?.[0]?.value}
-              onValueChange={(value) => {
-                switch (value) {
-                  case 'today':
-                    handleSelectDateToday();
-                    break;
-                  case 'week':
-                    handleSelectThisWeek();
-                    break;
-                  case 'month':
-                    handleSelectThisMonth();
-                    break;
-                  case 'date_range':
-                    updateParamsQuery({
-                      start_date: '',
-                      end_date: '',
-                      page: 1,
-                    });
-                    setValueDate('date_range');
-                    setOpen(true);
-                    break;
-                  default:
-                    setValueDate('');
-                    updateParamsQuery({
-                      start_date: '',
-                      end_date: '',
-                      page: 1,
-                    });
-                    break;
-                }
-              }}
+              onValueChange={handleDatePresetChange}
             >
               <SelectTrigger
                 className={cn(
@@ -194,7 +192,7 @@ const FilterLumaEvents = (props: IProps) => {
               </SelectContent>
             </Select>
           </Show>
-          <Show when={valueDate === 'date_range'}>
+          <Show when={selectedDatePreset === 'date_range'}>
             <div className="relative min-w-[180px]">
               <DateRangePicker
                 from={paramsQuery?.start_date}
@@ -203,19 +201,19 @@ const FilterLumaEvents = (props: IProps) => {
                 placeholder="Select date range"
                 className="cursor-pointer rounded-full text-xs"
                 onReset={() => {
-                  setValueDate('');
-                  updateParamsQuery({ start_date: undefined, end_date: undefined, page: 1 });
+                  setSelectedDatePreset('');
+                  mergeParamsQuery({ start_date: undefined, end_date: undefined, page: 1 });
                 }}
-                open={open}
-                setOpen={setOpen}
+                open={isDatePickerOpen}
+                setOpen={setIsDatePickerOpen}
               />
               <Show when={!paramsQuery?.start_date || !paramsQuery?.end_date}>
                 <div className="absolute right-2 top-[10px] cursor-pointer hover:opacity-60">
                   <X
                     size={16}
                     onClick={() => {
-                      setValueDate('');
-                      updateParamsQuery({ start_date: undefined, end_date: undefined, page: 1 });
+                      setSelectedDatePreset('');
+                      mergeParamsQuery({ start_date: undefined, end_date: undefined, page: 1 });
                     }}
                   />
                 </div>

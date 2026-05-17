@@ -12,13 +12,12 @@ import { VStack } from '@/components/ui/Utilities';
 import { onMutateError } from '@/lib/common';
 import { useUserStore } from '@/stores';
 
-const CheckRedirectSignUp = ({
-  setStep,
-  tokenGoogle,
-}: {
+interface CheckRedirectSignUpProps {
   setStep: React.Dispatch<React.SetStateAction<number>>;
   tokenGoogle: string;
-}) => {
+}
+
+const CheckRedirectSignUp = ({ setStep, tokenGoogle }: CheckRedirectSignUpProps) => {
   const router = useRouter();
   const { setStore, setIsRole, setIsLogin } = useUserStore();
   const { mutate } = useMutation(signUpWithGoogle, {
@@ -31,7 +30,7 @@ const CheckRedirectSignUp = ({
     onError: onMutateError,
   });
 
-  const signUpGoogle = () => {
+  const handleContinue = () => {
     mutate({
       token_id: String(tokenGoogle),
     });
@@ -50,7 +49,7 @@ const CheckRedirectSignUp = ({
           <Button variant={'outline'} onClick={() => setStep(1)}>
             Back to Sign in
           </Button>
-          <Button onClick={() => signUpGoogle()}>Continue</Button>
+          <Button onClick={handleContinue}>Continue</Button>
         </div>
         <Base3 className="text-shades-0">This site is protected by reCAPTCHA and the Google Privacy Policy.</Base3>
       </VStack>

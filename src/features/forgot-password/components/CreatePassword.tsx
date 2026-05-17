@@ -20,14 +20,14 @@ interface FormValueCreatePassword {
   confirmPassword: string;
 }
 
+const CRITERION_ICON_CLASS =
+  'border-neutral-40 text-neutral-40 flex items-center justify-center rounded-full border-[1.5px] h-[14px] w-[14px]';
+const CRITERION_ICON_VALID_CLASS = 'bg-main-green border-0 text-white';
+
 const PasswordCriteria = ({ isValid, label }: { isValid: boolean; label: string }) => (
   <HStack spacing={8}>
     <div
-      className={cn(
-        'border-neutral-40 text-neutral-40 flex items-center justify-center rounded-full border-[1.5px]',
-        'h-[14px] w-[14px]',
-        isValid && 'bg-main-green border-0 text-white'
-      )}
+      className={cn(CRITERION_ICON_CLASS, isValid && CRITERION_ICON_VALID_CLASS)}
       style={{ lineHeight: 'normal' }}
     >
       <Check size={10} strokeWidth={3} />
@@ -36,21 +36,30 @@ const PasswordCriteria = ({ isValid, label }: { isValid: boolean; label: string 
   </HStack>
 );
 
+const validatePassword = (password: string) => {
+  return {
+    isMinLength: password.length >= 8 && !/\s/.test(password),
+    hasUppercase: /[A-Z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+  };
+};
+
+const validatePasswordsMatch = (password: string, confirmPassword: string): boolean => {
+  return Boolean(password && confirmPassword && password === confirmPassword);
+};
+
 const CreatePassword = () => {
   const form = useForm<FormValueCreatePassword>({
     defaultValues: { password: '', confirmPassword: '' },
   });
 
   const router = useRouter();
-  const password = form.watch('password');
-  const confirmPassword = form.watch('confirmPassword');
+  const passwordValue = form.watch('password');
+  const confirmPasswordValue = form.watch('confirmPassword');
 
-  const isMinLength = password.length >= 8 && !/\s/.test(password);
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  const passMatch = password && confirmPassword && password === confirmPassword;
-
-  const isPasswordValid = isMinLength && hasUppercase && hasNumber && passMatch;
+  const { isMinLength, hasUppercase, hasNumber } = validatePassword(passwordValue);
+  const isPasswordMatch = validatePasswordsMatch(passwordValue, confirmPasswordValue);
+  const isPasswordValid = isMinLength && hasUppercase && hasNumber && isPasswordMatch;
 
   const handleContinue: SubmitHandler<FormValueCreatePassword> = () => {
     router.push(ROUTE.SIGN_IN);
@@ -83,7 +92,7 @@ const CreatePassword = () => {
           <PasswordCriteria isValid={isMinLength} label="At least 8 characters and no spaces" />
           <PasswordCriteria isValid={hasUppercase} label="Contain uppercase characters (A-Z)" />
           <PasswordCriteria isValid={hasNumber} label="Must contain number (0-9)" />
-          <PasswordCriteria isValid={Boolean(passMatch)} label="Password matches" />
+          <PasswordCriteria isValid={isPasswordMatch} label="Password matches" />
         </VStack>
 
         <Button

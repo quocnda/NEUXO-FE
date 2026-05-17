@@ -19,17 +19,15 @@ const ModalContacts: FCC<IModalContactsProps> = ({ children, companyId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { id } = router.query;
-  const [visibleContacts, setVisibleContacts] = useState<{ [key: number]: boolean }>({});
+  const [expandedContacts, setExpandedContacts] = useState<{ [key: number]: boolean }>({});
 
   const toggleVisibility = (index: number) => {
-    setVisibleContacts((prev) => ({
+    setExpandedContacts((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
   };
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleDialog = () => setIsOpen((prev) => !prev);
   const { data, isFetching } = useContactsWatchListViewById({
     variables: {
       id: String(companyId),
@@ -38,8 +36,8 @@ const ModalContacts: FCC<IModalContactsProps> = ({ children, companyId }) => {
     enabled: !!companyId && isOpen && !!id,
   });
   return (
-    <Dialog open={isOpen} onOpenChange={handleToggle}>
-      <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
+    <Dialog open={isOpen} onOpenChange={toggleDialog}>
+      <DialogTrigger onClick={toggleDialog} asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
       <DialogContent className="max-h-[700px] overflow-auto">
@@ -56,15 +54,15 @@ const ModalContacts: FCC<IModalContactsProps> = ({ children, companyId }) => {
                   <div className="flex cursor-pointer items-center gap-2" onClick={() => toggleVisibility(index)}>
                     <span className="text-sm">{item?.name || '-'}</span>
                     <button className="text-sm text-blue-500">
-                      {visibleContacts[index] ? <ChevronDown size={16} /> : <ChevronLeft size={16} />}
+                      {expandedContacts[index] ? <ChevronDown size={16} /> : <ChevronLeft size={16} />}
                     </button>
                   </div>
                 </HStack>
                 <VStack
                   spacing={8}
                   style={{
-                    maxHeight: visibleContacts[index] ? '500px' : '0',
-                    opacity: visibleContacts[index] ? 1 : 0,
+                    maxHeight: expandedContacts[index] ? '500px' : '0',
+                    opacity: expandedContacts[index] ? 1 : 0,
                     overflow: 'hidden',
                     transition: 'max-height 0.3s ease, opacity 0.3s ease',
                   }}

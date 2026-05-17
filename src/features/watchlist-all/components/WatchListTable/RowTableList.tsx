@@ -46,8 +46,9 @@ interface Props extends TypeItemTable {
 }
 const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Props) => {
   const router = useRouter();
+  const rowId = item?.id;
   const [companyId, setCompanyId] = useState<string>('');
-  const [tab, setTab] = useState<number | string>(tabNewsWatchList[0].value);
+  const [activeTab, setActiveTab] = useState<number | string>(tabNewsWatchList[0].value);
   const { data: countNotify } = useNotificationsWatchListViewById({
     variables: {
       company_id: item?.company_id,
@@ -56,8 +57,9 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
   });
   const { expandedRow, toggleRow, setExpandedRow } = useExpandedRow();
   const [userId, setUserId] = useState('');
+  const isRowExpanded = expandedRow === rowId;
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleCompanyClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const url = `/matching-companies/company-detail/${item?.company_id}?page=watch-list-all&user_id=${item?.user_id}`;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
@@ -66,9 +68,7 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
     }
   };
 
-  const handleRowClick = (rowId: string) => {
-    toggleRow(rowId);
-  };
+  const handleRowToggle = (targetRowId: string) => toggleRow(targetRowId);
 
   const rowRef = useRef<HTMLTableRowElement>(null);
 
@@ -84,7 +84,7 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
             <SheetCompany
               companyName={item?.company}
               avatarUrl={item?.avatar_url}
-              handleClick={handleClick}
+              handleClick={handleCompanyClick}
               companyId={item?.company_id}
               isWatchList
             />
@@ -97,7 +97,7 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
                   spacing={8}
                   className="bg-main flex h-6 w-6 cursor-pointer justify-center rounded-full hover:opacity-60"
                   onClick={() => {
-                    handleRowClick(item.id);
+                    handleRowToggle(item.id);
                     setCompanyId(item?.company_id);
                     setUserId(item?.user_id);
                   }}
@@ -230,8 +230,8 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
           <td colSpan={listHeaderWatchList.length + 1} style={{ padding: 0 }} className="relative">
             <div
               style={{
-                maxHeight: expandedRow === item.id ? '500px' : '0',
-                opacity: expandedRow === item.id ? 1 : 0,
+                maxHeight: isRowExpanded ? '500px' : '0',
+                opacity: isRowExpanded ? 1 : 0,
                 overflow: 'auto',
                 transition: 'max-height 0.3s ease, opacity 0.3s ease',
                 width: '100%',
@@ -241,10 +241,8 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
                 <div className="mx-auto">
                   <div className="sticky top-0 bg-gray-100 pb-2">
                     <Tabs
-                      onChange={(value) => {
-                        setTab(value);
-                      }}
-                      value={tab}
+                      onChange={(value) => setActiveTab(value)}
+                      value={activeTab}
                       data={tabNewsWatchList}
                       layoutId="tab-sidebar-searchs"
                       className="border-white bg-gray-100 px-4 py-2"
@@ -255,15 +253,15 @@ const RowTableList = ({ indexRow, tableLength, item, listHeaderWatchList }: Prop
                         color="black"
                         size={14}
                         className="cursor-pointer"
-                        onClick={() => handleRowClick(item.user_id)}
+                        onClick={() => handleRowToggle(item.user_id)}
                       />
                     </div>
                   </div>
 
-                  <Show when={tab === 'company_news'}>
+                  <Show when={activeTab === 'company_news'}>
                     <CompanyNews companyId={companyId} userId={userId} />
                   </Show>
-                  <Show when={tab === 'contact_news'}>
+                  <Show when={activeTab === 'contact_news'}>
                     <ContactNews companyId={companyId} userId={userId} />
                   </Show>
                 </div>

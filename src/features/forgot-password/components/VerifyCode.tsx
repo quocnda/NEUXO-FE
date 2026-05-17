@@ -28,10 +28,18 @@ const VerifyCode = ({ setStep }: IVerifyCodeProps) => {
   });
   const [errorMessage, setErrorMessage] = useState('');
 
-  const correctCode = '1234';
+  const EXPECTED_PIN_CODE = '1234';
+  const ERROR_MESSAGE_STYLE = {
+    marginTop: '5px',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  } as const;
+
+  const pinValue = form.watch('correntPin');
+  const pinErrorMessage = form.formState.errors.correntPin?.message;
 
   const handleContinue: SubmitHandler<VerifyCodeSchema> = () => {
-    if (form.watch('correntPin') === correctCode) {
+    if (pinValue === EXPECTED_PIN_CODE) {
       setStep(3);
     } else {
       setErrorMessage('The code you entered is incorrect.');
@@ -75,34 +83,20 @@ const VerifyCode = ({ setStep }: IVerifyCodeProps) => {
                     if (errorMessage) setErrorMessage('');
                   }}
                   initialValue={value}
-                  onComplete={(val, index) => {
-                    return val;
-                  }}
+                  onComplete={(val) => val}
                   autoSelect={true}
                 />
               )}
             />
-            {form.formState.errors.correntPin?.message && (
+            {pinErrorMessage && (
               <div
-                style={{
-                  marginTop: '5px',
-                  fontSize: '0.75rem',
-                  lineHeight: '1rem',
-                }}
+                style={ERROR_MESSAGE_STYLE}
                 className="text-error"
-                dangerouslySetInnerHTML={{ __html: form.formState.errors.correntPin?.message || 'Error' }}
+                dangerouslySetInnerHTML={{ __html: pinErrorMessage || 'Error' }}
               />
             )}
             {errorMessage && (
-              <div
-                style={{
-                  marginTop: '5px',
-                  fontSize: '0.75rem',
-                  lineHeight: '1rem',
-                }}
-                className="text-error"
-                dangerouslySetInnerHTML={{ __html: errorMessage }}
-              />
+              <div style={ERROR_MESSAGE_STYLE} className="text-error" dangerouslySetInnerHTML={{ __html: errorMessage }} />
             )}
           </VStack>
 

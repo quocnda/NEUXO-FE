@@ -20,7 +20,7 @@ interface Props {
 }
 const CompanyInfomation = (props: Props) => {
   const { active, setActive, companyId } = props;
-  const form = useForm({
+  const companyForm = useForm({
     resolver: zodResolver(schemaUpdateProfile),
   });
   const { data, refetch: refetchCompany } = useDetailCompanyById({
@@ -54,10 +54,10 @@ const CompanyInfomation = (props: Props) => {
   });
 
   useEffect(() => {
-    form.reset(defaultValues);
+    companyForm.reset(defaultValues);
   }, [defaultValues]);
 
-  const handleSubmit: SubmitHandler<any> = (formData) => {
+  const handleUpdateCompany: SubmitHandler<any> = (formData) => {
     mutate({
       id: String(companyId),
       country: formData.country || '',
@@ -66,19 +66,23 @@ const CompanyInfomation = (props: Props) => {
     });
   };
 
-  const handleAddToWatchlist = async (formData: any) => {
-    await handleSubmit(formData);
+  const handleSubmitForm = async (formData: any) => {
+    await handleUpdateCompany(formData);
   };
 
   return (
-    <FormWrapper form={form} onSubmit={handleAddToWatchlist} className="flex flex-col justify-between gap-8 p-3">
+    <FormWrapper
+      form={companyForm}
+      onSubmit={handleSubmitForm}
+      className="flex flex-col justify-between gap-8 p-3"
+    >
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <TextField control={form.control} label="Company Name" name="name" inputSize={'xs'} disabled />
-        <TextField label="Linkedin" control={form.control} name="linkedin_url" inputSize={'xs'} disabled />
+        <TextField control={companyForm.control} label="Company Name" name="name" inputSize={'xs'} disabled />
+        <TextField label="Linkedin" control={companyForm.control} name="linkedin_url" inputSize={'xs'} disabled />
         <TextField
           label="Twitter"
           variant={'outline'}
-          control={form.control}
+          control={companyForm.control}
           inputSize={'xs'}
           name="twitter_url"
           placeholder="Enter the X (formerly Twitter) URL"
@@ -88,7 +92,7 @@ const CompanyInfomation = (props: Props) => {
           label="Website"
           variant={'outline'}
           inputSize={'xs'}
-          control={form.control}
+          control={companyForm.control}
           name="website"
           placeholder="Enter your website"
         />
@@ -96,36 +100,36 @@ const CompanyInfomation = (props: Props) => {
         <TextField
           label="Country"
           variant={'outline'}
-          control={form.control}
+          control={companyForm.control}
           inputSize={'xs'}
           name="country"
           placeholder="Enter your country"
         />
 
-        <TextField label="Industry" inputSize={'xs'} control={form.control} disabled name="industry" />
+        <TextField label="Industry" inputSize={'xs'} control={companyForm.control} disabled name="industry" />
 
         <TextField
           label="Organization Type"
-          control={form.control}
+          control={companyForm.control}
           disabled
           name="organization_type"
           inputSize={'xs'}
         />
-        <TextField label="Headquarter" control={form.control} disabled inputSize={'xs'} name="headquarter" />
+        <TextField label="Headquarter" control={companyForm.control} disabled inputSize={'xs'} name="headquarter" />
 
-        <TextField label="Followers" inputSize={'xs'} disabled control={form.control} name="followers" />
+        <TextField label="Followers" inputSize={'xs'} disabled control={companyForm.control} name="followers" />
 
-        <TextField label="Company Size" control={form.control} name="company_size" inputSize={'xs'} disabled />
+        <TextField label="Company Size" control={companyForm.control} name="company_size" inputSize={'xs'} disabled />
 
         <TextField
           label="Short Description"
           disabled
           inputSize={'xs'}
-          control={form.control}
+          control={companyForm.control}
           name="short_description"
         />
 
-        <TextField label="Category" control={form.control} name="category" disabled inputSize={'xs'} />
+        <TextField label="Category" control={companyForm.control} name="category" disabled inputSize={'xs'} />
       </div>
       <div className="flex items-center justify-center space-x-2">
         {Array.from({ length: 3 }).map((_, index) => (

@@ -21,6 +21,7 @@ interface IProps {
   openChange: (open: boolean) => void;
 }
 const HeaderWatchList = ({ openModal, setIsShowUpload, isOpenDropdown, openChange }: IProps) => {
+  const handleOpenUpload = () => setIsShowUpload(true);
   return (
     <HStack className="mb-4" pos={'apart'} spacing={24}>
       <Tag className="bg-secondary-purple">Watchlist</Tag>
@@ -38,7 +39,7 @@ const HeaderWatchList = ({ openModal, setIsShowUpload, isOpenDropdown, openChang
           <DropdownMenuContent className="flex flex-col items-start gap-1 rounded-xl p-2">
             <DropdownMenuItem
               className="text-neutral-40 flex cursor-pointer items-start justify-start gap-3 text-xs font-semibold"
-              onClick={() => setIsShowUpload(true)}
+              onClick={handleOpenUpload}
             >
               <Plus size={16} />
               Upload Excel

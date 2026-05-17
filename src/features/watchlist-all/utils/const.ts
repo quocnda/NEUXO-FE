@@ -1,7 +1,7 @@
 import { Icons } from '@/assets/icons';
 import { typeHeaderTable } from '@/utils/const';
 
-export const listHeaderWatchList = [
+const watchlistHeaders = [
   {
     title: 'company',
     key: 'company',
@@ -72,6 +72,8 @@ export const listHeaderWatchList = [
     type: typeHeaderTable.DATA,
   },
 ];
+
+export const listHeaderWatchList = watchlistHeaders;
 
 export const tabNewsWatchList = [
   {

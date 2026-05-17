@@ -15,15 +15,13 @@ import { onMutateError } from '@/lib/common';
 import ModalSentMail from '@/features/email-tracking/components/EmailTracking/ModalSentMail';
 import { useUserStore } from '@/stores';
 
-const ActionBar = ({
-  isListContactEmail,
-  selectedIds,
-  refetch,
-}: {
+interface ActionBarProps {
   isListContactEmail: any[];
   selectedIds: any[];
   refetch: () => void;
-}) => {
+}
+
+const ActionBar = ({ isListContactEmail, selectedIds, refetch }: ActionBarProps) => {
   const { user } = useUserStore.getState();
   const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
   const [isOpenModalLoginEmail, setIsOpenModalLoginEmail] = useState(false);
@@ -34,6 +32,11 @@ const ActionBar = ({
       refetch();
     },
   });
+  const selectedCount = selectedIds.length;
+  const selectedLabel = selectedCount < 2 ? 'Account' : 'Accounts';
+  const hasMailAppPass = Boolean(user?.has_mail_app_pass);
+  const validContactEmails = isListContactEmail.filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  const handleRemoveSelected = () => removeWatch({ ids: selectedIds.join(',') });
   return (
     <motion.div
       className="flex items-center justify-center"
@@ -45,11 +48,11 @@ const ActionBar = ({
         <HStack spacing={12}>
           <Icons.checked width={14} height={14} />
           <Caption1 className="text-neutral-40 text-xs">
-            {selectedIds.length || 0} {`${selectedIds.length < 2 ? 'Account' : 'Accounts'}`} selected
+            {selectedCount || 0} {selectedLabel} selected
           </Caption1>
         </HStack>
         <HStack spacing={8}>
-          <Show when={!user?.has_mail_app_pass}>
+          <Show when={!hasMailAppPass}>
             <ModalLoginEmail setIsOpen={setIsOpenModalLoginEmail} isOpen={isOpenModalLoginEmail}>
               <Button className="flex h-10 items-center gap-2 text-xs">
                 Send Email
@@ -57,11 +60,11 @@ const ActionBar = ({
               </Button>
             </ModalLoginEmail>
           </Show>
-          <Show when={user?.has_mail_app_pass}>
+          <Show when={hasMailAppPass}>
             <ModalSentMail
               setIsOpenSendEmail={setIsOpenSendEmail}
               isOpenSendEmail={isOpenSendEmail}
-              contact_email={isListContactEmail.filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))}
+              contact_email={validContactEmails}
               event_id={selectedIds}
             >
               <Button className="flex h-10 items-center gap-2 text-xs">
@@ -70,7 +73,7 @@ const ActionBar = ({
               </Button>
             </ModalSentMail>
           </Show>
-          <ModalRemoveWatchList removeWatch={() => removeWatch({ ids: selectedIds.join(',') })} isLoading={isLoading}>
+          <ModalRemoveWatchList removeWatch={handleRemoveSelected} isLoading={isLoading}>
             <Button variant={'error'} className="flex h-10 items-center gap-2 text-xs">
               Remove
               <Icons.remove width={18} height={18} />

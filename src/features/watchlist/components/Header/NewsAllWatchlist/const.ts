@@ -1,6 +1,6 @@
 import { Icons } from '@/assets/icons';
 
-export const tabAllNews = [
+const tabAllNewsItems = [
   {
     label: 'Company News',
     value: 'company',
@@ -12,3 +12,5 @@ export const tabAllNews = [
     icon: Icons.contact,
   },
 ];
+
+export const tabAllNews = tabAllNewsItems;

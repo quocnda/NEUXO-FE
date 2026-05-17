@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import React from 'react';
 
 import { Icons } from '@/assets/icons';
 import ModalRemoveBlackList from '@/components/Modal/Watchlist/ModalRemoveBlackList';
 import { Button } from '@/components/ui/button';
 import Caption1 from '@/components/ui/typography/caption1';
 import { HStack } from '@/components/ui/Utilities';
-import { useUserStore } from '@/stores';
 
 const ActionBar = ({
   selectedIds,
@@ -19,9 +18,6 @@ const ActionBar = ({
   setIsDownloadAll: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedIds: React.Dispatch<React.SetStateAction<any[]>>;
 }) => {
-  const { user } = useUserStore.getState();
-  const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
-  const [isOpenModalLoginEmail, setIsOpenModalLoginEmail] = useState(false);
 
   return (
     <motion.div

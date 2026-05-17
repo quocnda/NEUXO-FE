@@ -41,30 +41,28 @@ const SideBarSearch = (props: IProps) => {
     setSelectedValues,
   } = props;
 
-  const [visibleContacts, setVisibleContacts] = useState<{ [key: number]: boolean }>({});
+  const [expandedSections, setExpandedSections] = useState<{ [key: number]: boolean }>({});
+  const [filterSearchTerms, setFilterSearchTerms] = useState<{ [key: number]: string }>({});
+  const [tooltipVisibility, setTooltipVisibility] = useState<{ [key: string]: boolean }>({});
 
-  const [searchTerms, setSearchTerms] = useState<{ [key: number]: string }>({});
-
-  const [showTooltip, setShowTooltip] = useState<{ [key: string]: boolean }>({});
-
-  const handleMouseEnter = (fieldKey: string) => (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleLabelMouseEnter = (fieldKey: string) => (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
     const isTruncated = target.scrollWidth > target.clientWidth;
-    setShowTooltip((prev) => ({ ...prev, [fieldKey]: isTruncated }));
+    setTooltipVisibility((prev) => ({ ...prev, [fieldKey]: isTruncated }));
   };
 
   const handleSearchChange = (index: number, value: string) => {
-    setSearchTerms((prev) => ({
+    setFilterSearchTerms((prev) => ({
       ...prev,
       [index]: value,
     }));
   };
-  const toggleVisibility = (index: number) => {
-    setVisibleContacts((prev) => ({
+  const toggleSection = (index: number) => {
+    setExpandedSections((prev) => ({
       [index]: !prev[index],
     }));
   };
-  const [tab, setTab] = useState<string | number>(tabs[0].value);
+  const [activeTab, setActiveTab] = useState<string | number>(tabs[0].value);
 
   const handleCheckboxChange = (fieldName: string, item: { value: string; label: string }, checked: boolean) => {
     setSelectedValues((prev) => {
@@ -154,17 +152,17 @@ const SideBarSearch = (props: IProps) => {
     <VStack className="bg-neutral-10 h-fit w-full p-3 xl:max-w-[320px]" spacing={12}>
       <HStack noWrap pos={'apart'}>
         <Tag
-          className={cn('h-7', tab === 'search' ? 'bg-secondary-blue' : 'bg-secondary-green')}
+          className={cn('h-7', activeTab === 'search' ? 'bg-secondary-blue' : 'bg-secondary-green')}
           classNameContent="text-lg"
         >
-          {tabs.find((t) => t.value === tab)?.label}
+          {tabs.find((t) => t.value === activeTab)?.label}
         </Tag>
 
         <div
           className="border-neutral-30 flex h-8 w-fit cursor-pointer items-center justify-center gap-2 rounded-md border-2 px-4 py-2 text-xs font-medium"
-          onClick={() => setTab(tab === 'search' ? 'save-icp' : 'search')}
+          onClick={() => setActiveTab(activeTab === 'search' ? 'save-icp' : 'search')}
         >
-          {tab === 'search' ? (
+          {activeTab === 'search' ? (
             <>
               Saved Search
               <Icons.icp className="h-4 w-4" />
@@ -177,7 +175,7 @@ const SideBarSearch = (props: IProps) => {
           )}
         </div>
       </HStack>
-      <Show when={tab === 'search'}>
+      <Show when={activeTab === 'search'}>
         <VStack spacing={12}>
           <Show when={!!isDataCustomFilter?.id}>
             <div className="flex items-center justify-between text-lg font-bold">
@@ -209,12 +207,12 @@ const SideBarSearch = (props: IProps) => {
           <VStack className="h-fit" spacing={8}>
             {getDataFilter.map((item, index) => {
               const customFilter = item?.value?.filter((i: any) =>
-                i.label.toLowerCase().includes(searchTerms[index]?.toLowerCase() || '')
+                i.label.toLowerCase().includes(filterSearchTerms[index]?.toLowerCase() || '')
               );
 
               return (
                 <VStack key={index} className="gap-[16px]">
-                  <HStack pos={'apart'} className="cursor-pointer" onClick={() => toggleVisibility(index)}>
+                  <HStack pos={'apart'} className="cursor-pointer" onClick={() => toggleSection(index)}>
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Base1 className="text-xs">{formatItem(item.name)}</Base1>
                       <Show when={selectedValues[item.name]?.length > 0}>
@@ -223,12 +221,12 @@ const SideBarSearch = (props: IProps) => {
                         </p>
                       </Show>
                     </div>
-                    {visibleContacts[index] ? <ChevronDown size={16} /> : <ChevronLeft size={16} />}
+                    {expandedSections[index] ? <ChevronDown size={16} /> : <ChevronLeft size={16} />}
                   </HStack>
                   <div
                     style={{
-                      maxHeight: visibleContacts[index] ? '200px' : '0',
-                      opacity: visibleContacts[index] ? 1 : 0,
+                      maxHeight: expandedSections[index] ? '200px' : '0',
+                      opacity: expandedSections[index] ? 1 : 0,
                       overflow: 'hidden',
                       transition: 'max-height 0.3s ease, opacity 0.3s ease',
                     }}
@@ -238,7 +236,7 @@ const SideBarSearch = (props: IProps) => {
                       <Input
                         className="border-neutral-30 h-7 border-2 text-xs"
                         placeholder="Search..."
-                        value={searchTerms[index] || ''}
+                        value={filterSearchTerms[index] || ''}
                         onChange={(e) => handleSearchChange(index, e.target.value)}
                         suffix={<Search size={14} color="#808080" />}
                       />
@@ -256,12 +254,12 @@ const SideBarSearch = (props: IProps) => {
                             />
                             <div
                               className="truncate whitespace-nowrap text-xs font-normal"
-                              onMouseEnter={handleMouseEnter(`${item.name}-${i.value}`)}
+                              onMouseEnter={handleLabelMouseEnter(`${item.name}-${i.value}`)}
                             >
                               <Tooltip
                                 label={i.label}
                                 className="max-w-xs text-xs"
-                                hidden={!showTooltip[`${item.name}-${i.value}`] || false}
+                                hidden={!tooltipVisibility[`${item.name}-${i.value}`] || false}
                               >
                                 <span>{i.label}</span>
                               </Tooltip>
@@ -303,12 +301,12 @@ const SideBarSearch = (props: IProps) => {
           </div>
         </VStack>
       </Show>
-      <Show when={tab === 'save-icp'}>
+      <Show when={activeTab === 'save-icp'}>
         <SaveICP
           listCustomFilter={listCustomFilter}
           setIsDataCustomFilter={setIsDataCustomFilter}
           setSelectedValues={setSelectedValues}
-          setTab={setTab}
+          setTab={setActiveTab}
           isDataCustomFilter={isDataCustomFilter}
         />
       </Show>

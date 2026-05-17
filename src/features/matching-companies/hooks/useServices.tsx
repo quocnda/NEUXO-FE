@@ -17,51 +17,51 @@ const useServices = (refetch?: () => void) => {
   const { data: listSales } = useListSales();
   const { data: listCountry } = useListCountry();
   const { data: listCustomFilter } = useListCustomFilter();
-  const { mutate: mutateAssignee } = useMutation(assigneeSales, {
+  const { mutate: assignSales } = useMutation(assigneeSales, {
     onError: onMutateError,
     onSuccess: () => {
       toast.success('Assignee successfully!');
       refetch?.();
     },
   });
-  const { mutate: messageSent } = useMutation(checkMessageSent, {
+  const { mutate: markMessageSent } = useMutation(checkMessageSent, {
     onError: onMutateError,
     onSuccess: () => {
       toast.success('Message sent successfully!');
       refetch?.();
     },
   });
-  const { mutate: addNote, isLoading } = useMutation(addNoteCompanyMatching, {
+  const { mutate: addCompanyNote, isLoading } = useMutation(addNoteCompanyMatching, {
     onError: onMutateError,
   });
-  const { mutate: crawlData } = useMutation(crawlDataCompany, {
+  const { mutate: crawlCompanyData } = useMutation(crawlDataCompany, {
     onError: onMutateError,
     onSuccess: () => {
       toast.success('Crawl data successfully!');
       refetch?.();
     },
   });
-  const { mutate, isLoading: loadingGenEmail } = useMutation(getContentById, {
+  const { mutate: openEmailContent, isLoading: loadingGenEmail } = useMutation(getContentById, {
     onSuccess: (res: any) => {
       window.open(res?.url, '_blank');
     },
     onError: onMutateError,
   });
 
-  const handleEmailClick = (company_id: string) => {
-    mutate({
-      id: company_id,
+  const handleOpenEmailContent = (companyId: string) => {
+    openEmailContent({
+      id: companyId,
     });
   };
   return {
     listSales,
-    mutateAssignee,
-    messageSent,
-    addNote,
+    mutateAssignee: assignSales,
+    messageSent: markMessageSent,
+    addNote: addCompanyNote,
     isLoading,
-    crawlData,
+    crawlData: crawlCompanyData,
     listCountry,
-    handleEmailClick,
+    handleEmailClick: handleOpenEmailContent,
     loadingGenEmail,
     listCustomFilter,
   };

@@ -12,7 +12,7 @@ const useServices = (setStep?: React.Dispatch<React.SetStateAction<number>>) => 
   const router = useRouter();
   const { setIsLogin, setStore, setIsRole } = useUserStore();
 
-  const { mutate, isLoading } = useMutation(loginRequest, {
+  const { mutate: mutateLogin, isLoading } = useMutation(loginRequest, {
     onSuccess: (data) => {
       setStore(data.data);
       setIsLogin(true);
@@ -40,10 +40,10 @@ const useServices = (setStep?: React.Dispatch<React.SetStateAction<number>>) => 
     },
   });
 
-  const handleSubmit: SubmitHandler<LoginSchema> = (data) => {
-    mutate({
-      username: data.username,
-      password: data.password,
+  const handleSubmit: SubmitHandler<LoginSchema> = (formData) => {
+    mutateLogin({
+      username: formData.username,
+      password: formData.password,
     });
   };
   return { handleSubmit, isLoading, mutateLoginGoogle };

@@ -15,21 +15,25 @@ interface IProps {
   paramsQuery: IParamsMatchingCompaniesList;
   setParamsQuery: React.Dispatch<React.SetStateAction<IParamsMatchingCompaniesList>>;
 }
-const Filter = (props: IProps) => {
-  const { paramsQuery, setParamsQuery } = props;
+const Filter = ({ paramsQuery, setParamsQuery }: IProps) => {
   const [valueDate, setValueDate] = useState<string>('');
   const [searchValue, setSearchValue] = useState(paramsQuery.search_key || '');
   const updateParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
+
+  const setDateRange = (start: Date, end: Date) => {
+    updateParamsQuery({
+      start_date: dayjs(start).format('YYYY-MM-DD'),
+      end_date: dayjs(end).format('YYYY-MM-DD'),
+      page: 1,
+    });
+  };
+
   const handleSelectDateToday = () => {
     const today = new Date();
     setValueDate('today');
-    updateParamsQuery({
-      start_date: dayjs(today).format('YYYY-MM-DD'),
-      end_date: dayjs(today).format('YYYY-MM-DD'),
-      page: 1,
-    });
+    setDateRange(today, today);
   };
 
   const handleSelectThisWeek = () => {
@@ -40,11 +44,7 @@ const Filter = (props: IProps) => {
     startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
     const endOfWeek = new Date(today);
 
-    updateParamsQuery({
-      start_date: dayjs(startOfWeek).format('YYYY-MM-DD'),
-      end_date: dayjs(endOfWeek).format('YYYY-MM-DD'),
-      page: 1,
-    });
+    setDateRange(startOfWeek, endOfWeek);
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
@@ -54,9 +54,9 @@ const Filter = (props: IProps) => {
     []
   );
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setSearchValue(value);
-    debouncedSearch(value);
+    const nextValue = e.target.value;
+    setSearchValue(nextValue);
+    debouncedSearch(nextValue);
   };
 
   useEffect(() => {
@@ -83,15 +83,14 @@ const Filter = (props: IProps) => {
         <Select
           key={valueDate}
           defaultValue={valueDate}
-          onValueChange={(e) => {
-            switch (e) {
+          onValueChange={(selectedValue) => {
+            switch (selectedValue) {
               case 'today':
                 handleSelectDateToday();
-                break;
+                return;
               case 'week':
                 handleSelectThisWeek();
-                break;
-
+                return;
               default:
                 setValueDate('');
                 updateParamsQuery({
@@ -99,7 +98,6 @@ const Filter = (props: IProps) => {
                   end_date: '',
                   page: 1,
                 });
-                break;
             }
           }}
         >
@@ -112,9 +110,9 @@ const Filter = (props: IProps) => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {dateOptions?.map((item: any, index) => (
-              <SelectItem value={item.value} key={index} className="text-xs">
-                {item.label}
+            {dateOptions?.map((option: any, index) => (
+              <SelectItem value={option.value} key={index} className="text-xs">
+                {option.label}
               </SelectItem>
             ))}
           </SelectContent>

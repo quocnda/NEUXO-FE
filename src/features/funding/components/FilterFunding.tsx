@@ -14,10 +14,20 @@ interface IProps {
   paramsQuery: IParamsMatchingCompaniesList;
   setParamsQuery: React.Dispatch<React.SetStateAction<IParamsMatchingCompaniesList>>;
 }
+const getWeekStartDate = (today: Date) => {
+  const dayOfWeek = today.getDay();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+  return startOfWeek;
+};
+
+const getMonthStartDate = (today: Date) => new Date(today.getFullYear(), today.getMonth(), 1);
+
 const FilterFunding = (props: IProps) => {
   const { paramsQuery, setParamsQuery } = props;
   const [valueDate, setValueDate] = useState<string>('');
   const [open, setOpen] = useState(false);
+
   const updateParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
@@ -25,6 +35,7 @@ const FilterFunding = (props: IProps) => {
   const handleInputChange = debounceV2((e: any) => {
     updateParamsQuery({ search_key: e.target.value, page: 1 });
   }, 500);
+
   const handleSelectDateToday = () => {
     const today = new Date();
     setValueDate('today');
@@ -38,14 +49,11 @@ const FilterFunding = (props: IProps) => {
   const handleSelectThisWeek = () => {
     setValueDate('week');
     const today = new Date();
-    const dayOfWeek = today.getDay();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-    const endOfWeek = new Date(today);
+    const startOfWeek = getWeekStartDate(today);
 
     updateParamsQuery({
       start_date: dayjs(startOfWeek).format('YYYY-MM-DD'),
-      end_date: dayjs(endOfWeek).format('YYYY-MM-DD'),
+      end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
@@ -53,15 +61,15 @@ const FilterFunding = (props: IProps) => {
   const handleSelectThisMonth = () => {
     setValueDate('month');
     const today = new Date();
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const endOfMonth = new Date(today);
+    const startOfMonth = getMonthStartDate(today);
 
     updateParamsQuery({
       start_date: dayjs(startOfMonth).format('YYYY-MM-DD'),
-      end_date: dayjs(endOfMonth).format('YYYY-MM-DD'),
+      end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
+
   const handleDateRangeChange = (dateRange: DateRange) => {
     const { from, to } = dateRange;
 

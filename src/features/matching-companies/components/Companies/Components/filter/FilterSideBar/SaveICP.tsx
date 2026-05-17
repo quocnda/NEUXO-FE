@@ -28,23 +28,23 @@ const SaveICP = (props: IProps) => {
   return (
     <VStack spacing={6}>
       <div className="flex flex-col gap-1">
-        {listCustomFilter?.map((item, index: number) => (
+        {listCustomFilter?.map((filterItem, index: number) => (
           <div
-            key={item.id}
+            key={filterItem.id}
             className={cn(
               'border-neutral-30 flex h-10 items-center justify-between rounded-md border-2 p-2',
-              isDataCustomFilter?.id === item?.id && 'bg-blue-500 text-white'
+              isDataCustomFilter?.id === filterItem?.id && 'bg-blue-500 text-white'
             )}
           >
             <HStack spacing={8} noWrap>
               <Base1
                 className="flex w-full cursor-pointer items-center gap-2 text-xs"
                 onClick={() => {
-                  setIsDataCustomFilter(item);
+                  setIsDataCustomFilter(filterItem);
                   setTab('search');
                 }}
               >
-                {item?.filter_name}
+                {filterItem?.filter_name}
               </Base1>
             </HStack>
 
@@ -52,19 +52,23 @@ const SaveICP = (props: IProps) => {
               <Tooltip label="Update" className="text-xs hover:opacity-60">
                 <Icons.edit
                   onClick={() => {
-                    setIsDataCustomFilter(item);
+                    setIsDataCustomFilter(filterItem);
                     setTab('search');
                   }}
                   width={14}
                   height={14}
-                  color={isDataCustomFilter?.id === item?.id ? 'white' : '#6F767E'}
+                  color={isDataCustomFilter?.id === filterItem?.id ? 'white' : '#6F767E'}
                   className="cursor-pointer hover:opacity-60"
                 />
               </Tooltip>
 
-              <ModalRemoveFilter id={item?.id} name={item?.filter_name} setIsDataCustomFilter={setIsDataCustomFilter}>
+              <ModalRemoveFilter
+                id={filterItem?.id}
+                name={filterItem?.filter_name}
+                setIsDataCustomFilter={setIsDataCustomFilter}
+              >
                 <Icons.remove
-                  color={isDataCustomFilter?.id === item?.id ? 'white' : '#6F767E'}
+                  color={isDataCustomFilter?.id === filterItem?.id ? 'white' : '#6F767E'}
                   width={14}
                   height={14}
                   className="cursor-pointer hover:opacity-60"

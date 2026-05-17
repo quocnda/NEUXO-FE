@@ -4,8 +4,6 @@ import withAuth from '@/lib/withAuth';
 
 import LumaEventsCard from './components/LumaEventsCard';
 
-const LumaEvents = () => {
-  return <LumaEventsCard />;
-};
+const LumaEventsPage = () => <LumaEventsCard />;
 
-export default withAuth(LumaEvents);
+export default withAuth(LumaEventsPage);

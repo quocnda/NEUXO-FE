@@ -6,14 +6,12 @@ import withAuth from '@/lib/withAuth';
 
 import TableWatchList from './components/TableWatchList';
 
-const WatchListPage = () => {
-  return (
-    <Wrapper>
-      <VStack spacing={0}>
-        <TableWatchList />
-      </VStack>
-    </Wrapper>
-  );
-};
+const WatchListPage = () => (
+  <Wrapper>
+    <VStack spacing={0}>
+      <TableWatchList />
+    </VStack>
+  </Wrapper>
+);
 
 export default withAuth(WatchListPage);

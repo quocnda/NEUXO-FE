@@ -18,7 +18,7 @@ interface IModalTriggerProps {
   start_date: string | undefined;
 }
 
-const RenderField = ({ label, value, isLink = false }: { label: string; value?: string; isLink?: boolean }) => (
+const FieldRow = ({ label, value, isLink = false }: { label: string; value?: string; isLink?: boolean }) => (
   <HStack pos="apart" className="mb-1">
     <Subtitle1>{label}</Subtitle1>
     <Show when={label === 'Amount'}>
@@ -35,12 +35,10 @@ const RenderField = ({ label, value, isLink = false }: { label: string; value?: 
   </HStack>
 );
 
-const RenderDataSection = ({
-  title,
+const DataSection = ({
   data,
   fields,
 }: {
-  title: string;
   data: any;
   fields: { label: string; key: string; isLink?: boolean }[];
 }) => {
@@ -49,7 +47,7 @@ const RenderDataSection = ({
       {data.map((item: { [x: string]: string }, index: React.Key | null | undefined) => (
         <Wrapper key={index}>
           {fields.map(({ label, key, isLink }) => (
-            <RenderField key={key} label={label} value={item[key as keyof typeof item]} isLink={isLink} />
+            <FieldRow key={key} label={label} value={item[key as keyof typeof item]} isLink={isLink} />
           ))}
         </Wrapper>
       ))}
@@ -57,60 +55,60 @@ const RenderDataSection = ({
   );
 };
 
+const CONTENT_MAPPING: Record<string, { title: string; fields: { label: string; key: string; isLink?: boolean }[] }> =
+  {
+    funding: {
+      title: 'Funding',
+      fields: [
+        { label: 'Name', key: 'name' },
+        { label: 'Date', key: 'date' },
+        { label: 'Amount', key: 'amount' },
+        { label: 'Project URL', key: 'project_url', isLink: true },
+        { label: 'Category', key: 'category' },
+      ],
+    },
+    hiring: {
+      title: 'Hiring',
+      fields: [
+        { label: 'Title', key: 'title' },
+        { label: 'Category Name', key: 'category__name' },
+        { label: 'Linkedin URL', key: 'linkedin_url', isLink: true },
+        { label: 'Label Name', key: 'label__name', isLink: true },
+        { label: 'Created At', key: 'created_at' },
+      ],
+    },
+    event: {
+      title: 'Event Attended',
+      fields: [
+        { label: 'Name', key: 'name' },
+        { label: 'Event URL', key: 'event_url', isLink: true },
+        { label: 'Start Date', key: 'start_date' },
+      ],
+    },
+    news: {
+      title: 'News',
+      fields: [
+        { label: 'News URL', key: 'link_news', isLink: true },
+        { label: 'Category', key: 'category' },
+        { label: 'Time Post', key: 'time_post' },
+      ],
+    },
+  };
+
 const ModalTrigger: FCC<IModalTriggerProps> = ({ children, companyId, tag, start_date }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const handleToggle = () => setIsOpen(!isOpen);
+  const toggleOpen = () => setIsOpen(!isOpen);
 
   const { data, isLoading } = useTriggerCompanyById<IResponsiveTrigger>({
     variables: { id: companyId, start_date: start_date || undefined },
     enabled: !!companyId && isOpen,
   });
 
-  const contentMapping: Record<string, { title: string; fields: { label: string; key: string; isLink?: boolean }[] }> =
-    {
-      funding: {
-        title: 'Funding',
-        fields: [
-          { label: 'Name', key: 'name' },
-          { label: 'Date', key: 'date' },
-          { label: 'Amount', key: 'amount' },
-          { label: 'Project URL', key: 'project_url', isLink: true },
-          { label: 'Category', key: 'category' },
-        ],
-      },
-      hiring: {
-        title: 'Hiring',
-        fields: [
-          { label: 'Title', key: 'title' },
-          { label: 'Category Name', key: 'category__name' },
-          { label: 'Linkedin URL', key: 'linkedin_url', isLink: true },
-          { label: 'Label Name', key: 'label__name', isLink: true },
-          { label: 'Created At', key: 'created_at' },
-        ],
-      },
-      event: {
-        title: 'Event Attended',
-        fields: [
-          { label: 'Name', key: 'name' },
-          { label: 'Event URL', key: 'event_url', isLink: true },
-          { label: 'Start Date', key: 'start_date' },
-        ],
-      },
-      news: {
-        title: 'News',
-        fields: [
-          { label: 'News URL', key: 'link_news', isLink: true },
-          { label: 'Category', key: 'category' },
-          { label: 'Time Post', key: 'time_post' },
-        ],
-      },
-    };
-
-  const selectedContent = contentMapping[tag];
+  const selectedContent = CONTENT_MAPPING[tag];
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleToggle}>
-      <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
+    <Dialog open={isOpen} onOpenChange={toggleOpen}>
+      <DialogTrigger onClick={toggleOpen} asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
       <DialogContent className="max-h-[80vh] max-w-screen-md overflow-auto">
@@ -127,16 +125,10 @@ const ModalTrigger: FCC<IModalTriggerProps> = ({ children, companyId, tag, start
               (data[tag as keyof IResponsiveTrigger]?.length || 0) > 0
             }
           >
-            <RenderDataSection
-              title={selectedContent.title}
-              data={data ? data[tag as keyof IResponsiveTrigger] || [] : []}
-              fields={selectedContent.fields}
-            />
+            <DataSection data={data ? data[tag as keyof IResponsiveTrigger] || [] : []} fields={selectedContent.fields} />
           </Show>{' '}
         </VStack>
-        <Show
-          when={data && !Object.keys(contentMapping).some((key) => data[key as keyof IResponsiveTrigger]?.length > 0)}
-        >
+        <Show when={data && !Object.keys(CONTENT_MAPPING).some((key) => data[key as keyof IResponsiveTrigger]?.length > 0)}>
           <VStack align="center" className="mt-5">
             <Icons.empty />
             <p className="text-xs font-medium">No data</p>

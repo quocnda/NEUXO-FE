@@ -27,20 +27,20 @@ const FilterMatchingCompanies = (props: IProps) => {
   const { paramsQuery, setParamsQuery, columns, refetch, setIsShowFilter, isShowFilter, setValueDate, valueDate } =
     props;
   const [searchValue, setSearchValue] = useState(paramsQuery.search_key || '');
-  const updateParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
+  const mergeParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
-  const handleSelectDateToday = () => {
+  const applyTodayDate = () => {
     const today = new Date();
     setValueDate('today');
-    updateParamsQuery({
+    mergeParamsQuery({
       start_date: dayjs(today).format('YYYY-MM-DD'),
       end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
 
-  const handleSelectThisWeek = () => {
+  const applyThisWeek = () => {
     setValueDate('week');
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -48,7 +48,7 @@ const FilterMatchingCompanies = (props: IProps) => {
     startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
     const endOfWeek = new Date(today);
 
-    updateParamsQuery({
+    mergeParamsQuery({
       start_date: dayjs(startOfWeek).format('YYYY-MM-DD'),
       end_date: dayjs(endOfWeek).format('YYYY-MM-DD'),
       page: 1,
@@ -106,15 +106,15 @@ const FilterMatchingCompanies = (props: IProps) => {
           onValueChange={(e) => {
             switch (e) {
               case 'today':
-                handleSelectDateToday();
+                applyTodayDate();
                 break;
               case 'week':
-                handleSelectThisWeek();
+                applyThisWeek();
                 break;
 
               default:
                 setValueDate('');
-                updateParamsQuery({
+                mergeParamsQuery({
                   start_date: '',
                   end_date: '',
                   page: 1,

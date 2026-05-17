@@ -83,8 +83,9 @@ const RowTableList = ({
   paramsQuery,
 }: Props) => {
   const router = useRouter();
+  const rowId = item?.company_id;
   const [companyId, setCompanyId] = useState<string>('');
-  const [tab, setTab] = useState<number | string>(tabNewsWatchList[0].value);
+  const [activeTab, setActiveTab] = useState<number | string>(tabNewsWatchList[0].value);
   const [valueNote, setValueNote] = useState<string>('');
   const { data: countNotify, refetch: refetchCount } = useNotificationsWatchListById({ variables: item?.company_id });
   const { expandedRow, toggleRow, setExpandedRow } = useExpandedRow();
@@ -104,7 +105,10 @@ const RowTableList = ({
     },
   });
   const isChecked = checkExist !== undefined || isDownloadAll;
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const isPinned = Boolean(item?.PIN);
+  const hasMailAppPass = Boolean(user?.has_mail_app_pass);
+  const isRowExpanded = expandedRow === rowId;
+  const handleCompanyClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const url = `/matching-companies/company-detail/${item?.company_id}?page=watch-list`;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
@@ -113,9 +117,7 @@ const RowTableList = ({
     }
   };
 
-  const handleRowClick = (rowId: string) => {
-    toggleRow(rowId);
-  };
+  const handleRowToggle = (targetRowId: string) => toggleRow(targetRowId);
 
   const rowRef = useRef<HTMLTableRowElement>(null);
 
@@ -139,6 +141,17 @@ const RowTableList = ({
     setExpandedRow(null);
   }, []);
 
+  const handleSelectRow = (checked: boolean) => {
+    setIsDownloadAll(false);
+    if (checked) {
+      setSelectedIds([...selectedIds, item?.company_id]);
+      setIsListContactEmail([...isListContactEmail, ...item?.lst_email]);
+      return;
+    }
+    setSelectedIds(selectedIds?.filter((s) => s !== item?.company_id));
+    setIsListContactEmail(isListContactEmail.filter((email) => !item?.lst_email.includes(email)));
+  };
+
   const renderColumnContent = useCallback(
     (column: any) => {
       switch (column?.title) {
@@ -147,7 +160,7 @@ const RowTableList = ({
             <SheetCompany
               companyName={item?.company}
               avatarUrl={item?.avatar_url}
-              handleClick={handleClick}
+              handleClick={handleCompanyClick}
               companyId={item?.company_id}
               isWatchList
             />
@@ -160,7 +173,7 @@ const RowTableList = ({
                   spacing={8}
                   className="bg-main flex h-6 w-6 cursor-pointer justify-center rounded-full hover:opacity-60"
                   onClick={() => {
-                    handleRowClick(item.company_id);
+                    handleRowToggle(item.company_id);
                     setCompanyId(item?.company_id);
                   }}
                 >
@@ -190,7 +203,7 @@ const RowTableList = ({
         case 'action':
           return (
             <div className="flex items-center gap-3">
-              <Show when={user?.has_mail_app_pass}>
+              <Show when={hasMailAppPass}>
                 <Tooltip label={getTooltipLabel(item?.status_mail, user?.user_name)}>
                   <div>
                     <ModalSentMail
@@ -218,7 +231,7 @@ const RowTableList = ({
                   </div>
                 </Tooltip>
               </Show>
-              <Show when={!user?.has_mail_app_pass}>
+              <Show when={!hasMailAppPass}>
                 <Tooltip label={getTooltipLabel(item?.status_mail, user?.user_name)}>
                   <div>
                     <ModalLoginEmail setIsOpen={setIsOpenModalLoginEmail} isOpen={isOpenModalLoginEmail}>
@@ -236,7 +249,7 @@ const RowTableList = ({
                 </Tooltip>
               </Show>
               <Tooltip
-                label={item?.PIN ? 'Unpin' : 'Pin'}
+                label={isPinned ? 'Unpin' : 'Pin'}
                 className="text-main border-main rounded-[21px] px-3 text-xs font-medium"
               >
                 <HStack
@@ -244,7 +257,7 @@ const RowTableList = ({
                   className="bg-neutral-20 flex h-6 w-6 justify-center rounded-full"
                   onClick={() => mutate({ company_id: String(item?.company_id) })}
                 >
-                  {!item?.PIN ? (
+                  {!isPinned ? (
                     <Pin className="cursor-pointer" color="#6B7280" width={12} height={12} />
                   ) : (
                     <Pin className="cursor-pointer" color="#FFC800" width={12} height={12} />
@@ -369,16 +382,7 @@ const RowTableList = ({
           >
             <Checkbox
               checked={isChecked}
-              onCheckedChange={(e: any) => {
-                setIsDownloadAll(false);
-                if (e) {
-                  setSelectedIds([...selectedIds, item?.company_id]);
-                  setIsListContactEmail([...isListContactEmail, ...item?.lst_email]);
-                } else {
-                  setSelectedIds(selectedIds?.filter((s) => s !== item?.company_id));
-                  setIsListContactEmail(isListContactEmail.filter((email) => !item?.lst_email.includes(email)));
-                }
-              }}
+              onCheckedChange={(e: any) => handleSelectRow(Boolean(e))}
             />
           </ItemRowTable>
           {listHeaderWatchList.map((column, i) => (
@@ -400,8 +404,8 @@ const RowTableList = ({
           <td colSpan={listHeaderWatchList.length + 1} style={{ padding: 0 }} className="relative">
             <div
               style={{
-                maxHeight: expandedRow === item.company_id ? '500px' : '0',
-                opacity: expandedRow === item.company_id ? 1 : 0,
+                maxHeight: isRowExpanded ? '500px' : '0',
+                opacity: isRowExpanded ? 1 : 0,
                 overflow: 'auto',
                 transition: 'max-height 0.3s ease, opacity 0.3s ease',
                 width: '100%',
@@ -411,10 +415,8 @@ const RowTableList = ({
                 <div className="mx-auto">
                   <div className="sticky top-0 bg-gray-100 pb-2">
                     <Tabs
-                      onChange={(value) => {
-                        setTab(value);
-                      }}
-                      value={tab}
+                      onChange={(value) => setActiveTab(value)}
+                      value={activeTab}
                       data={tabNewsWatchList}
                       layoutId="tab-sidebar-searchs"
                       className="border-white bg-gray-100 px-4 py-2"
@@ -425,15 +427,15 @@ const RowTableList = ({
                         color="#6F767E"
                         size={14}
                         className="cursor-pointer hover:opacity-50"
-                        onClick={() => handleRowClick(item.company_id)}
+                        onClick={() => handleRowToggle(item.company_id)}
                       />
                     </div>
                   </div>
 
-                  <Show when={tab === 'company_news'}>
+                  <Show when={activeTab === 'company_news'}>
                     <CompanyNews companyId={companyId} refetchCount={refetchCount} />
                   </Show>
-                  <Show when={tab === 'contact_news'}>
+                  <Show when={activeTab === 'contact_news'}>
                     <ContactNews companyId={companyId} refetchCount={refetchCount} />
                   </Show>
                 </div>

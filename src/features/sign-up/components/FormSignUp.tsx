@@ -24,7 +24,7 @@ import { ROUTE } from '@/types';
 
 const FormSignUp = () => {
   const { user } = useAuth();
-  const form = useForm<SchemaSignUp>({
+  const signUpForm = useForm<SchemaSignUp>({
     resolver: zodResolver(schemaSignUp),
     defaultValues: {
       first_name: '',
@@ -48,7 +48,7 @@ const FormSignUp = () => {
     onError: onMutateError,
   });
 
-  const handleSignUp: SubmitHandler<SchemaSignUp> = (formData) => {
+  const handleSubmitForm: SubmitHandler<SchemaSignUp> = (formData) => {
     updateProfile({
       first_name: formData?.first_name,
       last_name: formData?.last_name,
@@ -59,7 +59,7 @@ const FormSignUp = () => {
 
   useEffect(() => {
     if (user) {
-      form.reset({
+      signUpForm.reset({
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
         email: user?.email || '',
@@ -73,10 +73,10 @@ const FormSignUp = () => {
   return (
     <VStack className="col-span-2 mx-auto w-full max-w-[426px] rounded-lg" spacing={32}>
       <H4 className="text-neutral-70">Tell us more about yourself</H4>
-      <FormWrapper form={form} onSubmit={handleSignUp} className="flex flex-col gap-[20px]">
+      <FormWrapper form={signUpForm} onSubmit={handleSubmitForm} className="flex flex-col gap-[20px]">
         <TextField
           variant={'outline'}
-          control={form.control}
+          control={signUpForm.control}
           name="first_name"
           required
           label="First name"
@@ -85,7 +85,7 @@ const FormSignUp = () => {
         />
         <TextField
           variant={'outline'}
-          control={form.control}
+          control={signUpForm.control}
           name="last_name"
           required
           label="Last name"
@@ -94,7 +94,7 @@ const FormSignUp = () => {
         />
         <TextField
           variant={'outline'}
-          control={form.control}
+          control={signUpForm.control}
           name="email"
           disabled
           label="Email"
@@ -103,14 +103,14 @@ const FormSignUp = () => {
         />
         <TextField
           variant={'outline'}
-          control={form.control}
+          control={signUpForm.control}
           name="phone"
           label="Phone number"
           className="px-3"
           inputSize={'md'}
         />
         <SelectWithSearchField
-          control={form.control}
+          control={signUpForm.control}
           name="location"
           inputSize={'md'}
           label="Location"

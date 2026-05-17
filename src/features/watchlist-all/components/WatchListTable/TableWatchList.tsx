@@ -31,7 +31,7 @@ const TableWatchList = () => {
   });
   const { data: listUser } = useListAdmin();
 
-  const dataUser = listUser
+  const focusedUsers = listUser
     ?.filter((item) => listEmailFocus.includes(item.email))
     .map((item) => ({
       email: item.email,
@@ -49,20 +49,21 @@ const TableWatchList = () => {
     {
       name: 'list_user_id',
       value:
-        dataUser?.map((c: { user_id: string; user_name: string }) => ({ label: c.user_name, value: c.user_id })) || [],
+        focusedUsers?.map((c: { user_id: string; user_name: string }) => ({ label: c.user_name, value: c.user_id })) ||
+        [],
     },
   ];
 
   useEffect(() => {
-    if (!paramsQuery?.list_user_id && dataUser && dataUser.length > 0) {
+    if (!paramsQuery?.list_user_id && focusedUsers && focusedUsers.length > 0) {
       setParamsQuery((prev) => ({
         ...prev,
-        list_user_id: dataUser.map((user) => user.user_id).join(','),
+        list_user_id: focusedUsers.map((user) => user.user_id).join(','),
       }));
     }
-  }, [dataUser, paramsQuery?.list_user_id]);
+  }, [focusedUsers, paramsQuery?.list_user_id]);
 
-  const columns = listHeaderWatchList?.map((item: any) => {
+  const tableColumns = listHeaderWatchList?.map((item: any) => {
     return {
       title: item.title,
       key: item.key,
@@ -74,6 +75,8 @@ const TableWatchList = () => {
       dataFilter: getDataFilter.find((s) => s.name === item.key)?.value,
     };
   });
+  const hasData = Boolean(data && data?.data?.length !== 0 && !isFetching);
+  const isEmpty = !isFetching && (data?.data?.length === 0 || !data);
 
   return (
     <>
@@ -86,13 +89,13 @@ const TableWatchList = () => {
         <VStack spacing={0} className="my-4">
           <CommonTable
             checkBox={<Checkbox disabled checked={false} />}
-            listHeader={columns}
+            listHeader={tableColumns}
             paramsQuery={paramsQuery}
             setParamsQuery={setParamsQuery}
             bodyComponent={
               <>
-                <TableSkeleton loading={isFetching} col={columns.length + 1} />
-                <Show when={data && data?.data?.length !== 0 && !isFetching}>
+                <TableSkeleton loading={isFetching} col={tableColumns.length + 1} />
+                <Show when={hasData}>
                   {data?.data?.map((item: IWatchListView, index: number) => {
                     return (
                       <RowTableList
@@ -101,7 +104,7 @@ const TableWatchList = () => {
                         key={index}
                         item={item}
                         refetch={refetch}
-                        listHeaderWatchList={columns}
+                        listHeaderWatchList={tableColumns}
                       />
                     );
                   })}
@@ -109,7 +112,7 @@ const TableWatchList = () => {
               </>
             }
             footerComponent={
-              <Show when={data && data?.data?.length !== 0 && !isFetching}>
+              <Show when={hasData}>
                 <TablePagination
                   onPageChange={(page) => setParamsQuery({ ...paramsQuery, page })}
                   onPageSizeChange={(limit) => setParamsQuery({ ...paramsQuery, limit: Number(limit) })}
@@ -119,7 +122,7 @@ const TableWatchList = () => {
             }
           />
 
-          <Show when={!isFetching && (data?.data?.length === 0 || !data)}>
+          <Show when={isEmpty}>
             <Empty />
           </Show>
         </VStack>

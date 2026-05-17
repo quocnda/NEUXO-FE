@@ -23,8 +23,8 @@ const GuestsMetion = ({
   refetch?: () => void;
   icpId?: string;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isRemoveContact, setIsRemoveContact] = useState(false);
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [isRemovingContact, setIsRemovingContact] = useState(false);
   const {
     data,
     isFetching,
@@ -51,37 +51,42 @@ const GuestsMetion = ({
     },
   });
 
-  const handleAddICP = () => {
+  const handleSaveIcp = () => {
     mutate({
       icp_id: String(icpId),
       company_id: String(companyId),
     });
   };
 
-  const handleAddWatch = () => {
+  const handleAddToWatchlist = () => {
     addWatchListMutate(
       { id: String(companyId) },
       {
         onSuccess: () => {
-          handleAddICP();
+          handleSaveIcp();
         },
       }
     );
   };
   return (
     <>
-      <Show when={!isOpen}>
+      <Show when={!isContactFormOpen}>
         <ContactList
-          setIsOpen={setIsOpen}
+          setIsOpen={setIsContactFormOpen}
           data={data}
           isFetching={isFetching}
           refetchContacts={refetchContacts}
-          isRemoveContact={isRemoveContact}
-          setIsRemoveContact={setIsRemoveContact}
+          isRemoveContact={isRemovingContact}
+          setIsRemoveContact={setIsRemovingContact}
         />
       </Show>
-      <Show when={isOpen}>
-        <ContactAddNew isOpen={isOpen} setIsOpen={setIsOpen} companyId={companyId} refetchContacts={refetchContacts} />
+      <Show when={isContactFormOpen}>
+        <ContactAddNew
+          isOpen={isContactFormOpen}
+          setIsOpen={setIsContactFormOpen}
+          companyId={companyId}
+          refetchContacts={refetchContacts}
+        />
       </Show>
       <div className="flex items-center justify-center space-x-2">
         {Array.from({ length: 3 }).map((_, index) => (
@@ -91,7 +96,12 @@ const GuestsMetion = ({
           ></div>
         ))}
       </div>
-      <Button type="submit" onClick={handleAddWatch} className="px-3" disabled={isOpen || isRemoveContact}>
+      <Button
+        type="submit"
+        onClick={handleAddToWatchlist}
+        className="px-3"
+        disabled={isContactFormOpen || isRemovingContact}
+      >
         Add to watchlist
       </Button>
     </>

@@ -21,7 +21,7 @@ import ActionBar from './PopUpAction';
 import RowTableList from './RowTableList';
 
 const TableWatchList = () => {
-  const defaultQuery: IParamsMatchingCompaniesList = {
+  const defaultParams: IParamsMatchingCompaniesList = {
     page: 1,
     limit: 100,
   };
@@ -33,13 +33,13 @@ const TableWatchList = () => {
       const watchListPageSize = localStorage.getItem(`pageSize_${ENUM_PAGE.WATCH_LIST_PAGE}`);
       if (watchListPage && watchListPageSize) {
         return {
-          ...defaultQuery,
+          ...defaultParams,
           page: Number(watchListPage),
           limit: Number(watchListPageSize),
         };
       }
     }
-    return defaultQuery;
+    return defaultParams;
   });
 
   const [isDownloadAll, setIsDownloadAll] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const TableWatchList = () => {
     setIsOpenDropdown(false);
   };
 
-  const getDataFilter = [
+  const filterOptions = [
     {
       name: 'icp_id',
       value: listICP?.map((c: { id: string; icp_name: string }) => ({ label: c.icp_name, value: c.id })) || [],
@@ -99,7 +99,7 @@ const TableWatchList = () => {
     },
   ];
 
-  const columns = listHeaderWatchList?.map((item: any) => {
+  const tableColumns = listHeaderWatchList?.map((item: any) => {
     return {
       title: item.title,
       key: item.key,
@@ -108,9 +108,19 @@ const TableWatchList = () => {
       canFilter: item?.canFilter,
       filter_type: item?.type_filter,
       name_filter: item?.name_filter,
-      dataFilter: getDataFilter.find((s) => s.name === item.key)?.value,
+      dataFilter: filterOptions.find((s) => s.name === item.key)?.value,
     };
   });
+  const hasData = Boolean(data && data?.data?.length !== 0 && !isFetching);
+  const isEmpty = !isFetching && (data?.data?.length === 0 || !data);
+  const handleToggleDownloadAll = (checked: boolean) => {
+    if (checked) {
+      setIsDownloadAll(true);
+      return;
+    }
+    setIsDownloadAll(false);
+    setSelectedIds([]);
+  };
 
   return (
     <>
@@ -127,24 +137,17 @@ const TableWatchList = () => {
           checkBox={
             <Checkbox
               checked={isDownloadAll}
-              onCheckedChange={(e) => {
-                if (e) {
-                  setIsDownloadAll(true);
-                } else {
-                  setIsDownloadAll(false);
-                  setSelectedIds([]);
-                }
-              }}
+              onCheckedChange={(e) => handleToggleDownloadAll(Boolean(e))}
             />
           }
           isPinCheckbox
-          listHeader={columns}
+          listHeader={tableColumns}
           paramsQuery={paramsQuery}
           setParamsQuery={setParamsQuery}
           bodyComponent={
             <>
-              <TableSkeleton loading={isFetching} col={columns.length + 1} />
-              <Show when={data && data?.data?.length !== 0 && !isFetching}>
+              <TableSkeleton loading={isFetching} col={tableColumns.length + 1} />
+              <Show when={hasData}>
                 {data?.data?.map((item: IBodyWatchlist, index: number) => {
                   const validEmails = item?.lst_email.filter(
                     (email) => email !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -157,7 +160,7 @@ const TableWatchList = () => {
                       key={index}
                       item={item}
                       refetch={refetch}
-                      listHeaderWatchList={columns}
+                      listHeaderWatchList={tableColumns}
                       setIsDownloadAll={setIsDownloadAll}
                       isDownloadAll={isDownloadAll}
                       checkExist={checkExist}
@@ -174,7 +177,7 @@ const TableWatchList = () => {
             </>
           }
           footerComponent={
-            <Show when={data && data?.data?.length !== 0 && !isFetching}>
+            <Show when={hasData}>
               <TablePagination
                 onPageChange={(page) => setParamsQuery({ ...paramsQuery, page })}
                 onPageSizeChange={(limit) => {
@@ -187,7 +190,7 @@ const TableWatchList = () => {
             </Show>
           }
         />
-        <Show when={!isFetching && (data?.data?.length === 0 || !data)}>
+        <Show when={isEmpty}>
           <Empty />
         </Show>
       </VStack>

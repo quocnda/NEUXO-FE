@@ -23,8 +23,8 @@ import FormSignUp from './components/FormSignUp';
 
 const SignUpPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { step: stepRouter } = router.query;
-  const [step, setStep] = useState<number>(1);
+  const { step: stepFromQuery } = router.query;
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const { setStore, setIsRole, user, setIsLogin } = useUserStore();
 
   const { mutate } = useMutation(signUpWithGoogle, {
@@ -34,12 +34,12 @@ const SignUpPage: NextPageWithLayout = () => {
       setIsRole(res?.data?.user?.role);
       if (res.data.user.user_name) {
         router.push('/matching-companies');
-      } else setStep(2);
+      } else setCurrentStep(2);
     },
     onError: onMutateError,
   });
 
-  const signUpGoogle = useGoogleLogin({
+  const handleGoogleSignUp = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       mutate({ token_id: tokenResponse.access_token });
     },
@@ -50,24 +50,24 @@ const SignUpPage: NextPageWithLayout = () => {
   });
 
   useEffect(() => {
-    if (stepRouter) {
-      setStep(Number(stepRouter));
+    if (stepFromQuery) {
+      setCurrentStep(Number(stepFromQuery));
     }
-  }, [stepRouter]);
+  }, [stepFromQuery]);
 
   if (user?.user_name) {
     router.push('/matching-companies');
   }
   return (
     <>
-      <Show when={step === 1}>
+      <Show when={currentStep === 1}>
         <VStack className="max-w-auth col-span-2 mx-auto w-full rounded-lg" spacing={32}>
           <Image src={'/images/auth/logo-small.svg'} width={48} height={48} alt="" />
           <H2 className="text-neutral-70">Sign Up</H2>
           <Base3 className="text-neutral-70">Sign up with Open account</Base3>
           <Button
             variant={'secondary'}
-            onClick={() => signUpGoogle()}
+            onClick={() => handleGoogleSignUp()}
             rounded={'md'}
             className="border-neutral-30 flex items-center gap-2 border-2"
           >
@@ -81,7 +81,7 @@ const SignUpPage: NextPageWithLayout = () => {
           </Link>
         </VStack>
       </Show>
-      <Show when={step === 2}>
+      <Show when={currentStep === 2}>
         <FormSignUp />
       </Show>
     </>

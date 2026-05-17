@@ -16,37 +16,56 @@ interface IProps {
 }
 const FilterMatchingCompanies = (props: IProps) => {
   const { paramsQuery, setParamsQuery } = props;
-  const [valueDate, setValueDate] = useState('');
+  const [selectedDatePreset, setSelectedDatePreset] = useState('');
 
-  const updateParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
+  const mergeParamsQuery = (newParams: Partial<IParamsMatchingCompaniesList>) => {
     setParamsQuery((prev) => removeUndefinedKeys({ ...prev, ...newParams }));
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateParamsQuery({ search_key: e.target.value, page: 1 });
+    mergeParamsQuery({ search_key: e.target.value, page: 1 });
   };
 
-  const handleSelectDateToday = () => {
+  const applyTodayDate = () => {
     const today = new Date();
-    setValueDate('today');
-    updateParamsQuery({
+    setSelectedDatePreset('today');
+    mergeParamsQuery({
       start_date: dayjs(today).format('YYYY-MM-DD'),
       end_date: dayjs(today).format('YYYY-MM-DD'),
       page: 1,
     });
   };
-  const handleSelectThisWeek = () => {
-    setValueDate('week');
+  const applyThisWeek = () => {
+    setSelectedDatePreset('week');
     const today = new Date();
     const dayOfWeek = today.getDay();
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
     const endOfWeek = new Date(today);
 
-    updateParamsQuery({
+    mergeParamsQuery({
       start_date: dayjs(startOfWeek).format('YYYY-MM-DD'),
       end_date: dayjs(endOfWeek).format('YYYY-MM-DD'),
       page: 1,
     });
+  };
+
+  const handleDatePresetChange = (value: string) => {
+    switch (value) {
+      case 'today':
+        applyTodayDate();
+        break;
+      case 'week':
+        applyThisWeek();
+        break;
+      default:
+        setSelectedDatePreset('');
+        mergeParamsQuery({
+          start_date: '',
+          end_date: '',
+          page: 1,
+        });
+        break;
+    }
   };
 
   return (
@@ -67,26 +86,8 @@ const FilterMatchingCompanies = (props: IProps) => {
       <HStack>
         <Select
           key={dateOptions?.[0]?.value}
-          value={valueDate}
-          onValueChange={(e) => {
-            switch (e) {
-              case 'today':
-                handleSelectDateToday();
-                break;
-              case 'week':
-                handleSelectThisWeek();
-                break;
-
-              default:
-                setValueDate('');
-                updateParamsQuery({
-                  start_date: '',
-                  end_date: '',
-                  page: 1,
-                });
-                break;
-            }
-          }}
+          value={selectedDatePreset}
+          onValueChange={handleDatePresetChange}
         >
           <SelectTrigger
             className={cn(

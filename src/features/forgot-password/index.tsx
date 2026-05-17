@@ -13,7 +13,7 @@ import VerifyCode from './components/VerifyCode';
 
 const ForgotPassword: NextPageWithLayout = () => {
   const { isLoggedIn } = useAuth();
-  const [step, setStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1);
   const router = useRouter();
   if (isLoggedIn) {
     router.push('/matching-companies');
@@ -25,13 +25,13 @@ const ForgotPassword: NextPageWithLayout = () => {
           Already a member? <span className="text-neutral-70 cursor-pointer">Sign in</span>
         </Caption1>
       </div>
-      <Show when={step === 1}>
-        <EmailReset setStep={setStep} />
+      <Show when={currentStep === 1}>
+        <EmailReset setStep={setCurrentStep} />
       </Show>
-      <Show when={step === 2}>
-        <VerifyCode setStep={setStep} />
+      <Show when={currentStep === 2}>
+        <VerifyCode setStep={setCurrentStep} />
       </Show>
-      <Show when={step === 3}>
+      <Show when={currentStep === 3}>
         <CreatePassword />
       </Show>
     </>

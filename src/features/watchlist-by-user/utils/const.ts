@@ -1,6 +1,6 @@
 import { typeHeaderTable } from '@/utils/const';
 
-export const listHeaderWatchList = [
+const watchlistHeaders = [
   {
     title: 'company',
     type: typeHeaderTable.DATA,
@@ -50,6 +50,8 @@ export const listHeaderWatchList = [
     type: typeHeaderTable.DATA,
   },
 ];
+
+export const listHeaderWatchList = watchlistHeaders;
 
 export const tabNewsWatchList = [
   {

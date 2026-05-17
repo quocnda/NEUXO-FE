@@ -17,17 +17,14 @@ export const listHeaderWatchList = [
   },
   {
     title: 'action',
-    // key: 'action',
     type: typeHeaderTable.DATA,
   },
   {
     title: 'link',
-    // key: 'link',
     type: typeHeaderTable.DATA,
   },
   {
     title: 'news',
-    // key: 'news',
     type: typeHeaderTable.DATA,
   },
   {
@@ -65,11 +62,6 @@ export const listHeaderWatchList = [
     title: 'insert_time',
     type: typeHeaderTable.DATA,
   },
-  // {
-  //   title: 'progress_updated',
-  //   key: 'progress_updated',
-  //   type: typeHeaderTable.DATA,
-  // },
 ];
 
 export const tabNewsWatchList = [

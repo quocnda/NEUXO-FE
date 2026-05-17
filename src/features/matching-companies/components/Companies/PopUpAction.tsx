@@ -37,9 +37,9 @@ const ActionBar = ({
   const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
   const [isOpenModalLoginEmail, setIsOpenModalLoginEmail] = useState(false);
 
-  const listEmailAction = isListContactEmail.filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  const validEmails = isListContactEmail.filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
 
-  const { mutate } = useMutation(checkEmailAutomate, {
+  const { mutate: checkAutomateEmail } = useMutation(checkEmailAutomate, {
     onSuccess: (res) => {
       if (res?.message === 'Success') {
         setIsOpenModalAutomateEmail(true);
@@ -70,13 +70,13 @@ const ActionBar = ({
           <HStack spacing={8}>
             <Show when={!user?.has_mail_app_pass}>
               <ModalLoginEmail setIsOpen={setIsOpenModalLoginEmail} isOpen={isOpenModalLoginEmail}>
-                <Button className="flex h-10 items-center gap-2 text-xs" disabled={listEmailAction.length === 0}>
+                <Button className="flex h-10 items-center gap-2 text-xs" disabled={validEmails.length === 0}>
                   Send Email
                   <Mail size={18} />
                 </Button>
               </ModalLoginEmail>
               <ModalLoginEmail setIsOpen={setIsOpenModalLoginEmail} isOpen={isOpenModalLoginEmail}>
-                <Button className="flex h-10 items-center gap-2 text-xs" disabled={listEmailAction.length === 0}>
+                <Button className="flex h-10 items-center gap-2 text-xs" disabled={validEmails.length === 0}>
                   Automate Email
                   <SendHorizonal size={18} />
                 </Button>
@@ -86,18 +86,18 @@ const ActionBar = ({
               <ModalSentMail
                 setIsOpenSendEmail={setIsOpenSendEmail}
                 isOpenSendEmail={isOpenSendEmail}
-                contact_email={listEmailAction}
+                contact_email={validEmails}
                 event_id={selectedIds}
               >
-                <Button className="flex h-10 items-center gap-2 text-xs" disabled={listEmailAction.length === 0}>
+                <Button className="flex h-10 items-center gap-2 text-xs" disabled={validEmails.length === 0}>
                   Send Email
                   <Mail size={18} />
                 </Button>
               </ModalSentMail>
               <Button
-                onClick={() => mutate(listEmailAction)}
+                onClick={() => checkAutomateEmail(validEmails)}
                 className="flex h-10 items-center gap-2 text-xs"
-                disabled={listEmailAction.length === 0}
+                disabled={validEmails.length === 0}
               >
                 Automate Email
                 <SendHorizonal size={18} />

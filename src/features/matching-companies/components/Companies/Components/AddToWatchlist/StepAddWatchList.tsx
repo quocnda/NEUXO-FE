@@ -17,41 +17,46 @@ interface IStepAddWatchListProps {
   refetch?: () => void;
 }
 const StepAddWatchList: FCC<IStepAddWatchListProps> = ({ children, companyId, isOpen, setIsOpen, refetch }) => {
-  const [active, setActive] = useState(1);
+  const [activeStep, setActiveStep] = useState(1);
   const [icpId, setIcpId] = useState('');
-  const handleToggle = () => {
-    setActive(1);
+  const toggleDialog = () => {
+    setActiveStep(1);
     setIsOpen?.(!isOpen);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleToggle}>
-      <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
+    <Dialog open={isOpen} onOpenChange={toggleDialog}>
+      <DialogTrigger onClick={toggleDialog} asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
       <DialogContent className="flex max-h-[90vh] max-w-xl flex-col overflow-auto sm:max-h-[95vh]">
         <DialogHeader>
           <DialogTitle>
-            <Tag classNameContent="text-xl">{active === 3 ? 'Contact' : 'Company Information'}</Tag>
+            <Tag classNameContent="text-xl">{activeStep === 3 ? 'Contact' : 'Company Information'}</Tag>
           </DialogTitle>
         </DialogHeader>
-        <Show when={active === 1}>
-          <CompanyInfomation active={active} setActive={setActive} handleToggle={handleToggle} companyId={companyId} />
+        <Show when={activeStep === 1}>
+          <CompanyInfomation
+            active={activeStep}
+            setActive={setActiveStep}
+            handleToggle={toggleDialog}
+            companyId={companyId}
+          />
         </Show>
-        <Show when={active === 2}>
+        <Show when={activeStep === 2}>
           <AddICP
             companyId={companyId}
-            active={active}
-            setActive={setActive}
-            handleToggle={handleToggle}
+            active={activeStep}
+            setActive={setActiveStep}
+            handleToggle={toggleDialog}
             setIcpId={setIcpId}
           />
         </Show>
-        <Show when={active === 3}>
+        <Show when={activeStep === 3}>
           <GuestsMetion
             companyId={companyId}
-            active={active}
-            handleToggle={handleToggle}
+            active={activeStep}
+            handleToggle={toggleDialog}
             refetch={refetch}
             icpId={icpId}
           />

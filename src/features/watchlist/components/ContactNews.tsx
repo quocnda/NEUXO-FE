@@ -76,6 +76,7 @@ const ContactNews = (props: IProps) => {
       ?.flatMap((page: any) => page.data)
       ?.filter((item: any) => !item?.is_read)
       ?.map((item: any) => item.id) || [];
+  const isEmpty = dataNews?.pages[0]?.data?.length === 0;
 
   useEffect(() => {
     if (unseenNewsIds.length > 0 && unseenNewsIds.join(',') !== prevUnseenNewsIds.current.join(',')) {
@@ -108,7 +109,7 @@ const ContactNews = (props: IProps) => {
               </div>
             </div>
           </Show>
-          <Show when={dataNews?.pages[0]?.data?.length === 0}>
+          <Show when={isEmpty}>
             <div className="my-2 mb-5 flex items-center justify-center">
               <Empty content="There are no news recently" />
             </div>

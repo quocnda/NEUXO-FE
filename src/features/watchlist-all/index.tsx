@@ -8,7 +8,7 @@ import withAuth from '@/lib/withAuth';
 import TableWatchList from './components/WatchListTable/TableWatchList';
 
 const WatchListAll = () => {
-  const BREADCRUMB = useMemo(
+  const breadcrumbItems = useMemo(
     () => [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: 'Account Management', type: breadcrumbTypes.link, href: '/account-management' },
@@ -17,7 +17,7 @@ const WatchListAll = () => {
     []
   );
   return (
-    <BreadcrumbLayout data={BREADCRUMB}>
+    <BreadcrumbLayout data={breadcrumbItems}>
       <TableWatchList />
     </BreadcrumbLayout>
   );

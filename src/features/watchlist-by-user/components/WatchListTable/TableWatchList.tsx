@@ -17,24 +17,26 @@ import Filter from './Filter';
 import RowTableList from './RowTableList';
 
 const TableWatchList = () => {
-  const [paramsQuery, setParamsQuery] = useState({});
+  const [queryParams, setQueryParams] = useState({});
   const router = useRouter();
   const { user_id, user_name } = router.query;
   const { data, refetch, isFetching } = useListWatchListView({
     variables: {
-      ...paramsQuery,
+      ...queryParams,
       id: String(user_id),
     },
     refetchOnMount: true,
     enabled: !!user_id,
   });
+  const hasData = Boolean(data && data?.length !== 0 && !isFetching);
+  const isEmpty = !isFetching && (data?.length === 0 || !data);
 
   return (
     <>
       <Wrapper>
         <HStack pos={'apart'} spacing={8}>
           <Tag className="bg-secondary-purple">Watchlist: {user_name}</Tag>
-          <Filter setParamsQuery={setParamsQuery} paramsQuery={paramsQuery} />
+          <Filter setParamsQuery={setQueryParams} paramsQuery={queryParams} />
         </HStack>
         <VStack spacing={0} className="my-4">
           <CommonTable
@@ -43,7 +45,7 @@ const TableWatchList = () => {
             bodyComponent={
               <>
                 <TableSkeleton loading={isFetching} col={listHeaderWatchList.length + 1} />
-                <Show when={data && data?.length !== 0 && !isFetching}>
+                <Show when={hasData}>
                   {data?.map((item: IWatchListView, index: number) => {
                     return (
                       <RowTableList
@@ -62,7 +64,7 @@ const TableWatchList = () => {
             footerComponent={<></>}
           />
 
-          <Show when={!isFetching && (data?.length === 0 || !data)}>
+          <Show when={isEmpty}>
             <Empty />
           </Show>
         </VStack>

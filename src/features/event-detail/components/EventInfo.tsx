@@ -14,6 +14,34 @@ interface IProps {
   loading: boolean;
 }
 const EventInfo = ({ data, loading }: IProps) => {
+  const socialLinks = [
+    {
+      Icon: Instagram,
+      url: data?.instagram_url ?? '',
+      size: 14,
+    },
+    {
+      Icon: Icons.xTwitter,
+      url: data?.twitter_url ?? '',
+      size: 10,
+    },
+    {
+      Icon: Youtube,
+      url: data?.youtube_url ?? '',
+      size: 16,
+    },
+    {
+      Icon: Icons.linkedin,
+      url: data?.linkedin_url ?? '',
+      size: 14,
+    },
+    {
+      Icon: Icons.website,
+      url: data?.website ?? '',
+      size: 14,
+    },
+  ];
+
   return (
     <div className="flex items-start gap-6">
       <div className="mt-1">
@@ -35,47 +63,11 @@ const EventInfo = ({ data, loading }: IProps) => {
           </SkeletonWrapper>
           <SkeletonWrapper loading={loading}>
             <HStack spacing={8}>
-              {renderIcon(
-                Instagram,
-                data?.instagram_url ?? '',
-                () => window.open(data?.instagram_url, '_blank'),
-                false,
-                14,
-                14
-              )}
-              {renderIcon(
-                Icons.xTwitter,
-                data?.twitter_url ?? '',
-                () => window.open(data?.twitter_url, '_blank'),
-                false,
-                10,
-                10
-              )}
-
-              {renderIcon(
-                Youtube,
-                data?.youtube_url ?? '',
-                () => window.open(data?.youtube_url, '_blank'),
-                false,
-                16,
-                16
-              )}
-              {renderIcon(
-                Icons.linkedin,
-                data?.linkedin_url ?? '',
-                () => window.open(data?.linkedin_url, '_blank'),
-                false,
-                14,
-                14
-              )}
-              {renderIcon(
-                Icons.website,
-                data?.website ?? '',
-                () => window.open(data?.website, '_blank'),
-                false,
-                14,
-                14
-              )}
+              {socialLinks.map(({ Icon, url, size }, index) => (
+                <React.Fragment key={`${url}-${size}-${index}`}>
+                  {renderIcon(Icon, url, () => window.open(url, '_blank'), false, size, size)}
+                </React.Fragment>
+              ))}
             </HStack>
           </SkeletonWrapper>
         </HStack>

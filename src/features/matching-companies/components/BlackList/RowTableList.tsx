@@ -42,7 +42,7 @@ const RowTableList = ({
   const isChecked = checkExist !== undefined || isDownloadAll;
   const [companyId, setCompanyId] = useState<string>('');
 
-  const renderColumnContent = useCallback(
+  const renderCell = useCallback(
     (column: any) => {
       switch (column?.title) {
         case 'company':
@@ -150,6 +150,15 @@ const RowTableList = ({
     [item, companyId]
   );
 
+  const handleRowCheck = (checked: boolean) => {
+    setIsDownloadAll(false);
+    if (checked) {
+      setSelectedIds([...selectedIds, item?.id]);
+      return;
+    }
+    setSelectedIds(selectedIds?.filter((s) => s !== item?.id));
+  };
+
   return (
     <RowTable rowClassName={cn(isChecked && 'bg-blue-50 hover:bg-blue-50')}>
       <ItemRowTable
@@ -159,14 +168,7 @@ const RowTableList = ({
       >
         <Checkbox
           checked={isChecked}
-          onCheckedChange={(e: any) => {
-            setIsDownloadAll(false);
-            if (e) {
-              setSelectedIds([...selectedIds, item?.id]);
-            } else {
-              setSelectedIds(selectedIds?.filter((s) => s !== item?.id));
-            }
-          }}
+          onCheckedChange={(e: any) => handleRowCheck(!!e)}
         />
       </ItemRowTable>
       {columns?.map((column: any, i: number) => {
@@ -174,14 +176,14 @@ const RowTableList = ({
           <ItemRowTable
             indexRow={indexRow}
             tableLength={tableLength}
-            key={i}
+            key={column?.title || i}
             className={cn(
               column.pin &&
                 'bg-neutral-10 relative z-10 border-l-0 border-r-0 before:absolute before:right-0 before:top-0 before:h-full before:w-[8px] before:shadow-[3px_0px_4.1px_0px_#0000000F]',
               column.pin
             )}
           >
-            {renderColumnContent(column)}
+            {renderCell(column)}
           </ItemRowTable>
         );
       })}

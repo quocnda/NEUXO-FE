@@ -31,14 +31,31 @@ const TabelCompanyBlackList = () => {
   });
 
   useEffect(() => {
-    const temp: any[] = [];
+    const updatedSelection: any[] = [];
     if (isDownloadAll) {
-      data?.data?.map((s: IBodyBlackList) => temp.push(s.id));
+      data?.data?.map((s: IBodyBlackList) => updatedSelection.push(s.id));
     } else {
-      selectedIds.map((s: any) => temp.push(s));
+      selectedIds.map((s: any) => updatedSelection.push(s));
     }
-    setSelectedIds(temp);
+    setSelectedIds(updatedSelection);
   }, [isDownloadAll, data]);
+
+  const handleSelectAllChange = (checked: boolean) => {
+    if (checked) {
+      setIsDownloadAll(true);
+      return;
+    }
+    setIsDownloadAll(false);
+    setSelectedIds([]);
+  };
+
+  const handlePageChange = (page: number) => {
+    setParamsQuery({ ...paramsQuery, page });
+  };
+
+  const handlePageSizeChange = (limit: number | string) => {
+    setParamsQuery({ ...paramsQuery, limit: Number(limit) });
+  };
 
   const columns = listHeaderCourse
     ?.filter((item: any) => item.title !== 'action')
@@ -60,14 +77,7 @@ const TabelCompanyBlackList = () => {
           checkBox={
             <Checkbox
               checked={isDownloadAll}
-              onCheckedChange={(e) => {
-                if (e) {
-                  setIsDownloadAll(true);
-                } else {
-                  setIsDownloadAll(false);
-                  setSelectedIds([]);
-                }
-              }}
+              onCheckedChange={(e) => handleSelectAllChange(!!e)}
             />
           }
           listHeader={columns || listHeaderCourse}
@@ -103,8 +113,8 @@ const TabelCompanyBlackList = () => {
           footerComponent={
             <Show when={data && data?.data?.length !== 0 && !isFetching}>
               <TablePagination
-                onPageChange={(page) => setParamsQuery({ ...paramsQuery, page })}
-                onPageSizeChange={(limit) => setParamsQuery({ ...paramsQuery, limit: Number(limit) })}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
                 pagination={{ ...data?.pagination, current_page: paramsQuery.page, limit: paramsQuery.limit }}
               />
             </Show>

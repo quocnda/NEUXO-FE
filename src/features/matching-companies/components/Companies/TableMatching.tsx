@@ -23,7 +23,7 @@ import SideBarSearch from './Components/filter/FilterSideBar/SideBarSearch';
 import ActionBar from './PopUpAction';
 import RowTableList from './RowTableList';
 
-const defaultCompanySize = [
+const DEFAULT_COMPANY_SIZE = [
   {
     value: '2-10',
     label: '2-10',
@@ -38,13 +38,13 @@ const defaultCompanySize = [
   },
 ];
 
-const TableMatching = () => {
-  const defaultQuery: IParamsMatchingCompaniesList = {
-    page: 1,
-    limit: 100,
-    orderByVal: 'DESC',
-  };
+const DEFAULT_QUERY: IParamsMatchingCompaniesList = {
+  page: 1,
+  limit: 100,
+  orderByVal: 'DESC',
+};
 
+const TableMatching = () => {
   const [paramsQuery, setParamsQuery] = useState<IParamsMatchingCompaniesList>(() => {
     const isLocalStorageAvailable = typeof localStorage !== 'undefined';
     if (isLocalStorageAvailable) {
@@ -52,13 +52,13 @@ const TableMatching = () => {
       const companyPageSize = localStorage.getItem(`pageSize_${ENUM_PAGE.MATCHING_COMPANIES_PAGE}`);
       if (companyPage || companyPageSize) {
         return {
-          ...defaultQuery,
+          ...DEFAULT_QUERY,
           page: Number(companyPage) || 1,
           limit: Number(companyPageSize) || 100,
         };
       }
     }
-    return defaultQuery;
+    return DEFAULT_QUERY;
   });
 
   const [valueDate, setValueDate] = useState<string>('');
@@ -150,10 +150,29 @@ const TableMatching = () => {
 
   useEffect(() => {
     setSelectedValues({
-      company_size: defaultCompanySize,
+      company_size: DEFAULT_COMPANY_SIZE,
     });
-    setParamsQuery({ ...paramsQuery, company_size: defaultCompanySize.map((c) => c.value).join(',') });
+    setParamsQuery({ ...paramsQuery, company_size: DEFAULT_COMPANY_SIZE.map((c) => c.value).join(',') });
   }, []);
+
+  const handleSelectAllChange = (checked: boolean) => {
+    if (checked) {
+      setIsDownloadAll(true);
+      return;
+    }
+    setIsDownloadAll(false);
+    setSelectedIds([]);
+    setIsListContactEmail([]);
+  };
+
+  const handlePageChange = (page: number) => {
+    setParamsQuery({ ...paramsQuery, page });
+  };
+
+  const handlePageSizeChange = (limit: number | string) => {
+    setParamsQuery({ ...paramsQuery, limit: Number(limit) });
+    localStorage.setItem(`pageSize_${ENUM_PAGE.MATCHING_COMPANIES_PAGE}`, String(limit));
+  };
 
   return (
     <>
@@ -185,15 +204,7 @@ const TableMatching = () => {
             checkBox={
               <Checkbox
                 checked={isDownloadAll}
-                onCheckedChange={(e) => {
-                  if (e) {
-                    setIsDownloadAll(true);
-                  } else {
-                    setIsDownloadAll(false);
-                    setSelectedIds([]);
-                    setIsListContactEmail([]);
-                  }
-                }}
+                onCheckedChange={(e) => handleSelectAllChange(!!e)}
               />
             }
             isPinCheckbox
@@ -242,11 +253,8 @@ const TableMatching = () => {
             footerComponent={
               <Show when={data && data?.data?.length !== 0 && !isFetching}>
                 <TablePagination
-                  onPageChange={(page) => setParamsQuery({ ...paramsQuery, page })}
-                  onPageSizeChange={(limit) => {
-                    setParamsQuery({ ...paramsQuery, limit: Number(limit) });
-                    localStorage.setItem(`pageSize_${ENUM_PAGE.MATCHING_COMPANIES_PAGE}`, limit);
-                  }}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
                   pagination={{ ...data?.pagination, current_page: paramsQuery.page, limit: paramsQuery.limit }}
                   pageNameLocalStorage={ENUM_PAGE.MATCHING_COMPANIES_PAGE}
                 />

@@ -18,11 +18,11 @@ interface IModalReNameFilterProps {
 }
 const ModalReNameFilter: FCC<IModalReNameFilterProps> = ({ children, setIsDataCustomFilter, isDataCustomFilter }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [value, setValue] = useState<string>(isDataCustomFilter?.filter_name);
+  const [filterName, setFilterName] = useState<string>(isDataCustomFilter?.filter_name);
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation(creatFilter, {
     onSuccess: () => {
-      setIsDataCustomFilter((prev) => ({ ...prev, filter_name: value }));
+      setIsDataCustomFilter((prev) => ({ ...prev, filter_name: filterName }));
       toast.success('Updated successfully!');
 
       queryClient.refetchQueries(['/custom-filter/list']);
@@ -40,7 +40,7 @@ const ModalReNameFilter: FCC<IModalReNameFilterProps> = ({ children, setIsDataCu
     }
     mutate({
       id: isDataCustomFilter?.id,
-      filter_name: value,
+      filter_name: filterName,
       filter: filteredValues,
     });
   };
@@ -62,15 +62,15 @@ const ModalReNameFilter: FCC<IModalReNameFilterProps> = ({ children, setIsDataCu
           <Input
             variant={'outline'}
             placeholder="Enter Search Name"
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
+            onChange={(e) => setFilterName(e.target.value)}
+            value={filterName}
           />
         </VStack>
         <HStack pos={'apart'} noWrap>
           <Button onClick={handleToggle} variant={'outline'} fullWidth>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={!value} loading={isLoading} fullWidth>
+          <Button onClick={handleSubmit} disabled={!filterName} loading={isLoading} fullWidth>
             Save
           </Button>
         </HStack>

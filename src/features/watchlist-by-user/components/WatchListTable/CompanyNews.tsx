@@ -18,10 +18,10 @@ interface IProps {
 }
 const CompanyNews = (props: IProps) => {
   const { companyId } = props;
-  const [paramsQuery] = useState<{ filter: string }>();
+  const [queryParams] = useState<{ filter: string }>();
   const router = useRouter();
   const { id } = router.query;
-  const [valueTag, setValueTag] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const lastItemRef = useRef<HTMLDivElement>(null);
   const {
     data: dataNews,
@@ -30,7 +30,7 @@ const CompanyNews = (props: IProps) => {
     isFetchingNextPage,
   } = useListWatchNewsView({
     variables: {
-      ...paramsQuery,
+      ...queryParams,
       id: String(companyId),
       user_id: String(id),
       offset: 0,
@@ -66,13 +66,14 @@ const CompanyNews = (props: IProps) => {
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const handleSetValueTag = (value: string) => {
-    if (valueTag.includes(value)) {
-      setValueTag((prevState) => prevState.filter((item) => item !== value));
-    } else {
-      setValueTag((prevState) => [...prevState, value]);
+  const toggleTag = (value: string) => {
+    if (selectedTags.includes(value)) {
+      setSelectedTags((prevState) => prevState.filter((item) => item !== value));
+      return;
     }
+    setSelectedTags((prevState) => [...prevState, value]);
   };
+  const isEmpty = dataNews?.pages[0]?.data?.length === 0;
 
   return (
     <>
@@ -82,9 +83,9 @@ const CompanyNews = (props: IProps) => {
             key={index}
             className={cn(
               'text-neutral-40 flex h-8 cursor-pointer items-center justify-center rounded-md bg-white px-2',
-              valueTag.includes(item.value) && 'bg-main text-white'
+              selectedTags.includes(item.value) && 'bg-main text-white'
             )}
-            onClick={() => handleSetValueTag(item.value)}
+            onClick={() => toggleTag(item.value)}
           >
             <Base1 className="text-xs">{item.label}</Base1>
           </div>
@@ -106,7 +107,7 @@ const CompanyNews = (props: IProps) => {
           </div>
         </div>
       </Show>
-      <Show when={dataNews?.pages[0]?.data?.length === 0}>
+      <Show when={isEmpty}>
         <div className="my-2 mb-5 flex items-center justify-center">
           <Empty content="There are no news recently" />
         </div>

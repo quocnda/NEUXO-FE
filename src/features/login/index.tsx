@@ -11,19 +11,19 @@ import LoginForm from './components/LoginForm';
 
 const LoginPage: NextPageWithLayout = () => {
   const { user } = useUserStore();
-  const [step, setStep] = useState<number>(1);
-  const [tokenGoogle, setTokenGoogle] = useState('');
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [googleToken, setGoogleToken] = useState('');
   const router = useRouter();
   if (user?.user_name) {
     router.push('/matching-companies');
   }
   return (
     <>
-      <Show when={step === 1}>
-        <LoginForm setStep={setStep} setTokenGoogle={setTokenGoogle} />
+      <Show when={currentStep === 1}>
+        <LoginForm setStep={setCurrentStep} setTokenGoogle={setGoogleToken} />
       </Show>
-      <Show when={step === 2}>
-        <CheckRedirectSignUp setStep={setStep} tokenGoogle={tokenGoogle} />
+      <Show when={currentStep === 2}>
+        <CheckRedirectSignUp setStep={setCurrentStep} tokenGoogle={googleToken} />
       </Show>
     </>
   );

@@ -17,7 +17,7 @@ const EventDetail = () => {
   const { event_name, event_id } = router.query;
   const { data, isLoading } = useEventParentInfo({ variables: event_id as string, enabled: !!event_id });
 
-  const BREADCRUMB = useMemo(
+  const breadcrumbItems = useMemo(
     () => [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: 'Event', type: breadcrumbTypes.link, href: '/luma-events' },
@@ -26,7 +26,7 @@ const EventDetail = () => {
     [event_name]
   );
   return (
-    <BreadcrumbLayout data={BREADCRUMB}>
+    <BreadcrumbLayout data={breadcrumbItems}>
       <VStack spacing={8}>
         <Wrapper className="px-3">
           <EventInfo data={data} loading={isLoading} />

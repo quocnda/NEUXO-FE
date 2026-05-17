@@ -20,8 +20,8 @@ interface IProps {
 }
 const CompanyNews = (props: IProps) => {
   const { companyId, refetchCount } = props;
-  const [paramsQuery, setParamsQuery] = useState<{ filter: string }>();
-  const [valueTag, setValueTag] = useState<string[]>([]);
+  const [queryParams, setQueryParams] = useState<{ filter: string }>();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const lastItemRef = useRef<HTMLDivElement>(null);
   const prevUnseenNewsIds = useRef<string[]>([]);
   const {
@@ -33,7 +33,7 @@ const CompanyNews = (props: IProps) => {
     isLoading,
   } = useListWatchNews({
     variables: {
-      ...paramsQuery,
+      ...queryParams,
       id: String(companyId),
       offset: 0,
       limit: 5,
@@ -76,12 +76,12 @@ const CompanyNews = (props: IProps) => {
     onError: onMutateError,
   });
 
-  const handleSetValueTag = (value: string) => {
-    if (valueTag.includes(value)) {
-      setValueTag((prevState) => prevState.filter((item) => item !== value));
-    } else {
-      setValueTag((prevState) => [...prevState, value]);
+  const toggleTag = (value: string) => {
+    if (selectedTags.includes(value)) {
+      setSelectedTags((prevState) => prevState.filter((item) => item !== value));
+      return;
     }
+    setSelectedTags((prevState) => [...prevState, value]);
   };
 
   const unseenNewsIds =
@@ -89,10 +89,11 @@ const CompanyNews = (props: IProps) => {
       ?.flatMap((page: any) => page.data)
       ?.filter((item: any) => !item?.is_read)
       ?.map((item: any) => item.id) || [];
+  const isEmpty = dataNews?.pages[0]?.data?.length === 0;
 
   useEffect(() => {
-    setParamsQuery({ filter: valueTag.join(',') });
-  }, [valueTag]);
+    setQueryParams({ filter: selectedTags.join(',') });
+  }, [selectedTags]);
 
   useEffect(() => {
     if (unseenNewsIds.length > 0 && unseenNewsIds.join(',') !== prevUnseenNewsIds.current.join(',')) {
@@ -111,9 +112,9 @@ const CompanyNews = (props: IProps) => {
             key={index}
             className={cn(
               'text-neutral-40 flex h-8 cursor-pointer items-center justify-center rounded-md bg-white px-2',
-              valueTag.includes(item.value) && 'bg-main text-white'
+              selectedTags.includes(item.value) && 'bg-main text-white'
             )}
-            onClick={() => handleSetValueTag(item.value)}
+            onClick={() => toggleTag(item.value)}
           >
             <Base1 className="text-xs">{item.label}</Base1>
           </div>
@@ -140,7 +141,7 @@ const CompanyNews = (props: IProps) => {
                 </div>
               </div>
             </Show>
-            <Show when={dataNews?.pages[0]?.data?.length === 0}>
+            <Show when={isEmpty}>
               <div className="flex items-center justify-center">
                 <Empty content="There are no news recently" />
               </div>

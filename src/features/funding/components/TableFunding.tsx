@@ -14,27 +14,31 @@ import { listHeaderCourse } from '../utils/const';
 import FilterFunding from './FilterFunding';
 import RowTableList from './RowTableList';
 
+const DEFAULT_QUERY: IParamsMatchingCompaniesList = {
+  page: 1,
+  limit: 100,
+  orderByVal: 'DESC',
+};
+
+const getInitialQueryFromStorage = (): IParamsMatchingCompaniesList => {
+  if (typeof localStorage === 'undefined') return DEFAULT_QUERY;
+
+  const fundingPage = localStorage.getItem(ENUM_PAGE.FUNDING_PAGE);
+  const fundingPageSize = localStorage.getItem(`pageSize_${ENUM_PAGE.FUNDING_PAGE}`);
+
+  if (fundingPage || fundingPageSize) {
+    return {
+      ...DEFAULT_QUERY,
+      page: Number(fundingPage) || 1,
+      limit: Number(fundingPageSize) || 100,
+    };
+  }
+
+  return DEFAULT_QUERY;
+};
+
 const TableFunding = () => {
-  const defaultQuery: IParamsMatchingCompaniesList = {
-    page: 1,
-    limit: 100,
-    orderByVal: 'DESC',
-  };
-  const [paramsQuery, setParamsQuery] = useState<IParamsMatchingCompaniesList>(() => {
-    const isLocalStorageAvailable = typeof localStorage !== 'undefined';
-    if (isLocalStorageAvailable) {
-      const fundingPage = localStorage.getItem(ENUM_PAGE.FUNDING_PAGE);
-      const fundingPageSize = localStorage.getItem(`pageSize_${ENUM_PAGE.FUNDING_PAGE}`);
-      if (fundingPage || fundingPageSize) {
-        return {
-          ...defaultQuery,
-          page: Number(fundingPage) || 1,
-          limit: Number(fundingPageSize) || 100,
-        };
-      }
-    }
-    return defaultQuery;
-  });
+  const [paramsQuery, setParamsQuery] = useState<IParamsMatchingCompaniesList>(getInitialQueryFromStorage());
   const { data, isFetching, refetch } = useListFunding({ variables: paramsQuery, refetchOnMount: true });
   const { data: metaDataFunding } = useListMetaDateFunding();
 

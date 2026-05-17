@@ -14,28 +14,31 @@ import { listHeaderLinkedinJob } from '../utils/const';
 import FilterLinkedinJob from './FilterLinkedinJob';
 import RowTableList from './RowTableList';
 
-const TableLinkedinJob = () => {
-  const defaultQuery: IParamsMatchingCompaniesList = {
-    page: 1,
-    limit: 100,
-    orderByVal: 'DESC',
-  };
+const DEFAULT_QUERY: IParamsMatchingCompaniesList = {
+  page: 1,
+  limit: 100,
+  orderByVal: 'DESC',
+};
 
-  const [paramsQuery, setParamsQuery] = useState<IParamsMatchingCompaniesList>(() => {
-    const isLocalStorageAvailable = typeof localStorage !== 'undefined';
-    if (isLocalStorageAvailable) {
-      const jobPage = localStorage.getItem(ENUM_PAGE.LINKEDIN_JOB_PAGE);
-      const jobPageSize = localStorage.getItem(`pageSize_${ENUM_PAGE.LINKEDIN_JOB_PAGE}`);
-      if (jobPage || jobPageSize) {
-        return {
-          ...defaultQuery,
-          page: Number(jobPage) || 1,
-          limit: Number(jobPageSize) || 100,
-        };
-      }
-    }
-    return defaultQuery;
-  });
+const getInitialQueryFromStorage = (): IParamsMatchingCompaniesList => {
+  if (typeof localStorage === 'undefined') return DEFAULT_QUERY;
+
+  const jobPage = localStorage.getItem(ENUM_PAGE.LINKEDIN_JOB_PAGE);
+  const jobPageSize = localStorage.getItem(`pageSize_${ENUM_PAGE.LINKEDIN_JOB_PAGE}`);
+
+  if (jobPage || jobPageSize) {
+    return {
+      ...DEFAULT_QUERY,
+      page: Number(jobPage) || 1,
+      limit: Number(jobPageSize) || 100,
+    };
+  }
+
+  return DEFAULT_QUERY;
+};
+
+const TableLinkedinJob = () => {
+  const [paramsQuery, setParamsQuery] = useState<IParamsMatchingCompaniesList>(getInitialQueryFromStorage());
   const { data, isFetching, refetch } = useListLinkedinJob({ variables: paramsQuery, refetchOnMount: true });
   const { data: metaDataHiring } = useListMetaDateHiring();
 

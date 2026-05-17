@@ -27,7 +27,7 @@ const LoginForm = ({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setTokenGoogle: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const form = useForm<LoginSchema>({
+  const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: '',
@@ -38,7 +38,7 @@ const LoginForm = ({
 
   const { handleSubmit, isLoading, mutateLoginGoogle } = useServices(setStep);
 
-  const login2 = useGoogleLogin({
+  const handleGoogleSignIn = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       await mutateLoginGoogle({ token_id: tokenResponse.access_token });
       setTokenGoogle(tokenResponse.access_token);
@@ -56,7 +56,7 @@ const LoginForm = ({
         <H2 className="text-neutral-70">Sign In</H2>
         <Base3 className="text-neutral-70"></Base3>
         <Button
-          onClick={() => login2()}
+          onClick={() => handleGoogleSignIn()}
           variant={'secondary'}
           rounded={'md'}
           className="border-neutral-30 flex items-center gap-2 border-2"
@@ -64,18 +64,18 @@ const LoginForm = ({
           <Icons.google1 size={18} /> <span className="text-[15px] font-bold leading-6">Sign in with Google</span>
         </Button>
         <Separator className="h-[2px]" />
-        <FormWrapper form={form} onSubmit={handleSubmit}>
+        <FormWrapper form={loginForm} onSubmit={handleSubmit}>
           <div className="flex flex-col gap-[20px]">
             <div className="flex flex-col gap-3">
               <TextField
-                control={form.control}
+                control={loginForm.control}
                 name="username"
                 placeholder="Your email"
                 className="pl-12"
                 suffix={<Mail size={23} />}
               />
               <TextField
-                control={form.control}
+                control={loginForm.control}
                 type="password"
                 name="password"
                 placeholder="Password"

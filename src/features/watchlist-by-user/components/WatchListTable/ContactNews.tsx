@@ -36,6 +36,7 @@ const ContactNews = (props: IProps) => {
     cacheTime: 0,
     enabled: !!companyId,
   });
+  const isEmpty = dataNews?.pages[0]?.data?.length === 0;
 
   useEffect(() => {
     if (!lastItemRef.current || !hasNextPage || isFetchingNextPage) return;
@@ -79,7 +80,7 @@ const ContactNews = (props: IProps) => {
           </div>
         </div>
       </Show>
-      <Show when={dataNews?.pages[0]?.data?.length === 0}>
+      <Show when={isEmpty}>
         <div className="my-2 mb-5 flex items-center justify-center">
           <Empty content="There are no news recently" />
         </div>

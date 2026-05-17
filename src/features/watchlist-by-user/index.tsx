@@ -11,7 +11,7 @@ import TableWatchList from './components/WatchListTable/TableWatchList';
 const WatchListByUserPage = () => {
   const router = useRouter();
   const { user_name } = router.query;
-  const BREADCRUMB = useMemo(
+  const breadcrumbItems = useMemo(
     () => [
       { label: <Icons.folderOpen width={20} height={20} />, type: breadcrumbTypes.page },
       { label: 'Account Management', type: breadcrumbTypes.link, href: '/account-management' },
@@ -20,7 +20,7 @@ const WatchListByUserPage = () => {
     [user_name]
   );
   return (
-    <BreadcrumbLayout data={BREADCRUMB}>
+    <BreadcrumbLayout data={breadcrumbItems}>
       <TableWatchList />
     </BreadcrumbLayout>
   );

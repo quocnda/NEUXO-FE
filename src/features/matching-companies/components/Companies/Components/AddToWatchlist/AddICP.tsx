@@ -30,7 +30,7 @@ const AddICP = (props: Props) => {
 
   const { data } = useListICPWatchlist();
 
-  const data_list_icp = [
+  const icpOptions = [
     {
       label: 'Please select',
       value: '',
@@ -54,7 +54,7 @@ const AddICP = (props: Props) => {
           name="icp_id"
           label="ICP"
           inputSize="sm"
-          data={data_list_icp}
+          data={icpOptions}
           control={form.control}
           placeholder="Select ICP"
         />

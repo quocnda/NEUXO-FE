@@ -71,7 +71,7 @@ const DraggableColumns = ({ columns, onDragEnd, onToggle }: any) => {
 };
 
 const ToggleColumns = ({ columns, refetch }: any) => {
-  const [customColumns, setCustomColumns] = useState<any[]>([]);
+  const [orderedColumns, setOrderedColumns] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const ToggleColumns = ({ columns, refetch }: any) => {
       .sort((a, b) => (a.order_by ?? 0) - (b.order_by ?? 0))
       .filter((item: any) => item.name !== 'company');
 
-    setCustomColumns(sortedColumns);
+    setOrderedColumns(sortedColumns);
   }, [columns]);
 
   const { mutate } = useMutation(toggleColumnsAction, {
@@ -94,7 +94,7 @@ const ToggleColumns = ({ columns, refetch }: any) => {
   const handleToggleColumns = (item: any) => {
     if (item.name === 'company') return;
 
-    const updatedColumns = customColumns.map((col) =>
+    const updatedColumns = orderedColumns.map((col) =>
       col.name === item.name ? { ...col, is_show: !col.is_show } : col
     );
 
@@ -106,7 +106,7 @@ const ToggleColumns = ({ columns, refetch }: any) => {
       ...updatedColumns,
     ];
 
-    setCustomColumns(updatedColumns);
+    setOrderedColumns(updatedColumns);
 
     mutate({
       name_columns: finalColumns,
@@ -116,7 +116,7 @@ const ToggleColumns = ({ columns, refetch }: any) => {
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
 
-    const reorderedColumns = Array.from(customColumns);
+    const reorderedColumns = Array.from(orderedColumns);
     const [movedItem] = reorderedColumns.splice(result.source.index, 1);
     reorderedColumns.splice(result.destination.index, 0, movedItem);
     const columnsToSend = reorderedColumns.map((item) => ({
@@ -129,7 +129,7 @@ const ToggleColumns = ({ columns, refetch }: any) => {
       },
       ...columnsToSend,
     ];
-    setCustomColumns(reorderedColumns);
+    setOrderedColumns(reorderedColumns);
     mutate({
       name_columns: finalColumns,
     });
@@ -144,7 +144,7 @@ const ToggleColumns = ({ columns, refetch }: any) => {
         </Button>
         {isOpen && (
           <div className="absolute right-0 z-[999] mt-2 w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg">
-            <DraggableColumns columns={customColumns} onDragEnd={handleDragEnd} onToggle={handleToggleColumns} />
+            <DraggableColumns columns={orderedColumns} onDragEnd={handleDragEnd} onToggle={handleToggleColumns} />
           </div>
         )}
       </div>

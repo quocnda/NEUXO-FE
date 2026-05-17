@@ -74,19 +74,19 @@ const RowTableList = ({
   valueDate,
 }: Props) => {
   const router = useRouter();
-  const [valueNote, setValueNote] = useState<string>('');
+  const [noteValue, setNoteValue] = useState<string>('');
   const { addNote } = useServices(refetch);
-  const [isOpenNote, setIsOpenNote] = useState(false);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const isChecked = checkExist !== undefined || isDownloadAll;
-  const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
-  const [contactEmail, setContactEmail] = useState<string[]>([]);
-  const [isOpenModalLoginEmail, setIsOpenModalLoginEmail] = useState(false);
+  const [isSendEmailOpen, setIsSendEmailOpen] = useState(false);
+  const [contactEmails, setContactEmails] = useState<string[]>([]);
+  const [isLoginEmailModalOpen, setIsLoginEmailModalOpen] = useState(false);
   const { user } = useUserStore.getState();
 
-  const labelArray = useMemo(() => item?.label.split(',').map((label) => label.trim()), [item?.label]);
-  const listReachOut = item?.status_mail?.split(',').map((name) => name.trim());
+  const labelList = useMemo(() => item?.label.split(',').map((label) => label.trim()), [item?.label]);
+  const reachOutList = item?.status_mail?.split(',').map((name) => name.trim()) || [];
 
-  const handleClick = useCallback(
+  const handleOpenCompanyDetail = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const queryParams = {
         page: 'matching-companies',
@@ -106,10 +106,10 @@ const RowTableList = ({
         router.push(url);
       }
     },
-    [router, item?.company_id, paramsQuery, valueDate]
+    [router, item?.company_id]
   );
 
-  const renderColumnContent = useCallback(
+  const renderCell = useCallback(
     (column: any) => {
       switch (column?.title) {
         case 'company':
@@ -117,7 +117,7 @@ const RowTableList = ({
             <SheetCompany
               companyName={item?.company}
               avatarUrl={item?.avatar_url}
-              handleClick={handleClick}
+              handleClick={handleOpenCompanyDetail}
               companyId={item?.company_id}
             />
           );
@@ -230,9 +230,9 @@ const RowTableList = ({
                     <div>
                       <ModalSentMail
                         refetch={refetch}
-                        setIsOpenSendEmail={setIsOpenSendEmail}
-                        isOpenSendEmail={isOpenSendEmail}
-                        contact_email={contactEmail}
+                        setIsOpenSendEmail={setIsSendEmailOpen}
+                        isOpenSendEmail={isSendEmailOpen}
+                        contact_email={contactEmails}
                         event_id={[item?.company_id]}
                       >
                         <HStack
@@ -241,7 +241,7 @@ const RowTableList = ({
                             'bg-neutral-20 flex h-6 w-6 cursor-pointer justify-center rounded-full',
                             validEmails.length === 0 && 'pointer-events-none'
                           )}
-                          onClick={() => setContactEmail(validEmails)}
+                          onClick={() => setContactEmails(validEmails)}
                         >
                           <Mail size={12} color="#6F767E" opacity={validEmails.length !== 0 ? 1 : 0.4} />
                         </HStack>
@@ -253,7 +253,7 @@ const RowTableList = ({
               <Show when={!user?.has_mail_app_pass}>
                 <Tooltip label="Send email">
                   <div>
-                    <ModalLoginEmail setIsOpen={setIsOpenModalLoginEmail} isOpen={isOpenModalLoginEmail}>
+                    <ModalLoginEmail setIsOpen={setIsLoginEmailModalOpen} isOpen={isLoginEmailModalOpen}>
                       <HStack
                         spacing={8}
                         className={cn(
@@ -274,8 +274,8 @@ const RowTableList = ({
                     className="bg-neutral-20 flex h-6 w-6 justify-center rounded-full"
                     onClick={() => {
                       setCompanyId(item?.company_id);
-                      setValueNote(item?.note);
-                      setIsOpenNote(true);
+                      setNoteValue(item?.note);
+                      setIsNoteModalOpen(true);
                     }}
                   >
                     <FilePlus size={12} className="cursor-pointer" color={item.note ? '#FFC800' : '#6F767E'} />
@@ -295,9 +295,9 @@ const RowTableList = ({
                       }}
                     >
                       <MessageCircle size={12} className="cursor-pointer" color="#6F767E" />
-                      <Show when={listReachOut.length > 0 && item?.status_mail !== 'Send mail'}>
+                      <Show when={reachOutList.length > 0 && item?.status_mail !== 'Send mail'}>
                         <HStack className="absolute bottom-0 left-4 flex min-h-[14px] w-fit min-w-[14px] items-center justify-center rounded-full bg-red-500 text-white">
-                          <span className="mt-[2px] text-[7px]">{listReachOut.length || 0}</span>
+                          <span className="mt-[2px] text-[7px]">{reachOutList.length || 0}</span>
                         </HStack>
                       </Show>
                     </HStack>
@@ -310,7 +310,7 @@ const RowTableList = ({
         case 'label':
           return (
             <div className="flex items-center gap-3">
-              {labelArray.slice(0, 2).map((label, index) => (
+              {labelList.slice(0, 2).map((label, index) => (
                 <Tooltip
                   key={index}
                   hidden={!(label && label.length > 20)}
@@ -331,16 +331,16 @@ const RowTableList = ({
                 </Tooltip>
               ))}
 
-              {labelArray.length > 2 && (
+              {labelList.length > 2 && (
                 <Tooltip
                   label={
                     <div className="text-grey-600 max-w-[200px] whitespace-pre-wrap rounded-sm px-1.5 text-xs">
-                      {labelArray.slice(2).join(', ')}
+                      {labelList.slice(2).join(', ')}
                     </div>
                   }
                 >
                   <div className="text-grey-500 text-neutral-40 flex h-[24px] items-center justify-center rounded-[6px] border border-[#6F767E66] px-2 text-xs font-medium">
-                    + {labelArray.length - 2}
+                    + {labelList.length - 2}
                   </div>
                 </Tooltip>
               )}
@@ -367,8 +367,19 @@ const RowTableList = ({
           );
       }
     },
-    [companyId, item, contactEmail, isOpenSendEmail, isOpenModalLoginEmail, valueNote]
+    [companyId, item, contactEmails, isSendEmailOpen, isLoginEmailModalOpen, noteValue, handleOpenCompanyDetail]
   );
+
+  const handleRowCheck = (checked: boolean) => {
+    setIsDownloadAll(false);
+    if (checked) {
+      setSelectedIds([...selectedIds, item?.company_id]);
+      setIsListContactEmail([...isListContactEmail, ...item?.lst_email]);
+    } else {
+      setSelectedIds(selectedIds?.filter((s) => s !== item?.company_id));
+      setIsListContactEmail(isListContactEmail.filter((email) => !item?.lst_email.includes(email)));
+    }
+  };
 
   return (
     <>
@@ -380,16 +391,7 @@ const RowTableList = ({
         >
           <Checkbox
             checked={isChecked}
-            onCheckedChange={(e: any) => {
-              setIsDownloadAll(false);
-              if (e) {
-                setSelectedIds([...selectedIds, item?.company_id]);
-                setIsListContactEmail([...isListContactEmail, ...item?.lst_email]);
-              } else {
-                setSelectedIds(selectedIds?.filter((s) => s !== item?.company_id));
-                setIsListContactEmail(isListContactEmail.filter((email) => !item?.lst_email.includes(email)));
-              }
-            }}
+            onCheckedChange={(e: any) => handleRowCheck(!!e)}
           />
         </ItemRowTable>
         {columns?.map((column: any, i: number) => {
@@ -397,29 +399,29 @@ const RowTableList = ({
             <ItemRowTable
               indexRow={indexRow}
               tableLength={tableLength}
-              key={i}
+              key={column?.title || i}
               className={cn(
                 column.pin &&
                   'bg-neutral-10 relative z-10 border-l-0 border-r-0 before:absolute before:right-0 before:top-0 before:h-full before:w-[8px] before:shadow-[3px_0px_4.1px_0px_#0000000F]',
                 column.pin
               )}
             >
-              {renderColumnContent(column)}
+              {renderCell(column)}
             </ItemRowTable>
           );
         })}
       </RowTable>
-      <Show when={isOpenNote}>
+      <Show when={isNoteModalOpen}>
         <ModalAddNote
           addNote={addNote}
           companyId={companyId}
           companyName={item?.company}
-          isOpen={isOpenNote}
-          setIsOpen={setIsOpenNote}
-          valueNote={valueNote}
+          isOpen={isNoteModalOpen}
+          setIsOpen={setIsNoteModalOpen}
+          valueNote={noteValue}
           onSuccess={(newNote) => {
             item.note = newNote;
-            setValueNote(newNote);
+            setNoteValue(newNote);
           }}
         />
       </Show>

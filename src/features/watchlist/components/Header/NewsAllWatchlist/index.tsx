@@ -28,7 +28,7 @@ import ContactNews from './tabs/ContactNews';
 
 const NewsAllWatchlist = () => {
   const [opened, { toggle }] = useDisclosure(false);
-  const [tab, setTab] = useState<number | string>(tabAllNews[0].value);
+  const [activeTab, setActiveTab] = useState<number | string>(tabAllNews[0].value);
   const { data: countNotify, refetch: refetchCount } = useNotificationAll({ refetchOnMount: true });
   const { mutate, isLoading } = useMutation(seenAllNews, {
     onError: onMutateError,
@@ -37,18 +37,21 @@ const NewsAllWatchlist = () => {
       toast.success('Mark all as read successfully!');
     },
   });
+  const hasNotifications = Number(countNotify) > 0;
+  const isCompanyTab = activeTab === 'company';
   const handleSeenAll = () => {
     mutate({
-      type: String(tab),
+      type: String(activeTab),
     });
   };
+  const handleTabChange = (value: number | string) => setActiveTab(value);
   return (
     <>
       <div className="relative" onClick={toggle}>
         <HStack spacing={8} className="bg-main flex h-7 w-7 justify-center rounded-full">
           <Icons.news strokeWidth={2} className={cn('cursor-pointer hover:opacity-60')} width={14} height={14} />
         </HStack>
-        <Show when={countNotify > 0}>
+        <Show when={hasNotifications}>
           <HStack className="absolute -top-1 left-5 flex min-h-[14px] w-fit min-w-[14px] items-center justify-center rounded-full bg-red-500 text-white">
             <span className="mt-[2px] text-[7px]">{countNotify || 0}</span>
           </HStack>
@@ -61,12 +64,12 @@ const NewsAllWatchlist = () => {
             <SheetTitle>
               <div className="relative">
                 <div className="flex items-center gap-2 text-lg font-semibold text-white">
-                  {tab === 'company' ? (
+                  {isCompanyTab ? (
                     <Icons.company color="white" width={18} height={18} />
                   ) : (
                     <Icons.contact color="white" width={18} height={18} />
                   )}
-                  {formatItem(tab as string)}
+                  {formatItem(activeTab as string)}
                 </div>
                 <div className="absolute right-0 top-[20%]">
                   <Show when={isLoading}>
@@ -93,10 +96,8 @@ const NewsAllWatchlist = () => {
               </div>
             </SheetTitle>
             <Tabs
-              onChange={(value) => {
-                setTab(value);
-              }}
-              value={tab}
+              onChange={handleTabChange}
+              value={activeTab}
               data={tabAllNews}
               layoutId="tab-sidebar-searchs"
               className="p-2"
@@ -107,10 +108,10 @@ const NewsAllWatchlist = () => {
           </SheetHeader>
 
           <VStack spacing={24}>
-            <Show when={tab === 'company'}>
+            <Show when={activeTab === 'company'}>
               <CompanyNews refetchCount={refetchCount} />
             </Show>
-            <Show when={tab === 'contact'}>
+            <Show when={activeTab === 'contact'}>
               <ContactNews refetchCount={refetchCount} />
             </Show>
           </VStack>

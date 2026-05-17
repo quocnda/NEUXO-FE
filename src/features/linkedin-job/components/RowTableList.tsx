@@ -21,12 +21,19 @@ import ModalSentMail from '@/features/email-tracking/components/EmailTracking/Mo
 import { useUserStore } from '@/stores';
 import type { TypeItemTable } from '@/types/common.type';
 
+const EMAIL_VALIDATION_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const filterValidEmails = (emails: string[]): string[] => {
+  return emails.filter((email) => email !== '' && EMAIL_VALIDATION_REGEX.test(email));
+};
+
 interface Props extends TypeItemTable {
   item: IDataLinkedinJob;
   refetch?: () => void;
   validEmails: string[];
   paramsQuery: IParamsMatchingCompaniesList;
 }
+
 const RowTableList = ({ indexRow, tableLength, item, refetch, validEmails, paramsQuery }: Props) => {
   const router = useRouter();
   const { user } = useUserStore.getState();
@@ -34,7 +41,7 @@ const RowTableList = ({ indexRow, tableLength, item, refetch, validEmails, param
   const [contactEmail, setContactEmail] = useState<string[]>([]);
   const [isOpenModalLoginEmail, setIsOpenModalLoginEmail] = useState(false);
 
-  const handleClick = useCallback(
+  const handleCompanyClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const url = `/matching-companies/company-detail/${item?.company_id}?page=linkedin-job`;
       if (item?.company_id) {
@@ -49,6 +56,10 @@ const RowTableList = ({ indexRow, tableLength, item, refetch, validEmails, param
     [router, item?.company_id, paramsQuery]
   );
 
+  const handleEmailIconClick = useCallback(() => {
+    setContactEmail(filterValidEmails(item?.lst_email || []));
+  }, [item?.lst_email]);
+
   return (
     <>
       <RowTable>
@@ -57,7 +68,7 @@ const RowTableList = ({ indexRow, tableLength, item, refetch, validEmails, param
             <SheetCompany
               companyName={item?.company}
               avatarUrl={item?.avatar_url}
-              handleClick={handleClick}
+              handleClick={handleCompanyClick}
               companyId={item?.company_id}
             />
           </Show>
@@ -107,11 +118,7 @@ const RowTableList = ({ indexRow, tableLength, item, refetch, validEmails, param
                       'bg-neutral-20 flex h-6 w-6 justify-center rounded-full',
                       validEmails.length === 0 && 'pointer-events-none'
                     )}
-                    onClick={() =>
-                      setContactEmail(
-                        item?.lst_email.filter((email) => email !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-                      )
-                    }
+                    onClick={handleEmailIconClick}
                   >
                     {getIconsEmail(item?.status_mail, user?.user_name, validEmails.length !== 0 ? 1 : 0.4)}
                   </HStack>
