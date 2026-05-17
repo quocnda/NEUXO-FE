@@ -23,7 +23,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[60] bg-black/40',
+      'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[60] bg-black/50 backdrop-blur-[2px]',
       className
     )}
     {...props}
@@ -51,7 +51,7 @@ const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.C
           <DialogPrimitive.Content
             ref={ref}
             className={cn(
-              'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 grid w-full max-w-lg gap-6 bg-white p-6 duration-200 sm:rounded-lg md:w-full',
+              'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 grid w-full max-w-lg gap-8 bg-white p-6 sm:p-8 shadow-2xl ring-1 ring-black/5 duration-300 sm:rounded-2xl md:w-full',
               className
             )}
             {...props}
@@ -79,9 +79,9 @@ const DialogHeader = ({ className, close, closable = true, classNameHeader, ...p
     {closable && (
       <DialogPrimitive.Close
         onClick={close}
-        className="bg-neutral-20 flex h-8 w-8 items-center justify-center rounded-full"
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
       >
-        <X className="h-4 w-4" color="#6B7280" />
+        <X className="h-4 w-4" color="#64748b" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     )}
@@ -90,7 +90,7 @@ const DialogHeader = ({ className, close, closable = true, classNameHeader, ...p
 DialogHeader.displayName = 'DialogHeader';
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...props} />
+  <div className={cn('mt-6 flex flex-col-reverse sm:mt-8 sm:flex-row sm:justify-end sm:space-x-3', className)} {...props} />
 );
 DialogFooter.displayName = 'DialogFooter';
 
@@ -100,7 +100,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold leading-tight tracking-tight', className)}
+    className={cn('text-xl font-semibold leading-tight tracking-tight text-slate-900', className)}
     {...props}
   />
 ));

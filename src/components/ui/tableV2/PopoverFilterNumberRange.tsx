@@ -50,15 +50,15 @@ const PopoverFilterNumberRange = (props: Props) => {
         <div>
           <ListFilter
             size={12}
-            className={cn('cursor-pointer', {
+            className={cn('cursor-pointer text-neutral-400 transition-colors hover:text-neutral-600', {
               'text-blue-600': !!(paramsQuery as any)?.email_count_start && (paramsQuery as any)?.email_count_end,
             })}
           />
         </div>
       </PopoverTrigger>
-      <PopoverContent align="end" className="z-[100] w-[content] rounded-sm border p-2">
+      <PopoverContent align="end" className="z-[100] w-[content] rounded-md border border-neutral-200/70 bg-white p-2 shadow-lg">
         <VStack spacing={8}>
-          <HStack className={cn('cursor-pointer text-blue-600')} spacing={8} onClick={handleClear}>
+          <HStack className={cn('cursor-pointer text-blue-600 hover:text-blue-700')} spacing={8} onClick={handleClear}>
             <div>
               <RefreshCcw size={14} />
             </div>
@@ -76,7 +76,7 @@ const PopoverFilterNumberRange = (props: Props) => {
                   evt.currentTarget.value = evt.currentTarget.value.replace(reGex, '');
                 }
               }}
-              className="max-w-[70px] rounded border px-2 py-1 text-xs"
+              className="max-w-[70px] rounded-md border border-neutral-200/70 px-2 py-1 text-xs text-neutral-700 shadow-sm focus:border-neutral-300"
             />
             <p>-</p>
             <input
@@ -90,7 +90,7 @@ const PopoverFilterNumberRange = (props: Props) => {
                   evt.currentTarget.value = evt.currentTarget.value.replace(reGex, '');
                 }
               }}
-              className="max-w-[70px] rounded border px-2 py-1 text-xs"
+              className="max-w-[70px] rounded-md border border-neutral-200/70 px-2 py-1 text-xs text-neutral-700 shadow-sm focus:border-neutral-300"
             />
           </div>
           <Button className="h-8 w-full text-xs" onClick={handleApply}>

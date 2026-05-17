@@ -45,10 +45,10 @@ const AuthProfile = () => {
   };
 
   return (
-    <div className="pr-10">
+    <div className="pr-6">
       <Popover open={isOpen} onOpenChange={handleToggle}>
         <PopoverTrigger asChild>
-          <HStack className="cursor-pointer hover:opacity-90" spacing={12}>
+          <HStack className="cursor-pointer rounded-lg px-2 py-1 hover:bg-neutral-10" spacing={12}>
             <Avatar
               src={user?.avatar?.file_path || '/images/no-avatar-user.png'}
               style={{ width: '38px', height: '38px' }}
@@ -62,11 +62,11 @@ const AuthProfile = () => {
           </HStack>
         </PopoverTrigger>
 
-        <PopoverContent className="mr-2 flex w-[content] flex-col gap-3 rounded-xl p-4 shadow-[32px_0px_32px_0px_#0000001A]">
+        <PopoverContent className="mr-2 flex w-[content] flex-col gap-2 rounded-xl border border-[#E6E8EC] bg-white p-3 shadow-[0_16px_40px_rgba(16,24,40,0.12)]">
           <Show when={role === 'Admin' || role === 'Super_Admin'}>
             <HStack
               spacing={12}
-              className="text-neutral-40 cursor-pointer rounded-lg p-3 hover:bg-gray-100"
+              className="text-neutral-50 cursor-pointer rounded-lg px-3 py-2 hover:bg-neutral-10"
               onClick={() => router.push(ROUTE.ACCOUNT_MANAGEMENT)}
             >
               <Icons.accountManagement />
@@ -76,19 +76,19 @@ const AuthProfile = () => {
           <Show when={role === 'Admin'}>
             <Separator />
           </Show>
-          <HStack spacing={12} className="text-main-purple cursor-pointer rounded-lg p-3 hover:bg-gray-100">
+          <HStack spacing={12} className="text-main-purple cursor-pointer rounded-lg px-3 py-2 hover:bg-neutral-10">
             <Icons.upgade />
             <Base1 className="ml-1">Upgrade to Pro</Base1>
           </HStack>
           <Separator />
           <HStack
-            className="text-neutral-40 cursor-pointer rounded-lg p-3 hover:bg-gray-100"
+            className="text-neutral-50 cursor-pointer rounded-lg px-3 py-2 hover:bg-neutral-10"
             onClick={() => router.push(ROUTE.ACCOUNT_SETTING)}
           >
             <Base1 className="ml-1">Account Setting</Base1>
           </HStack>
           <HStack
-            className="text-neutral-40 cursor-pointer rounded-lg p-3 hover:bg-gray-100"
+            className="text-neutral-50 cursor-pointer rounded-lg px-3 py-2 hover:bg-neutral-10"
             onClick={handleLogoutClick}
           >
             <Base1 className="ml-1">Logout</Base1>

@@ -39,7 +39,7 @@ const NavLinkContent = ({ Icon, title, onlyIcon, active, hasChildren, open }: an
             width={18}
             height={18}
             color="currentColor"
-            className={cn('transition-color group-hover:text-main text-[#6F767E]', {
+            className={cn('transition-color text-[#6B7280] group-hover:text-main', {
               'text-main': active,
             })}
           />
@@ -53,7 +53,7 @@ const NavLinkContent = ({ Icon, title, onlyIcon, active, hasChildren, open }: an
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0 }}
           className={cn(
-            'transition-color group-hover:text-main ml-3 whitespace-nowrap text-sm font-medium text-neutral-50',
+            'transition-color ml-3 whitespace-nowrap text-sm font-medium text-neutral-70 group-hover:text-main',
             {
               'text-main': active,
             }
@@ -62,7 +62,7 @@ const NavLinkContent = ({ Icon, title, onlyIcon, active, hasChildren, open }: an
           {title}
         </motion.span>
         {hasChildren && (
-          <span className="group-hover:text-main ml-1 text-neutral-50">
+          <span className="ml-1 text-neutral-50 group-hover:text-main">
             {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </span>
         )}
@@ -83,9 +83,9 @@ const SidebarChildLinks = ({ childrenItems, pathname, isMobile, toggleSidebar }:
         href={child.route}
         onClick={() => isMobile && toggleSidebar()}
         className={cn(
-          'text-neutral-60 hover:bg-neutral-30 hover:text-main ml-[10px] rounded-l-md rounded-r-2xl px-4 py-2 text-sm',
+          'text-neutral-60 hover:bg-[#EFF4FA] hover:text-main ml-[10px] rounded-lg px-3 py-2 text-sm',
           {
-            'bg-neutral-30 text-main': child.route === pathname,
+            'bg-[#EFF4FA] text-main': child.route === pathname,
           }
         )}
       >
@@ -108,9 +108,9 @@ const DropdownChildren = ({ childrenItems, pathname, isMobile, toggleSidebar }: 
           toggleSidebar?.();
         }}
         className={cn(
-          'text-neutral-80 hover:bg-neutral-30 hover:text-main block rounded-md bg-white px-4 py-2 text-sm shadow-lg',
+          'text-neutral-80 hover:bg-[#EFF4FA] hover:text-main block rounded-md border border-[#EEF1F5] bg-white px-4 py-2 text-sm shadow-[0_10px_24px_rgba(16,24,40,0.12)]',
           {
-            'bg-neutral-30 text-main': child.route === pathname,
+            'bg-[#EFF4FA] text-main': child.route === pathname,
           }
         )}
       >
@@ -162,9 +162,9 @@ const NavItem = ({ Icon, active, link = '', title, onlyIcon, className, children
   };
 
   const linkClasses = cn(
-    'group flex h-12 w-full items-center rounded-l-md rounded-r-2xl px-4 py-2 text-main hover:bg-neutral-30',
+    'group flex h-11 w-full items-center rounded-lg px-3 py-2 text-main transition-all hover:bg-[#EFF4FA] hover:shadow-[0_1px_0_rgba(16,24,40,0.04)]',
     {
-      'bg-neutral-30': active,
+      'bg-[#EFF4FA] shadow-[0_1px_0_rgba(16,24,40,0.04)]': active,
       'justify-center': onlyIcon,
       'cursor-pointer': hasChildren,
     },
@@ -212,7 +212,7 @@ const NavItem = ({ Icon, active, link = '', title, onlyIcon, className, children
             </div>
 
             <Show when={open}>
-              <span className="absolute bottom-2 left-[24px] top-12 z-0 w-px bg-[#D4D7DD]" />
+              <span className="absolute bottom-2 left-[24px] top-12 z-0 w-px bg-[#DDE3EA]" />
               {childrenItems.map((child, index) =>
                 child.route === pathname ? (
                   <span

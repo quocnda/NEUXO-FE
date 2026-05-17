@@ -4,7 +4,7 @@ import type { TextProps } from './type';
 
 function Title1({ className, children, ...props }: TextProps) {
   return (
-    <p {...props} className={cn('text-lg font-medium leading-8', className)}>
+    <p {...props} className={cn('text-title-1 font-semibold', className)}>
       {children}
     </p>
   );

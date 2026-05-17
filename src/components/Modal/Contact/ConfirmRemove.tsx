@@ -6,8 +6,6 @@ import toast from 'react-hot-toast';
 
 import { removeContactByAdmin } from '@/api/company';
 import { Button } from '@/components/ui/button';
-import Body1 from '@/components/ui/typography/body1';
-import { HStack, VStack } from '@/components/ui/Utilities';
 import { onMutateError } from '@/lib/common';
 import type { FCC } from '@/types';
 
@@ -32,19 +30,20 @@ const ConfirmRemove: FCC<IConfirmRemoveProps> = ({ refetch, contactId, isOpen, s
   };
 
   return (
-    <VStack>
-      <Body1 className="text-neutral-40 text-center">Are you sure you want to remove this contact?</Body1>
-      <HStack pos={'apart'} noWrap spacing={8}>
-        <Button variant={'outline'} onClick={() => setIsOpen?.(!isOpen)} className="h-10 w-10">
-          <div className="mx-auto">
-            <ChevronLeft size={20} color="#6F767E" />
-          </div>
+    <div className="flex flex-col space-y-6 pt-2">
+      <div className="text-center text-sm text-slate-600">
+        Are you sure you want to remove this contact? This action cannot be undone.
+      </div>
+      <div className="flex gap-3">
+        <Button variant={'outline'} onClick={() => setIsOpen?.(!isOpen)} className="px-3" type="button">
+          <ChevronLeft size={20} className="text-slate-500" />
+          <span className="sr-only">Back</span>
         </Button>
-        <Button loading={isLoading} onClick={handleContinue} variant={'error'} fullWidth>
-          Save
+        <Button loading={isLoading} onClick={handleContinue} variant={'error'} className="flex-1">
+          Remove Contact
         </Button>
-      </HStack>
-    </VStack>
+      </div>
+    </div>
   );
 };
 

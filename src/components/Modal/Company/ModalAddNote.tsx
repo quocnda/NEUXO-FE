@@ -1,16 +1,14 @@
-import { DialogTitle } from '@radix-ui/react-dialog';
 import type { UseMutateFunction } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { StickyNote } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { HStack, VStack } from '@/components/ui/Utilities';
 import type { FCC } from '@/types';
 
-import Tag from '../../TagComponent';
 import { TextArea } from '../../ui/textarea';
-import Base3 from '../../ui/typography/base3';
 
 interface IModalAddNoteProps {
   addNote: UseMutateFunction<
@@ -73,35 +71,41 @@ const ModalAddNote: FCC<IModalAddNoteProps> = ({
       <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            <Tag className="bg-secondary-blue" classNameContent="text-lg">
-              {companyName} Notes
-            </Tag>
-          </DialogTitle>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader className="flex flex-col items-start gap-2 border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
+              <StickyNote className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <DialogTitle className="text-xl font-semibold text-slate-900">
+                {companyName} Notes
+              </DialogTitle>
+              <div className="text-sm text-slate-500">Private note</div>
+            </div>
+          </div>
         </DialogHeader>
-        <VStack spacing={12}>
-          <Base3>Private note</Base3>
+        <div className="py-4">
           <TextArea
             variant={'default'}
             maxLength={500}
             placeholder="Add notes here..."
             value={value}
+            className="min-h-[120px] resize-none text-base"
             onChange={(e) => {
               setValue(e.target.value);
             }}
           />
-        </VStack>
+        </div>
 
-        <HStack pos={'center'} spacing={12} noWrap>
-          <Button variant={'outline'} onClick={handleToggle} type="button" fullWidth>
+        <DialogFooter className="pt-2">
+          <Button variant={'outline'} onClick={handleToggle} type="button" className="w-full sm:w-auto">
             Cancel
           </Button>
-          <Button fullWidth onClick={handleAddNote} disabled={!value && !valueNote}>
-            Save
+          <Button onClick={handleAddNote} disabled={!value && !valueNote} className="w-full sm:w-auto">
+            Save Note
           </Button>
-        </HStack>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

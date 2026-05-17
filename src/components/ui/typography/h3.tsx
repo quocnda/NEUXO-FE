@@ -4,7 +4,7 @@ import type { TextProps } from './type';
 
 function H3({ className, children, ...props }: TextProps) {
   return (
-    <p {...props} className={cn('text-[40px] font-semibold leading-[48px]', className)}>
+    <p {...props} className={cn('text-headline-1 font-semibold', className)}>
       {children}
     </p>
   );

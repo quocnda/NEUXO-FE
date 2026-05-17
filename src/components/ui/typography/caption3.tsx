@@ -4,7 +4,7 @@ import type { TextProps } from './type';
 
 function Caption3({ className, children, ...props }: TextProps) {
   return (
-    <p {...props} className={cn('text-xs font-bold leading-4', className)}>
+    <p {...props} className={cn('text-caption-2 font-semibold', className)}>
       {children}
     </p>
   );

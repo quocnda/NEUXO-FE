@@ -46,7 +46,7 @@ const SideBar = () => {
           'w-full -translate-x-0 md:w-[13.9375rem]': fullSidebar,
           'w-[4.25rem] -translate-x-[100%] md:translate-x-0': !fullSidebar,
         },
-        'border-input fixed bottom-0 top-0 z-[1000] flex h-screen flex-col items-center justify-between border-r bg-white p-2 py-5 transition-all duration-300 ease-linear'
+        'fixed bottom-0 top-0 z-[1000] flex h-screen flex-col items-center justify-between border-r border-[#E6E8EC] bg-white/95 p-3 py-6 shadow-[0_8px_32px_rgba(16,24,40,0.08)] backdrop-blur transition-all duration-300 ease-linear'
       )}
     >
       <div className="flex w-full flex-col">
@@ -59,7 +59,7 @@ const SideBar = () => {
           <button
             onClick={toggleSidebar}
             className={cn(
-              'border-neutral-30 text-neutral-40 flex items-center rounded-sm border-2 p-1',
+              'border-neutral-20 text-neutral-60 flex items-center rounded-md border bg-white p-1 shadow-sm transition hover:bg-neutral-10',
               !fullSidebar && 'hidden group-hover:block'
             )}
           >
@@ -71,7 +71,7 @@ const SideBar = () => {
             {
               'items-center': !fullSidebar,
             },
-            'mt-8 flex max-h-[calc(100vh-180px)] flex-col overflow-y-auto transition-all'
+            'mt-8 flex max-h-[calc(100vh-180px)] flex-col gap-1 overflow-y-auto pr-1 transition-all'
           )}
         >
           {listSideBar.map((group) => (
@@ -79,13 +79,13 @@ const SideBar = () => {
               <Show when={fullSidebar}>
                 <button
                   onClick={() => toggleGroup(group.group)}
-                  className="text-neutral-70 h-10 w-full rounded px-4 py-2 text-left text-[15px] font-semibold hover:bg-gray-100"
+                  className="text-neutral-60 h-9 w-full rounded-md px-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] hover:bg-neutral-10"
                 >
                   {group.group}
                 </button>
               </Show>
               {(!fullSidebar || openGroups[group.group]) && (
-                <div className="ml-2 flex flex-col gap-1">
+                <div className="ml-1 flex flex-col gap-1">
                   {group.items.map((x) => (
                     <NavItem
                       key={x.key}

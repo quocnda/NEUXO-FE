@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-import Tag from '@/components/TagComponent';
+import { Info } from 'lucide-react';
+
+import { DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Body1 from '@/components/ui/typography/body1';
-import { HStack } from '@/components/ui/Utilities';
 import type { FCC } from '@/types';
 
 interface IModalConfirmWatchListProps {
@@ -30,29 +31,35 @@ const ModalConfirmWatchList: FCC<IModalConfirmWatchListProps> = ({ children, set
       <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
-      <DialogContent className="max-h-screen overflow-auto text-center">
-        <DialogHeader>
-          <DialogTitle>
-            <Tag className="bg-secondary-blue">Add to watchlist</Tag>
+      <DialogContent className="max-h-screen overflow-auto sm:max-w-md">
+        <DialogHeader className="flex flex-col items-center">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
+            <Info className="h-6 w-6 text-blue-600" />
+          </div>
+          <DialogTitle className="text-center text-xl font-semibold text-slate-900">
+            Already in another watchlist
           </DialogTitle>
         </DialogHeader>
-        <div className="flex items-center justify-center space-x-[-20px]">
-          {Array.from({ length: 3 }).map((src, index) => (
-            <div key={index} className="h-16 w-16 overflow-hidden rounded-full bg-orange-300">
-              <img src="/images/Avatar.png" alt={`Avatar ${index + 1}`} className="h-full w-full object-cover" />
-            </div>
-          ))}
+        <div className="flex flex-col items-center justify-center space-y-4 px-4 pb-6 pt-2">
+          <div className="flex items-center justify-center space-x-[-12px]">
+            {Array.from({ length: 3 }).map((src, index) => (
+              <div key={index} className="h-12 w-12 overflow-hidden rounded-full border-2 border-white bg-slate-100 shadow-sm">
+                <img src="/images/Avatar.png" alt={`Avatar ${index + 1}`} className="h-full w-full object-cover" />
+              </div>
+            ))}
+          </div>
+          <div className="text-center text-sm text-slate-500">
+            This company is already in another watchlist. Do you want to continue to add it into your current watchlist?
+          </div>
         </div>
-        <Body1 className="text-neutral-40">This company is already in another watchlist.</Body1>
-        <Body1 className="text-neutral-70">Do you want to continue to add it into your watchlist?</Body1>
-        <HStack pos={'apart'} noWrap>
-          <Button variant={'outline'} onClick={handleToggle} fullWidth>
+        <DialogFooter className="flex-row gap-3 sm:justify-center sm:space-x-0">
+          <Button variant="outline" onClick={handleToggle} className="w-full sm:w-32">
             Cancel
           </Button>
-          <Button fullWidth onClick={handleContinue}>
+          <Button onClick={handleContinue} className="w-full sm:w-32">
             Continue
           </Button>
-        </HStack>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

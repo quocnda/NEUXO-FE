@@ -6,21 +6,21 @@ import { cn } from '@/lib/utils';
 
 export const textAreaVariants = cva(
   cn(
-    'placeholder:font-light text-normal bg-transparent ring-offset-background peer',
-    'focus-visible:ring-transparent focus-visible:border-main flex w-full file:border-0 file:bg-transparent',
-    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-1 disabled:cursor-not-allowed'
+    'text-sm text-foreground placeholder:text-muted-foreground bg-background ring-offset-background peer transition-colors',
+    'flex w-full file:border-0 file:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2',
+    'disabled:cursor-not-allowed disabled:bg-muted/60'
     // 'read-only:bg-readonly read-only:border-readonly-border read-only:cursor-default'
   ),
   {
     variants: {
       variant: {
-        default: 'bg-neutral-20 placeholder:italic border-2 border-[#9A9FA540]',
-        filled: 'bg-background',
-        error: 'bg-white hover:border-error border focus-visible:border-error border-error text-error',
+        default: 'bg-background border border-input hover:border-border/70',
+        filled: 'bg-surface border border-transparent',
+        error: 'bg-error-light border border-error/40 text-error placeholder:text-error',
         unstyled: 'focus-visible:ring-offset-0',
       },
       inputSize: {
-        default: 'min-h-14 py-4 px-5 text-sm rounded-md max-h-[calc(100vh-200px)]',
+        default: 'min-h-14 py-4 px-5 text-sm rounded-lg max-h-[calc(100vh-200px)]',
       },
     },
     defaultVariants: {

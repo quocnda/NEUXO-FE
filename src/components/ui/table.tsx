@@ -11,8 +11,12 @@ import { HStack, Show, VStack } from './Utilities';
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div className="grid">
-      <div className="w-full overflow-auto">
-        <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
+      <div className="w-full overflow-auto rounded-lg border border-neutral-200/70 bg-white">
+        <table
+          ref={ref}
+          className={cn('w-full caption-bottom text-sm text-neutral-800', className)}
+          {...props}
+        />
       </div>
     </div>
   )
@@ -20,18 +24,34 @@ const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableE
 Table.displayName = 'Table';
 
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
-  ({ className, ...props }, ref) => <thead ref={ref} className={cn('border-y [&_tr]:border-b', className)} {...props} />
+  ({ className, ...props }, ref) => (
+    <thead
+      ref={ref}
+      className={cn('bg-neutral-50/80 text-neutral-0 [&_tr]:border-b [&_tr]:border-neutral-200/70', className)}
+      {...props}
+    />
+  )
 );
 TableHeader.displayName = 'TableHeader';
 
 const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
-  ({ className, ...props }, ref) => <tbody ref={ref} className={cn('', className)} {...props} />
+  ({ className, ...props }, ref) => (
+    <tbody
+      ref={ref}
+      className={cn('[&_tr:last-child]:border-b-0 [&_tr:nth-child(even)]:bg-neutral-50/40', className)}
+      {...props}
+    />
+  )
 );
 TableBody.displayName = 'TableBody';
 
 const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <tfoot ref={ref} className={cn('bg-primary text-primary-foreground font-medium', className)} {...props} />
+    <tfoot
+      ref={ref}
+      className={cn('bg-neutral-50 text-neutral-700 font-medium border-t border-neutral-200/70', className)}
+      {...props}
+    />
   )
 );
 TableFooter.displayName = 'TableFooter';
@@ -40,7 +60,10 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
   ({ className, ...props }, ref) => (
     <tr
       ref={ref}
-      className={cn('data-[state=selected]:bg-muted border-b transition-colors hover:bg-gray-100', className)}
+      className={cn(
+        'group data-[state=selected]:bg-neutral-100 border-b border-neutral-200/70 transition-colors hover:bg-neutral-50/80 hover:[&_*]:text-neutral-0',
+        className
+      )}
       {...props}
     />
   )
@@ -52,7 +75,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0',
+        'h-10 px-3 text-left align-middle text-xs font-semibold tracking-wide text-neutral-0 [&:has([role=checkbox])]:pr-0',
         className
       )}
       {...props}
@@ -65,7 +88,10 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
   ({ className, ...props }, ref) => (
     <td
       ref={ref}
-      className={cn('border-b p-4 align-middle text-sm [&:has([role=checkbox])]:pr-0', className)}
+      className={cn(
+        'border-b border-neutral-200/70 px-3 py-2 align-middle text-sm text-neutral-800 group-hover:text-neutral-0 [&:has([role=checkbox])]:pr-0',
+        className
+      )}
       {...props}
     />
   )
@@ -74,7 +100,7 @@ TableCell.displayName = 'TableCell';
 
 const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttributes<HTMLTableCaptionElement>>(
   ({ className, ...props }, ref) => (
-    <caption ref={ref} className={cn('text-muted-foreground mt-4 text-sm', className)} {...props} />
+    <caption ref={ref} className={cn('text-neutral-500 mt-3 text-xs', className)} {...props} />
   )
 );
 TableCaption.displayName = 'TableCaption';
@@ -85,7 +111,7 @@ export const TableEmptyData = ({ col = 4, emptyText }: { col: number; emptyText?
   return (
     <TableRow className="pointer-events-none">
       <TableCell colSpan={col}>
-        <VStack align="center" className="select-none pt-2 font-semibold text-gray-600">
+        <VStack align="center" className="select-none py-6 text-sm font-medium text-neutral-500">
           {/* <Icons.empty className="h-24" /> */}
 
           <p>{emptyText ?? 'No Data'}</p>
@@ -107,7 +133,7 @@ export const TableSkeleton = ({ loading = false, row = 5, col = 4 }: TableSkelet
         <TableRow key={index}>
           {Array.from({ length: col }, (__, index2) => (
             <TableCell key={index2} className="py-2">
-              <SkeletonWrapper loading={loading} className="h-7 w-full min-w-[16px]"></SkeletonWrapper>
+              <SkeletonWrapper loading={loading} className="h-6 w-full min-w-[16px]"></SkeletonWrapper>
             </TableCell>
           ))}
         </TableRow>
@@ -129,22 +155,22 @@ export const TablePagination = ({
   pageNameLocalStorage,
 }: TablePaginationProps) => {
   return (
-    <HStack className="items-center justify-center xl:justify-between">
-      <HStack className="hidden xl:flex">
-        <div className="mr-2 flex text-xs text-[#777777]">Showing</div>
+    <HStack className="items-center justify-center gap-4 xl:justify-between">
+      <HStack className="hidden xl:flex" spacing={8}>
+        <div className="mr-2 flex text-xs text-neutral-500">Showing</div>
         <Select value={String(pagination?.limit)} onValueChange={onPageSizeChange}>
-          <SelectTrigger className="bg-neutral-30 h-6 text-xs text-[#777777]">
+          <SelectTrigger className="h-7 min-w-[4.5rem] rounded-md border border-neutral-200/70 bg-white px-2 text-xs text-neutral-600 shadow-sm">
             <SelectValue />
           </SelectTrigger>
 
-          <SelectContent className="text-xs text-[#777777]">
+          <SelectContent className="text-xs text-neutral-600">
             <SelectItem value="10">10</SelectItem>
             <SelectItem value="50">50</SelectItem>
             <SelectItem value="100">100</SelectItem>
             <SelectItem value="200">200</SelectItem>
           </SelectContent>
         </Select>
-        <div className="ml-2 flex text-xs text-[#777777]">
+        <div className="ml-2 flex text-xs text-neutral-500">
           {Number((Number(pagination?.page) - 1) * Number(pagination?.limit)) || 0 + 1}
           &nbsp;-&nbsp;
           {pagination?.total_page === pagination?.page

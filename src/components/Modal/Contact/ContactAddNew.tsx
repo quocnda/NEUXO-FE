@@ -56,9 +56,9 @@ const ContactAddNew: FCC<IContactAddNewProps> = ({ refetchContacts, companyId, d
   };
 
   return (
-    <FormWrapper form={form} className="p-3" onSubmit={handleSubmit}>
-      <VStack spacing={32}>
-        <VStack spacing={12}>
+    <FormWrapper form={form} className="px-1 py-2" onSubmit={handleSubmit}>
+      <div className="space-y-8">
+        <div className="space-y-4">
           <TextField
             control={form.control}
             name="linkedin_url"
@@ -76,18 +76,17 @@ const ContactAddNew: FCC<IContactAddNewProps> = ({ refetchContacts, companyId, d
             variant={'outline'}
             placeholder="Enter the X (formerly Twitter) URL"
           />
-        </VStack>
-        <HStack pos={'apart'} noWrap spacing={8}>
-          <Button variant={'outline'} onClick={() => setIsOpen(!isOpen)} className="h-10 w-10">
-            <div className="mx-auto">
-              <ChevronLeft size={20} color="#6F767E" />
-            </div>
+        </div>
+        <div className="flex gap-3 pt-2">
+          <Button variant={'outline'} type="button" onClick={() => setIsOpen(!isOpen)} className="px-3">
+            <ChevronLeft size={20} className="text-slate-500" />
+            <span className="sr-only">Back</span>
           </Button>
-          <Button loading={isLoadingButton} type="submit" variant={'primary'} fullWidth>
-            Save
+          <Button loading={isLoadingButton} type="submit" variant={'primary'} className="flex-1">
+            Save Contact
           </Button>
-        </HStack>
-      </VStack>
+        </div>
+      </div>
     </FormWrapper>
   );
 };

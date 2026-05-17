@@ -11,9 +11,9 @@ const ItemRowTable = ({ indexRow, tableLength, children, className, ...props }: 
       <td
         {...props}
         className={cn(
-          'h-8 whitespace-nowrap px-2',
+          'h-9 whitespace-nowrap px-3 py-2 text-sm text-neutral-800 group-hover:text-white',
           {
-            'border-neutral-30 border border-l-0': indexRow !== tableLength,
+            'border border-neutral-200/60 border-l-0': indexRow !== tableLength,
           },
           className
         )}

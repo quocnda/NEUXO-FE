@@ -8,7 +8,7 @@ const RowTable = (props: Props) => {
   const { rowClassName, children } = props;
   return (
     <>
-      <tr className={cn('hover:bg-gray-50', rowClassName)}>{children}</tr>
+      <tr className={cn('group transition-colors hover:bg-neutral-50/80 hover:[&_*]:text-neutral-0', rowClassName)}>{children}</tr>
     </>
   );
 };

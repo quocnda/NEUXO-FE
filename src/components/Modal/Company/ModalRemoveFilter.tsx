@@ -2,15 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { Trash2 } from 'lucide-react';
+
 import { removeFilter } from '@/api/company';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { HStack } from '@/components/ui/Utilities';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { onMutateError } from '@/lib/common';
 import type { FCC } from '@/types';
-
-import Tag from '../../TagComponent';
-import Title1 from '../../ui/typography/title1';
 
 interface IModalRemoveFilterProps {
   id: string;
@@ -46,22 +44,27 @@ const ModalRemoveFilter: FCC<IModalRemoveFilterProps> = ({ children, id, setIsDa
       <DialogTrigger onClick={handleToggle} asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-xl font-medium">
-            <Tag className="bg-secondary-orange">Delete</Tag>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="flex flex-col items-center">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
+            <Trash2 className="h-6 w-6 text-red-600" />
+          </div>
+          <DialogTitle className="text-center text-xl font-semibold text-slate-900">
+            Delete Filter
           </DialogTitle>
         </DialogHeader>
-        <Title1 className="p-3 text-center">Are you sure you want to delete your saved search?</Title1>
+        <div className="mb-6 mt-2 text-center text-sm text-slate-500">
+          Are you sure you want to delete your saved search? This action cannot be undone.
+        </div>
 
-        <HStack pos={'center'} noWrap className="p-3" spacing={8}>
-          <Button variant={'outline'} onClick={handleToggle} type="button" className="w-full">
+        <DialogFooter className="w-full sm:justify-center">
+          <Button variant={'outline'} onClick={handleToggle} type="button" className="w-full sm:w-32">
             Cancel
           </Button>
-          <Button loading={isLoading} onClick={handleSubmit} className="w-full" variant={'error'}>
-            Yes, I am
+          <Button loading={isLoading} onClick={handleSubmit} variant={'error'} className="w-full sm:w-32">
+            Delete
           </Button>
-        </HStack>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

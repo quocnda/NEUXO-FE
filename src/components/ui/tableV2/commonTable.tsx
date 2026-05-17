@@ -119,14 +119,14 @@ const CommonTable = (props: Props) => {
 
   return (
     <>
-      <div className="flex max-h-[calc(100vh-13rem)] w-full overflow-auto">
-        <table className={cn('mt-0 w-full table-auto border-collapse border-spacing-0', tableClassName)}>
-          <thead className="sticky top-0 z-20">
+      <div className="flex max-h-[calc(100vh-13rem)] w-full overflow-auto rounded-lg border border-neutral-200/70 bg-white">
+        <table className={cn('mt-0 w-full table-auto border-collapse border-spacing-0 text-sm text-neutral-800', tableClassName)}>
+          <thead className="sticky top-0 z-20 bg-neutral-50/90 backdrop-blur">
             <tr>
               {checkBox && (
                 <th
                   className={cn(
-                    'h-8 w-[50px] border-none bg-white px-4 pb-2',
+                    'h-9 w-[50px] border-none bg-neutral-50/90 px-3 py-2 text-left text-xs font-semibold text-neutral-0',
                     isPinCheckbox && 'sm:sticky sm:left-[-1px]'
                   )}
                 >
@@ -142,14 +142,14 @@ const CommonTable = (props: Props) => {
                 return (
                   <th
                     key={index}
-                    className={cn('h-8 bg-white px-2 pb-2', item.pin, {
+                    className={cn('h-9 bg-neutral-50/90 px-3 py-2', item.pin, {
                       'border-r-0': index !== listHeader.length,
                       'w-[150px]': item.type === typeHeaderTable.BUTTON,
                       'w-[100px]': item.type === typeHeaderTable.INDEX,
                       'min-w-[100px]': item.type === typeHeaderTable.DATA,
                     })}
                   >
-                    <div className="flex w-full flex-row flex-nowrap items-center justify-between gap-5">
+                    <div className="flex w-full flex-row flex-nowrap items-center justify-between gap-3">
                       <div
                         className="flex w-full cursor-pointer items-center gap-1"
                         onClick={() => {
@@ -159,15 +159,15 @@ const CommonTable = (props: Props) => {
                         }}
                       >
                         {item?.icon && <item.icon />}
-                        <Label className="text-neutral-40 cursor-pointer whitespace-nowrap text-start text-xs font-medium">
+                        <Label className="text-neutral-0 cursor-pointer whitespace-nowrap text-start text-[0.7rem] font-semibold tracking-wide">
                           {formatItem(item?.title)}
                         </Label>{' '}
                         <Show when={item?.key}>
                           <Show when={paramsQuery?.sortByVal === item.key && paramsQuery?.orderByVal === 'ASC'}>
-                            <ArrowUp className="text-neutral-40" size={14} />
+                            <ArrowUp className="text-neutral-0" size={14} />
                           </Show>
                           <Show when={paramsQuery?.sortByVal === item.key && paramsQuery?.orderByVal === 'DESC'}>
-                            <ArrowDown className="text-neutral-40" size={14} />
+                            <ArrowDown className="text-neutral-0" size={14} />
                           </Show>
                         </Show>
                       </div>
@@ -186,17 +186,17 @@ const CommonTable = (props: Props) => {
                           >
                             <PopoverTrigger asChild className="ml-3">
                               <div>
-                                <ListFilter
-                                  size={12}
-                                  className={cn('cursor-pointer', {
-                                    'text-blue-600':
-                                      !!(paramsQuery as any)?.[item.key] &&
-                                      (paramsQuery as any)?.[item.key]?.length !== 0,
-                                  })}
-                                />
+                                  <ListFilter
+                                    size={12}
+                                    className={cn('cursor-pointer text-neutral-0/70 transition-colors hover:text-neutral-0', {
+                                      'text-blue-400':
+                                        !!(paramsQuery as any)?.[item.key] &&
+                                        (paramsQuery as any)?.[item.key]?.length !== 0,
+                                    })}
+                                  />
                               </div>
                             </PopoverTrigger>
-                            <PopoverContent align="start" className="w-[content] rounded-sm border py-0">
+                            <PopoverContent align="start" className="w-[content] rounded-md border border-neutral-200/70 bg-white py-0 shadow-lg">
                               <VStack spacing={4} className="py-2">
                                 <PopoverFilter
                                   elementRef={elementRef}
@@ -243,7 +243,9 @@ const CommonTable = (props: Props) => {
           <tbody>{bodyComponent}</tbody>
         </table>
       </div>
-      <div className="sticky bottom-0 z-[10] mt-0 bg-white">{footerComponent}</div>
+      <div className="sticky bottom-0 z-[10] mt-0 border-t border-neutral-200/70 bg-white/95 backdrop-blur">
+        {footerComponent}
+      </div>
     </>
   );
 };

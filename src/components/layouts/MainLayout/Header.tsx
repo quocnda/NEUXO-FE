@@ -20,26 +20,26 @@ const AuthHeader = () => {
             'left-[5.625rem]': !fullSidebar,
             'left-[15.9375rem]': fullSidebar,
           },
-          'border-input flex h-12 w-full items-center justify-between border-b bg-[#ffffff] p-4'
+          'border-input flex h-14 w-full items-center justify-between border-b border-[#E6E8EC] bg-white/90 px-5 shadow-[0_1px_0_rgba(16,24,40,0.04)] backdrop-blur'
         )}
       >
         <HStack>
           <div className="block md:hidden">
             <button
               onClick={toggleSidebar}
-              className="border-neutral-30 text-neutral-40 flex items-center rounded-sm border-2 p-1"
+              className="border-neutral-20 text-neutral-60 flex items-center rounded-md border bg-white p-1 shadow-sm"
             >
               {!fullSidebar ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
             </button>
           </div>
         </HStack>
 
-        <HStack spacing={24} align="center">
-          <HStack spacing={24}>
+        <HStack spacing={20} align="center">
+          <HStack spacing={16}>
             {/* <SheetNews /> */}
             <EmailNotification />
           </HStack>{' '}
-          <span className="h-7 border border-r-[0px] border-[#6F767E]"></span>
+          <span className="h-7 border border-r-[0px] border-[#E1E5EA]"></span>
           <AuthProfile />
         </HStack>
       </header>

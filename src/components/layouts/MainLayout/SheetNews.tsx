@@ -59,9 +59,9 @@ const SheetNews = () => {
     <>
       <Newspaper onClick={toggle} className="cursor-pointer" color="#6F767E" size={20} />
       <Sheet open={opened} onOpenChange={toggle}>
-        <SheetContent className="max-h-screen overflow-auto bg-blue-400 pb-5">
+        <SheetContent className="max-h-screen overflow-auto bg-[#F8FAFC] pb-5">
           <SheetHeader>
-            <SheetTitle className="sticky top-0 z-10 mt-0 bg-blue-400 py-6 text-white">
+            <SheetTitle className="sticky top-0 z-10 mt-0 bg-[#F8FAFC] py-6 text-[#101828]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Title2>News</Title2>
@@ -87,7 +87,7 @@ const SheetNews = () => {
               </>
             ) : (
               <div className="flex min-h-screen items-center justify-center">
-                <Empty className="text-white" />
+                <Empty className="text-neutral-50" />
               </div>
             )}
             <Show when={hasNextPage}>

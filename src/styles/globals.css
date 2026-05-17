@@ -9,12 +9,16 @@ html {
 
 @layer base {
   :root {
-    --background: 0, 0%, 100%;
-    --foreground: 240, 10%, 3.9%;
+    --background: 210, 33%, 98%;
+    --surface: 0, 0%, 100%;
+    --foreground: 222, 47%, 11%;
     --card: 0, 0%, 100%;
-    --card-foreground: 240, 10%, 3.9%;
+    --card-foreground: 222, 47%, 11%;
     --popover: 0, 0%, 100%;
-    --popover-foreground: 240, 10%, 3.9%;
+    --popover-foreground: 222, 47%, 11%;
+
+    --primary: 141, 49%, 43%;
+    --primary-foreground: 0, 0%, 100%;
 
     /* primary */
     --primary-50: 138, 35%, 93%;
@@ -46,17 +50,23 @@ html {
     /* alpha light */
     --alpha-light: 0, 0%, 100%;
 
-    --muted: 240, 4.8%, 95.9%;
-    --muted-foreground: 240, 3.8%, 46.1%;
-    --accent: 240, 4.8%, 95.9%;
-    --accent-foreground: 240, 5.9%, 10%;
+    --muted: 210, 22%, 96%;
+    --muted-foreground: 215, 16%, 46%;
+    --accent: 210, 25%, 96%;
+    --accent-foreground: 222, 47%, 11%;
     --destructive: 0, 84.2%, 60.2%;
     --destructive-foreground: 0, 0%, 98%;
-    --border: 240, 5.9%, 90%;
-    --input: 240, 5.9%, 90%;
-    --ring: 240, 5.9%, 10%;
-    --radius: 0.5rem;
-    --line: 0, 0%, 77%;
+    --border: 220, 13%, 91%;
+    --input: 220, 13%, 91%;
+    --ring: 141, 49%, 43%;
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.25rem;
+    --radius-3xl: 1.5rem;
+    --line: 220, 10%, 85%;
 
     /* CUSTOM TOKEN */
 
@@ -74,7 +84,7 @@ html {
     --info: 225, 98%, 35%;
     --info-light: 227, 56%, 94%;
 
-    --divider: 240, 85%, 90%;
+    --divider: 220, 20%, 92%;
     --dark: 0, 0%, 5%;
     --link: 234, 92%, 58%;
     --auth-container: 334px;
@@ -82,6 +92,7 @@ html {
 
   .dark {
     --background: 240, 10%, 3.9%;
+    --surface: 240, 10%, 6%;
     --foreground: 0, 0%, 98%;
     --card: 240, 10%, 3.9%;
     --card-foreground: 0, 0%, 98%;
@@ -106,12 +117,12 @@ html {
 @layer base {
   * {
     box-sizing: border-box;
-    scrollbar-color: #6F767E transparent;
+    scrollbar-color: hsl(var(--muted-foreground)) transparent;
   }
 
   html,
   body {
-    @apply scroll-smooth font-normal text-black;
+    @apply scroll-smooth bg-background font-normal text-foreground antialiased;
   }
 }
 ::-webkit-scrollbar-track {
@@ -121,7 +132,7 @@ html {
 ::-webkit-scrollbar {
   width: 4px;
   border-radius: 10px;
-  background-color: #fff;
+  background-color: transparent;
   overflow-y: overlay;
 }
 

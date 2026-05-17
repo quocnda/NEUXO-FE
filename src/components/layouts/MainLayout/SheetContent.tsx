@@ -17,10 +17,10 @@ const SheetContentComponent = (props: Props) => {
   const isMobile = useMediaQuery('(max-width: 639px)');
   const pos = isMobile ? 'center' : 'left';
   return (
-    <Wrapper className="p-2 hover:bg-gray-200">
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-7">
+    <Wrapper className="rounded-xl p-3 transition hover:bg-[#F3F6FB]">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-7">
         <div className="mx-auto px-2 sm:col-span-1">
-          <img src={item?.avatar_url} alt="" className="h-14 w-14 rounded-full object-cover" />
+          <img src={item?.avatar_url} alt="" className="h-14 w-14 rounded-full object-cover shadow-sm" />
         </div>
         <VStack spacing={4} className="sm:col-span-6">
           <div className="mb-2 flex flex-col items-center justify-between gap-2 sm:flex-row">
@@ -36,10 +36,12 @@ const SheetContentComponent = (props: Props) => {
               <p className="text-sm">{shortenName(item?.description, 100) ?? '-'}</p>
             </Tooltip>
           </VStack>
-          <HStack spacing={4} className="mb-4" pos={pos}>
+          <HStack spacing={4} className="mb-2" pos={pos}>
             <Subtitle1>{item?.name}</Subtitle1>
             <Show when={!!item?.score}>
-              <p className="rounded-md border bg-blue-500 px-2 py-1 text-xs text-white">{item?.score}</p>
+              <p className="rounded-full border border-[#DDE3EA] bg-white px-2.5 py-1 text-xs text-[#1F2937]">
+                {item?.score}
+              </p>
             </Show>
           </HStack>
         </VStack>

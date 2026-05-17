@@ -48,15 +48,15 @@ const PopoverFilter = (props: Props) => {
 
   return (
     <div ref={elementRef}>
-      <div className="sticky top-0 z-[99999] bg-white">
-        <div className="px-2 py-1">
+      <div className="sticky top-0 z-[99999] bg-white/95 backdrop-blur">
+        <div className="px-2 py-2">
           <Input
-            className="border-neutral-30 h-8 border-2 text-xs"
+            className="h-8 rounded-md border border-neutral-200/70 text-xs text-neutral-700 shadow-sm focus:border-neutral-300"
             placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <div className="absolute bottom-1/2 left-3 translate-y-1/2">
+          <div className="absolute bottom-1/2 left-3 translate-y-1/2 text-neutral-400">
             <Icons.search fill="#fff" className="m-auto h-[1.1rem]" />
           </div>
         </div>
@@ -66,7 +66,7 @@ const PopoverFilter = (props: Props) => {
           onClick={() => {
             setSelectedFilters((prev) => ({ ...prev, [item.key]: [] }));
           }}
-          className={cn('cursor-pointer px-2 py-2 text-blue-600')}
+          className={cn('cursor-pointer px-2 py-2 text-blue-600 hover:text-blue-700')}
           spacing={8}
         >
           <div>
@@ -77,11 +77,11 @@ const PopoverFilter = (props: Props) => {
         <VStack spacing={8} className="max-h-[300px] overflow-auto">
           {filteredDataFilter.map((i: { label: string; value: string }, z: number) => {
             return (
-              <Label key={z} className="text-grey-600 flex items-center space-x-2 px-2 text-xs font-medium">
+              <Label key={z} className="text-neutral-700 flex items-center space-x-2 px-2 text-xs font-medium">
                 <Input
                   type="checkbox"
                   onChange={() => handleSelectItem(i.value, item.key)}
-                  className="h-3 w-3"
+                  className="h-3 w-3 rounded border-neutral-300"
                   checked={!!selectedFilters[item.key]?.includes(i.value)}
                 />
                 <span className="line-clamp-1 max-w-[12rem] break-all pr-2">{i.label}</span>

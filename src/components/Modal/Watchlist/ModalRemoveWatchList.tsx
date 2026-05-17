@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import type { FCC } from '@/types';
 
-import Tag from '../../TagComponent';
+import { AlertCircle } from 'lucide-react';
+
+import { DialogFooter } from '@/components/ui/dialog';
 import { Button } from '../../ui/button';
-import Title1 from '../../ui/typography/title1';
-import { HStack } from '../../ui/Utilities';
 
 interface IModalRemoveWatchListProps {
   removeWatch: () => void;
@@ -25,16 +25,19 @@ const ModalRemoveWatchList: FCC<IModalRemoveWatchListProps> = ({ children, isLoa
         {children}
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-xl font-medium">
-            <Tag className="bg-secondary-purple">Delete</Tag>
+        <DialogHeader className="flex flex-col items-center">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
+            <AlertCircle className="h-6 w-6 text-red-600" />
+          </div>
+          <DialogTitle className="text-center text-xl font-semibold text-slate-900">
+            Remove from Watchlist
           </DialogTitle>
         </DialogHeader>
-        <Title1 className="text-center">
-          Are you sure you want to remove the selected companies from the watchlist?
-        </Title1>
-        <HStack pos={'center'} noWrap className="mt-5" spacing={8}>
-          <Button variant={'outline'} onClick={handleToggle} type="button" className="w-full">
+        <div className="mb-6 mt-2 text-center text-sm text-slate-500">
+          Are you sure you want to remove the selected companies from the watchlist? This action cannot be undone.
+        </div>
+        <DialogFooter className="w-full sm:justify-center">
+          <Button variant={'outline'} onClick={handleToggle} type="button" className="w-full sm:w-32">
             Cancel
           </Button>
           <Button
@@ -43,12 +46,12 @@ const ModalRemoveWatchList: FCC<IModalRemoveWatchListProps> = ({ children, isLoa
               removeWatch();
               handleToggle();
             }}
-            className="w-full border-2"
             variant={'error'}
+            className="w-full sm:w-32"
           >
             Remove
           </Button>
-        </HStack>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { memo } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import type { FCC } from '@/types';
 

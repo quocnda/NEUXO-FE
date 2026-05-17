@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 
 import type { FCC } from '@/types';
 
-import { TailwindIndicator } from '../TailwindIndicator';
+import { TailwindIndicator } from '@/components/shared/TailwindIndicator';
 
 const ModuleLayout: FCC = ({ children }) => {
   return (

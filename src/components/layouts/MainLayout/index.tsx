@@ -16,7 +16,7 @@ const MainLayout: FCC<Props> = ({ children }) => {
   const { fullSidebar } = useLayoutStore();
 
   return (
-    <div className="flex min-h-screen overflow-clip bg-[#F9F8F7]">
+    <div className="flex min-h-screen overflow-clip bg-gradient-to-b from-[#F8FAFC] to-[#F4F6F8]">
       <SideBar />
 
       <div
@@ -28,11 +28,11 @@ const MainLayout: FCC<Props> = ({ children }) => {
             'ml-0 md:ml-[4.25rem]': !fullSidebar,
             'md:ml-[13.9375rem]': fullSidebar,
           },
-          'relative z-10 w-fit overflow-clip transition-all duration-300 ease-linear'
+          'relative z-10 flex min-h-screen w-fit flex-col overflow-clip transition-all duration-300 ease-linear'
         )}
       >
         <AuthHeader />
-        <main className="w-full p-2">{children}</main>
+        <main className="w-full p-4 md:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

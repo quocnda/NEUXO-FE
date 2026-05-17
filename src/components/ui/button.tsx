@@ -6,47 +6,50 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-sm text-base font-semibold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:shadow-none',
+  'inline-flex items-center justify-center text-sm font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none active:translate-y-px select-none',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        outline: 'border-2 border-neutral-30 bg-neutral-10 hover:opacity-50 text-neutral-40',
-        secondary: 'bg-neutral-10 text-neutral-70 hover:opacity-50',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md',
+        outline: 'border border-input bg-background text-foreground shadow-sm hover:bg-muted/70 hover:border-border/70',
+        secondary: 'bg-muted text-foreground shadow-sm hover:bg-muted/80',
+        ghost: 'text-foreground hover:bg-muted/70',
         link: 'underline-offset-4 hover:underline',
         // Custom token
-        primary: 'bg-main shadow-btn text-white hover:opacity-50 disabled:bg-disabled-grey border-2 border-neutral-30',
-        terq: 'bg-main-terq shadow-btn text-white hover:bg-main-terq-hovered active:bg-main-terq-clicked disabled:bg-main-terq-disable',
+        primary:
+          'bg-main text-white shadow-btn hover:bg-main/90 active:bg-main/80 disabled:bg-disabled-grey border border-transparent',
+        terq:
+          'bg-main-terq text-white shadow-btn hover:bg-main-terq-hovered active:bg-main-terq-clicked disabled:bg-main-terq-disable',
         white:
-          'bg-white shadow-btn disabled:text-white hover:text-white active:bg-main disabled:bg-disabled-grey hover:bg-main',
-        error: 'bg-main-red shadow-btn text-white hover:opacity-50 active:bg-main-red disabled:bg-disabled-grey',
+          'bg-white text-neutral-70 shadow-btn border border-border/60 hover:bg-main hover:text-white active:bg-main/90 disabled:bg-disabled-grey',
+        error:
+          'bg-main-red text-white shadow-btn hover:bg-main-red/90 active:bg-main-red/80 disabled:bg-disabled-grey',
         success:
-          'bg-main-green shadow-btn text-white hover:opacity-50 active:bg-main-green disabled:bg-success-disable',
+          'bg-main-green text-white shadow-btn hover:bg-main-green/90 active:bg-main-green/80 disabled:bg-success-disable',
         warning:
-          'bg-secondary-orange shadow-btn text-white hover:opacity-50 active:bg-secondary-orange disabled:bg-disabled-grey',
+          'bg-secondary-orange text-white shadow-btn hover:bg-secondary-orange/90 active:bg-secondary-orange/80 disabled:bg-disabled-grey',
         black:
-          'bg-main-70 shadow-btn text-white hover:bg-main-dark-gray-hovered active:bg-main-dark-gray disabled:bg-disabled-grey',
+          'bg-main-70 text-white shadow-btn hover:bg-main-dark-gray-hovered active:bg-main-dark-gray disabled:bg-disabled-grey',
         'outline-icon':
-          'border border-main-dark-blue-hovered bg-background hover:bg-accent hover:text-accent-foreground',
-        text: 'hover:bg-accent hover:text-primary text-primary',
-        select: 'px-0 border border-input rounded-sm text-[#808080] font-normal active:border-primary-500',
+          'border border-main-dark-blue-hovered bg-background hover:bg-accent hover:text-accent-foreground shadow-sm',
+        text: 'text-primary hover:bg-accent hover:text-primary',
+        select: 'px-0 border border-input rounded-md text-muted-foreground font-normal active:border-primary',
       },
       rounded: {
-        default: 'rounded-sm',
+        default: 'rounded-md',
         full: 'rounded-full',
-        md: 'rounded-md',
+        md: 'rounded-lg',
         none: 'rounded-none',
       },
       size: {
-        default: 'h-10 px-5 py-3',
+        default: 'h-11 px-5',
         md: 'h-btn-md px-4',
         sm: 'h-btn-sm px-3',
         xs: 'h-8 px-3',
-        st: 'h-12 px-3',
+        st: 'h-12 px-4',
         search: 'h-11 px-3',
         mixin: 'p-0',
-        icon: 'h-6 w-6 rounded-full',
+        icon: 'h-8 w-8 rounded-full',
       },
       textSize: {
         default: 'text-xs font-semibold leading-6',

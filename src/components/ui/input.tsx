@@ -12,28 +12,27 @@ import { Show } from './Utilities';
 
 export const inputVariants = cva(
   cn(
-    'placeholder:font-light placeholder:text-shades-0 text-normal bg-transparent ring-offset-background peer',
-    'focus-visible:ring-transparent focus-visible:border-neutral-40 flex w-full file:border-0 file:bg-transparent',
-    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:bg-neutral-20 disabled:border-0'
+    'text-sm text-foreground placeholder:text-muted-foreground bg-background ring-offset-background peer transition-all duration-200',
+    'flex w-full file:border-0 file:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2',
+    'disabled:cursor-not-allowed disabled:bg-muted/60 disabled:border-0'
   ),
   {
     variants: {
       variant: {
-        default: 'bg-neutral-20 hover:border-2 border-neutral-40 focus:border-2',
-        search: 'border-neutral-30 h-8 border-2 text-xs',
-        outline:
-          'border-2 border-neutral-30 hover:border-main focus-visible:border-main disabled:border-0 disabled:bg-neutral-20',
-        filled: 'bg-background',
-        error: 'bg-[#FFBC9940] text-main-red font-semibold placeholder:text-main-red',
+        default: 'border border-input hover:border-border/70 focus-visible:border-primary/50 shadow-sm',
+        search: 'border border-input h-8 text-xs',
+        outline: 'border border-input hover:border-primary/50 focus-visible:border-primary/50 shadow-sm',
+        filled: 'bg-surface border border-transparent shadow-sm focus-visible:border-primary/30',
+        error: 'bg-error-light text-error placeholder:text-error border border-error/50 focus-visible:ring-error/30',
         check: 'bg-main-dark-gray text-white border-none',
         table: '',
       },
       inputSize: {
         xs: 'h-9 text-xs px-3 rounded-md',
-        sm: 'h-11 px-5 py-2 text-sm rounded-sm file:text-sm ',
-        md: 'h-12 p-3 text-sm rounded-md',
-        default: 'h-12 px-10 text-sm rounded-md file:text-base',
-        number: 'h-6 border-[.0938rem] pl-1 pr-8',
+        sm: 'h-11 px-4 py-2 text-sm rounded-md file:text-sm',
+        md: 'h-12 p-3 text-sm rounded-lg',
+        default: 'h-12 px-10 text-sm rounded-lg file:text-base',
+        number: 'h-7 border-[.0938rem] pl-2 pr-8 rounded-md',
       },
     },
     defaultVariants: {

@@ -6,7 +6,7 @@ import type { TextProps } from './type';
 
 function TextBody1({ className, children, ...props }: TextProps) {
   return (
-    <p {...props} className={cn('text-neutral-70 text-xs font-normal', className)}>
+    <p {...props} className={cn('text-body-2 font-normal text-muted-foreground', className)}>
       {children}
     </p>
   );

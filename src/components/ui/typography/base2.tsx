@@ -4,7 +4,7 @@ import type { TextProps } from './type';
 
 function Base2({ className, children, ...props }: TextProps) {
   return (
-    <p {...props} className={cn('text-[15px] font-bold leading-6', className)}>
+    <p {...props} className={cn('text-body-1 font-semibold', className)}>
       {children}
     </p>
   );

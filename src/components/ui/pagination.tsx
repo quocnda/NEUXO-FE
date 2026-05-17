@@ -42,11 +42,11 @@ const Pagination = (props: Props) => {
   const lastPage = paginationRange[paginationRange.length - 1];
 
   return (
-    <div className="flex items-center justify-center gap-4 py-1">
+    <div className="flex items-center justify-center gap-2 py-1">
       <Button
         size={'sm'}
         variant="link"
-        className="hidden text-sm font-normal text-[#777777] md:block"
+        className="hidden text-sm font-normal text-neutral-500 hover:text-neutral-700 md:block"
         onClick={onPrevious}
         disabled={currentPage === 1}
       >
@@ -55,7 +55,7 @@ const Pagination = (props: Props) => {
       {paginationRange.map((pageNumber, i) => {
         if (pageNumber === DOTS) {
           return (
-            <div className="mb-1 text-[#777777]" key={pageNumber + i}>
+            <div className="mb-0.5 text-xs text-neutral-400" key={pageNumber + i}>
               {pageNumber}
             </div>
           );
@@ -66,7 +66,12 @@ const Pagination = (props: Props) => {
             size={'sm'}
             key={pageNumber}
             variant={`${pageNumber === currentPage ? 'primary' : 'white'}`}
-            className={cn('w-9 text-xs font-normal', pageNumber === currentPage ? 'text-white' : 'text-[#777777]')}
+            className={cn(
+              'h-7 w-7 rounded-md text-xs font-medium',
+              pageNumber === currentPage
+                ? 'text-white shadow-sm'
+                : 'text-neutral-500 hover:text-neutral-700 border border-neutral-200/70'
+            )}
             onClick={() => {
               onPageChange(pageNumber as number);
               localStorage.setItem(String(pageNameLocalStorage), String(pageNumber));
@@ -79,7 +84,7 @@ const Pagination = (props: Props) => {
       <Button
         size={'sm'}
         variant="link"
-        className="hidden text-sm font-normal text-[#777777] md:block"
+        className="hidden text-sm font-normal text-neutral-500 hover:text-neutral-700 md:block"
         onClick={onNext}
         disabled={currentPage === lastPage}
       >

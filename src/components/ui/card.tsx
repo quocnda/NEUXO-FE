@@ -3,14 +3,14 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-const cardVariants = cva('border transition-all duration-200', {
+const cardVariants = cva('border border-border/70 bg-card shadow-sm transition-all duration-200', {
   variants: {
     variant: {
-      default: 'bg-background hover:border-transparent hover:shadow-active cursor-pointer',
-      static: 'bg-background cursor-pointer',
+      default: 'hover:border-border/50 hover:shadow-active cursor-pointer',
+      static: 'border-border/70',
     },
     rounded: {
-      default: 'rounded-lg p-8',
+      default: 'rounded-xl p-8',
     },
   },
   defaultVariants: {

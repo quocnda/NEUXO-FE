@@ -4,7 +4,7 @@ import type { TextProps } from './type';
 
 function Base3({ className, children, ...props }: TextProps) {
   return (
-    <p {...props} className={cn('text-xs font-semibold leading-5', className)}>
+    <p {...props} className={cn('text-body-3 font-semibold', className)}>
       {children}
     </p>
   );

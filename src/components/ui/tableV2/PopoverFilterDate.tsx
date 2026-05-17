@@ -56,7 +56,7 @@ const PopoverFilterDate = (props: Props) => {
   };
 
   return (
-    <div className="max-h-[500px] overflow-hidden" ref={elementRef}>
+    <div className="max-h-[500px] overflow-hidden rounded-md border border-neutral-200/70 bg-white shadow-lg" ref={elementRef}>
       <DateRangePicker
         from={startDate ? paramsQuery?.[startDate] : undefined}
         to={endDate ? paramsQuery?.[endDate] : undefined}
