@@ -6,7 +6,6 @@ export const createCompanySchema = z.object({
   linkedin_url: z.string().nonempty(validationMessages.required('Linkedin url')).regex(linkedinUrlRegex, {
     message: 'Invalid LinkedIn URL. Please use the format: https://www.linkedin.com/company/company_name',
   }),
-  icp_id: z.string().nonempty(validationMessages.required()),
 });
 
 export const schemaAddGuestMention = () =>

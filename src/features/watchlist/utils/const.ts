@@ -9,13 +9,6 @@ export const listHeaderWatchList = [
     pin: 'sm:sticky sm:left-[47px]',
   },
   {
-    title: 'ICP',
-    key: 'icp_id',
-    type: typeHeaderTable.DATA,
-    canFilter: true,
-    type_filter: 'CHECKBOX',
-  },
-  {
     title: 'action',
     type: typeHeaderTable.DATA,
   },
@@ -69,12 +62,7 @@ export const tabNewsWatchList = [
     label: 'Company',
     value: 'company_news',
     icon: Icons.company,
-  },
-  {
-    label: 'Contact News',
-    value: 'contact_news',
-    icon: Icons.contact,
-  },
+  }
 ];
 
 export const dataTags = [
@@ -105,11 +93,7 @@ export const dataTags = [
   {
     value: 'FUNDING',
     label: 'Funding',
-  },
-  {
-    value: 'JOB_CHANGE',
-    label: 'Job Change',
-  },
+  }
 ];
 
 export const dateOptions = [

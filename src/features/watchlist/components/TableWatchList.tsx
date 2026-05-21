@@ -5,8 +5,6 @@ import type { IBodyWatchlist, IParamsMatchingCompaniesList } from '@/api/company
 import { useListCountry, useListWatchList } from '@/api/company';
 import { useListICPWatchlist } from '@/api/watchlist';
 import Empty from '@/components/Empty';
-import ModalUploadExcel from '@/components/Modal/ModalUploadExcel';
-import ModalCreateManually from '@/components/Modal/Watchlist/ModalCreateManually';
 import { Checkbox } from '@/components/ui/checkbox';
 import { TablePagination, TableSkeleton } from '@/components/ui/table';
 import CommonTable from '@/components/ui/tableV2/commonTable';
@@ -81,10 +79,6 @@ const TableWatchList = () => {
   };
 
   const filterOptions = [
-    {
-      name: 'icp_id',
-      value: listICP?.map((c: { id: string; icp_name: string }) => ({ label: c.icp_name, value: c.id })) || [],
-    },
     {
       name: 'country',
       value: (listCountry as any)?.list_country?.map((c: string) => ({ label: c, value: c })) || [],
@@ -197,8 +191,6 @@ const TableWatchList = () => {
       <Show when={selectedIds.length > 0}>
         <ActionBar isListContactEmail={isListContactEmail} refetch={refetch} selectedIds={selectedIds} />
       </Show>
-      <ModalCreateManually refetch={refetch} setIsOpen={setIsOpen} isOpen={isOpen} />
-      <ModalUploadExcel setIsShowUpload={setIsShowUpload} isShowUpload={isShowUpload} refetch={refetch} />
     </>
   );
 };

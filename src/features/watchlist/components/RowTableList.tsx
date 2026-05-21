@@ -16,7 +16,6 @@ import SheetCompany from '@/components/CompanySidePanel/SheetCompany';
 import { useExpandedRow } from '@/components/contexts/ExpandedRowContext';
 import ModalAddNote from '@/components/Modal/Company/ModalAddNote';
 import ModalLoginEmail from '@/components/Modal/Email/ModalLoginEmail';
-import ModalEditICPWatchlist from '@/components/Modal/Watchlist/ModalEditICPWatchlist';
 import ModalRemoveWatchList from '@/components/Modal/Watchlist/ModalRemoveWatchList';
 import renderIcon from '@/components/RenderExternal';
 import Tabs from '@/components/Tabs';
@@ -37,7 +36,6 @@ import type { TypeItemTable } from '@/types/common.type';
 
 import { tabNewsWatchList } from '../utils/const';
 import CompanyNews from './CompanyNews';
-import ContactNews from './ContactNews';
 
 interface Props extends TypeItemTable {
   item: IBodyWatchlist;
@@ -435,9 +433,6 @@ const RowTableList = ({
                   <Show when={activeTab === 'company_news'}>
                     <CompanyNews companyId={companyId} refetchCount={refetchCount} />
                   </Show>
-                  <Show when={activeTab === 'contact_news'}>
-                    <ContactNews companyId={companyId} refetchCount={refetchCount} />
-                  </Show>
                 </div>
               </Wrapper>
             </div>
@@ -456,21 +451,6 @@ const RowTableList = ({
           }}
           isOpen={isOpenNote}
           setIsOpen={setIsOpenNote}
-        />
-      </Show>
-      <Show when={isOpenICP}>
-        <ModalEditICPWatchlist
-          company_id={companyId}
-          refetch={refetch}
-          valueICP={valueICP}
-          setValueICP={setValueICP}
-          onSuccess={(newValue) => {
-            item.icp_name = newValue;
-            setValueICP(newValue);
-          }}
-          isOpen={isOpenICP}
-          setIsOpen={setIsOpenICP}
-          mutate={mutateSaveICP}
         />
       </Show>
     </>

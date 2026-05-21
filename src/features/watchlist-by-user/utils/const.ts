@@ -6,10 +6,6 @@ const watchlistHeaders = [
     type: typeHeaderTable.DATA,
   },
   {
-    title: 'ICP',
-    type: typeHeaderTable.DATA,
-  },
-  {
     title: 'link',
     type: typeHeaderTable.DATA,
   },
@@ -57,11 +53,7 @@ export const tabNewsWatchList = [
   {
     label: 'Company News',
     value: 'company_news',
-  },
-  {
-    label: 'Contact News',
-    value: 'contact_news',
-  },
+  }
 ];
 
 export const dataTags = [
@@ -92,9 +84,5 @@ export const dataTags = [
   {
     value: 'FUNDING',
     label: 'Funding',
-  },
-  {
-    value: 'JOB_CHANGE',
-    label: 'Job Change',
-  },
+  }
 ];
