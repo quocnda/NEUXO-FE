@@ -35,11 +35,6 @@ const AuthHeader = () => {
         </HStack>
 
         <HStack spacing={20} align="center">
-          <HStack spacing={16}>
-            {/* <SheetNews /> */}
-            <EmailNotification />
-          </HStack>{' '}
-          <span className="h-7 border border-r-[0px] border-[#E1E5EA]"></span>
           <AuthProfile />
         </HStack>
       </header>

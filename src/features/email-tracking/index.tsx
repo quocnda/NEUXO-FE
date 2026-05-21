@@ -64,7 +64,6 @@ const EmailTracking = () => {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   if (!user?.has_mail_app_pass && !user_id)

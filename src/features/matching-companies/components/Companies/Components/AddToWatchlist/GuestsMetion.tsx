@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
 import { addWatchList, useContactDetailCompany } from '@/api/company';
-import { saveICPWatchlist } from '@/api/watchlist';
 import ContactAddNew from '@/components/Modal/Contact/ContactAddNew';
 import ContactList from '@/components/Modal/Contact/ContactList';
 import { Button } from '@/components/ui/button';
@@ -15,13 +14,11 @@ const GuestsMetion = ({
   active,
   handleToggle,
   refetch,
-  icpId,
 }: {
   companyId: string;
   active: number;
   handleToggle: () => void;
   refetch?: () => void;
-  icpId?: string;
 }) => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [isRemovingContact, setIsRemovingContact] = useState(false);
@@ -32,14 +29,7 @@ const GuestsMetion = ({
   } = useContactDetailCompany({
     variables: companyId,
     refetchOnMount: true,
-    enabled: !!companyId && active === 3,
-  });
-
-  const { mutate } = useMutation(saveICPWatchlist, {
-    onSuccess: () => {
-      toast.success('Add ICP successfully!');
-    },
-    onError: onMutateError,
+    enabled: !!companyId && active === 2,
   });
 
   const { mutate: addWatchListMutate } = useMutation(addWatchList, {
@@ -51,22 +41,8 @@ const GuestsMetion = ({
     },
   });
 
-  const handleSaveIcp = () => {
-    mutate({
-      icp_id: String(icpId),
-      company_id: String(companyId),
-    });
-  };
-
   const handleAddToWatchlist = () => {
-    addWatchListMutate(
-      { id: String(companyId) },
-      {
-        onSuccess: () => {
-          handleSaveIcp();
-        },
-      }
-    );
+    addWatchListMutate({ id: String(companyId) });
   };
   return (
     <>
@@ -89,7 +65,7 @@ const GuestsMetion = ({
         />
       </Show>
       <div className="flex items-center justify-center space-x-2">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <div
             key={index}
             className={`h-2 w-2 rounded-full ${active === index + 1 ? 'bg-blue-500' : 'bg-gray-300'}`}

@@ -132,7 +132,7 @@ const CompanyInfomation = (props: Props) => {
         <TextField label="Category" control={companyForm.control} name="category" disabled inputSize={'xs'} />
       </div>
       <div className="flex items-center justify-center space-x-2">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <div
             key={index}
             className={`h-2 w-2 rounded-full ${active === index + 1 ? 'bg-blue-500' : 'bg-gray-300'}`}

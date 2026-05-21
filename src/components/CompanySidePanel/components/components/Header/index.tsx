@@ -30,9 +30,6 @@ const Header = ({ data, isFetching, refetch, handleClick, toggle }: IProps) => {
         <CompanyDetails mutate={mutate} data={data} />
       </Show>
       <HStack spacing={8}>
-        <div onClick={handleClick}>
-          <MoveDiagonal className="cursor-pointer" size={20} />
-        </div>
         <div onClick={toggle}>
           <X className="cursor-pointer" size={20} />
         </div>

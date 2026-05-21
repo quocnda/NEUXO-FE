@@ -40,31 +40,9 @@ export const listHeaderAccount = [
     filter_type: 'CHECKBOX',
   },
   {
-    title: 'follow_up_date',
-    key: 'follow_up_date',
-    type: typeHeaderTable.DATA,
-    canFilter: true,
-    filter_type: 'DATE',
-    name_filter: ['follow_up_start_date', 'follow_up_end_date'],
-  },
-  {
-    title: 'follow_up_status',
-    key: 'follow_up_status',
-    type: typeHeaderTable.DATA,
-    canFilter: true,
-    filter_type: 'CHECKBOX',
-  },
-  {
     title: 'note',
     key: 'note',
     type: typeHeaderTable.DATA,
-  },
-  {
-    title: 'priority',
-    key: 'priority',
-    type: typeHeaderTable.DATA,
-    canFilter: true,
-    filter_type: 'CHECKBOX',
   },
   {
     title: 'action',

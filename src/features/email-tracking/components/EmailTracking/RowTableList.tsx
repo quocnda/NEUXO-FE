@@ -1,28 +1,19 @@
 /* eslint-disable react/no-unescaped-entities */
 
 import { useMutation } from '@tanstack/react-query';
-import { Check, ChevronDown, Eye, Mail } from 'lucide-react';
+import { Eye, Mail } from 'lucide-react';
 import moment from 'moment-timezone';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
-import toast from 'react-hot-toast';
 
-import { addNode, type IResponseEmailTracking, updateFollowUpDate } from '@/api/email-tracking';
+import { addNode, type IResponseEmailTracking } from '@/api/email-tracking';
 import { Checkbox } from '@/components/ui/checkbox';
-import { DatePicker } from '@/components/ui/date-picker-custom';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ItemRowTable from '@/components/ui/tableV2/itemRowTable';
 import RowTable from '@/components/ui/tableV2/rowTable';
 import { Tooltip } from '@/components/ui/tooltip';
 import TextBody1 from '@/components/ui/typography/TextBody1';
 import { HStack, Show } from '@/components/ui/Utilities';
-import { formatStatus, formatToDateTime, onMutateError, shortenName } from '@/lib/common';
+import { onMutateError, shortenName } from '@/lib/common';
 import { cn } from '@/lib/utils';
 import type { TypeItemTable } from '@/types/common.type';
 
@@ -64,38 +55,10 @@ const RowTableList = ({
   const [isOpenSendEmail, setIsOpenSendEmail] = useState(false);
   const [selectedContactEmail, setSelectedContactEmail] = useState<string>('');
   const [noteValue, setNoteValue] = useState<string>('');
-  const [currentPriority, setCurrentPriority] = useState<string>(item?.priority || '-');
-  const [currentFollowUpDate, setCurrentFollowUpDate] = useState<string>(item?.follow_up_date);
-  const [currentFollowUpStatus, setCurrentFollowUpStatus] = useState<string>(item?.follow_up_status);
-
-  const [isEditDate, setIsEditDate] = useState(false);
 
   const { mutate: mutateAddNote } = useMutation(addNode, {
     onError: onMutateError,
   });
-
-  const { mutate: followUpDateMutate } = useMutation(updateFollowUpDate, {
-    onError: onMutateError,
-  });
-
-  const handleToggleEditDate = useCallback(() => {
-    setIsEditDate((prev) => !prev);
-  }, []);
-
-  const handlePriorityChange = useCallback(
-    (email: any, newPriority: any) => {
-      mutateAddNote(
-        { email, priority: newPriority },
-        {
-          onSuccess: () => {
-            toast.success('Priority updated successfully');
-            setCurrentPriority(newPriority);
-          },
-        }
-      );
-    },
-    [mutateAddNote]
-  );
 
   const handleCheckboxChange = useCallback(
     (isChecked: boolean) => {
@@ -107,30 +70,6 @@ const RowTableList = ({
       }
     },
     [isEmailValid, item.email, item.id, setIsDownloadAll, setSelectedIds]
-  );
-
-  const handleEditDate = useCallback(
-    (email: any, newDate: any) => {
-      const today = moment(new Date()).format('YYYY-MM-DD');
-      const newDateFormatted = moment(newDate).format('YYYY-MM-DD');
-      followUpDateMutate(
-        { email, follow_up_date: formatToDateTime(newDate) },
-        {
-          onSuccess: () => {
-            toast.success('Follow up date updated successfully');
-            setCurrentFollowUpDate(newDate);
-            if (newDateFormatted < today) {
-              setCurrentFollowUpStatus('Overdue');
-            } else if (newDateFormatted === today) {
-              setCurrentFollowUpStatus('Focused');
-            } else if (newDateFormatted > today) {
-              setCurrentFollowUpStatus('Upcoming');
-            }
-          },
-        }
-      );
-    },
-    [followUpDateMutate]
   );
 
   return (
@@ -192,39 +131,6 @@ const RowTableList = ({
               <div>{colorStatus(item?.email_status)}</div>
             </Tooltip>
           </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <TextBody1>
-              <Show when={!user_id}>
-                {item?.email_status !== 'REPLIED' ? (
-                  moment(currentFollowUpDate).format('DD MMM, YYYY')
-                ) : (
-                  <Popover open={isEditDate} onOpenChange={handleToggleEditDate}>
-                    <PopoverTrigger asChild>
-                      <div>
-                        <TextBody1 className="cursor-pointer hover:opacity-50">
-                          {currentFollowUpDate ? moment(currentFollowUpDate).format('DD MMM, YYYY') : 'TBD'}
-                        </TextBody1>
-                      </div>
-                    </PopoverTrigger>
-                    <PopoverContent className="z-[99999] w-auto overflow-hidden rounded-sm p-0" align="start">
-                      <DatePicker
-                        onChange={(date: any) => {
-                          handleEditDate(item?.email, date);
-                        }}
-                        onCancel={handleToggleEditDate}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </Show>
-              <Show when={!!user_id}>
-                {currentFollowUpDate ? moment(currentFollowUpDate).format('DD MMM, YYYY') : 'TBD'}
-              </Show>
-            </TextBody1>
-          </ItemRowTable>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            {colorStatus(currentFollowUpStatus)}
-          </ItemRowTable>
         </Show>
         <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
           <Show when={!user_id}>
@@ -273,32 +179,6 @@ const RowTableList = ({
             </Tooltip>
           </Show>
         </ItemRowTable>
-        <Show when={tabs === tabs_email_tracking[0].value}>
-          <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
-            <DropdownMenu open={user_id ? false : undefined}>
-              <DropdownMenuTrigger asChild>
-                <HStack className="cursor-pointer">
-                  <TextBody1>{formatStatus(currentPriority) || '-'}</TextBody1>
-                  <Show when={!user_id}>
-                    <ChevronDown size={18} color="#0077B5" />
-                  </Show>
-                </HStack>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {['HIGH', 'MEDIUM', 'LOW'].map((priority) => (
-                  <DropdownMenuItem
-                    key={priority}
-                    className="cursor-pointer text-xs"
-                    disabled={currentPriority === priority}
-                    onClick={() => handlePriorityChange(item.email, priority)}
-                  >
-                    {formatStatus(priority)} {currentPriority === priority && <Check size={18} color="#10A37F" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </ItemRowTable>
-        </Show>
         <ItemRowTable indexRow={indexRow} tableLength={tableLength}>
           <div className="flex items-center gap-3">
             <ModalViewDetailEmail isMail={mailPreview.email} contactName={mailPreview.contactName}>

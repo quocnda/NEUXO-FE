@@ -36,14 +36,6 @@ const HeaderNews = ({
         <Tag className="bg-secondary-purple h-6 w-3" classNameContent="text-lg">
           News
         </Tag>
-        <Show when={isWatchList && !isHidden}>
-          <ModalGenIdeal company_id_outside={id}>
-            <Button size={'sm'} className="flex items-center gap-2">
-              <Icons.genideal width={20} height={20} />
-              <span>Gen AI Ideas</span>
-            </Button>
-          </ModalGenIdeal>
-        </Show>
       </HStack>
       <HStack noWrap spacing={8} className={cn(isWatchList && !isHidden ? 'w-full' : '')}>
         {tabNewsWatchList.map((item, index) => {

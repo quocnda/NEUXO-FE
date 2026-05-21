@@ -17,6 +17,47 @@ export const listCampaignReport = async (params: IParamsCampaignList): Promise<I
   return data;
 };
 
+const normalizeCampaignDetail = (raw: any): ICampaignDetail => {
+  const payload = raw?.data ?? raw;
+  const emailDetails = Array.isArray(payload?.email_details)
+    ? payload.email_details
+    : Array.isArray(payload?.data)
+      ? payload.data
+      : [];
+  const pagination = payload?.pagination ?? {};
+  const statistics = payload?.statistics ?? {};
+
+  return {
+    data_report: {
+      contacts_count: statistics.total_targets ?? payload?.email_targets_count ?? 0,
+      total_email_sent: statistics.total_sent ?? 0,
+      replied_rate: statistics.total_received ?? 0,
+      error_rate: statistics.total_error ?? 0,
+    },
+    data: emailDetails.map((item: any) => ({
+      email: item?.email ?? '',
+      contact_name: item?.contact_name ?? '',
+      company_name: item?.company_name ?? '',
+      email_sent: String(item?.sent_count ?? item?.email_sent ?? ''),
+      last_sent_date: item?.last_sent_date ?? '',
+      error_message: item?.error_message ?? '',
+      email_status: item?.status ?? item?.email_status ?? '',
+      open_count: item?.opened_count ?? item?.open_count ?? 0,
+    })),
+    data_status: {
+      campaign_status: payload?.campaign_status ?? '',
+      status_choice: Array.isArray(payload?.status_choice) ? payload.status_choice : [],
+    },
+    pagination: {
+      page: pagination.page ?? 1,
+      limit: pagination.limit ?? 0,
+      total_page: pagination.total_page ?? 1,
+      total_item: pagination.total_item ?? emailDetails.length,
+      current_page: pagination.current_page ?? pagination.page ?? 1,
+    },
+  };
+};
+
 export const updateStatusCampaign = async (params: { status_campaign: string; id: string }) => {
   const { data } = await request({
     url: `/data/campaign/email/updateStatus/${params.id}`,
@@ -32,7 +73,7 @@ export const campaignDetail = async (params: IParamsCampaignDetail): Promise<ICa
     method: 'GET',
     params,
   });
-  return data;
+  return normalizeCampaignDetail(data);
 };
 
 export const campaignDetailAbout = async (params: { id: string }): Promise<ICampaignDetailAbout> => {

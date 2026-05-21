@@ -103,7 +103,13 @@ const PreviewEmail = (props: IProps) => {
         }
       }
     } catch (error) {
-      toast.error((error as any)?.data || 'An error occurred');
+      const errorMessage =
+        (error as any)?.message ||
+        (error as any)?.error ||
+        (error as any)?.data ||
+        (error as any)?.status ||
+        'Unknown error';
+      toast.error(`The AI Service has some error: ${errorMessage}`);
     }
   };
 

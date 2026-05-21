@@ -276,27 +276,6 @@ const RowTableList = ({
               </Tooltip>
             </div>
           );
-        case 'progress_updated':
-          return (
-            <Tooltip
-              hidden={item?.completeness_missing.length === 0}
-              onPointerDown={(e) => e.preventDefault()}
-              label={
-                <div className="text-grey-600 max-w-[500px] whitespace-pre-wrap rounded-sm text-xs">
-                  <p className="text-xs font-medium">Need more information:</p>
-                  <ul className="ml-5 list-disc">
-                    {item?.completeness_missing?.map((i: string, z: number) => {
-                      return <li key={z}>{formatItem(i)}</li>;
-                    })}
-                  </ul>
-                </div>
-              }
-            >
-              <div>
-                <ProgressBar process={item?.completeness.toFixed(0) || 0} />
-              </div>
-            </Tooltip>
-          );
         case 'insert_time':
           return <TextBody1>{item?.created_at ? moment(item.created_at).format('DD MMM, YYYY') : '-'}</TextBody1>;
         case 'followers':
@@ -321,30 +300,6 @@ const RowTableList = ({
                   }}
                 >
                   {shortenName(item?.note, 20) || '-'}
-                </TextBody1>
-              </div>
-            </Tooltip>
-          );
-        case 'ICP':
-          return (
-            <Tooltip
-              hidden={!(item?.icp_name && String(item?.icp_name).length > 20)}
-              label={
-                <div className="text-grey-600 max-w-[200px] whitespace-pre-wrap rounded-sm px-1.5 text-xs">
-                  {item?.icp_name}
-                </div>
-              }
-            >
-              <div>
-                <TextBody1
-                  className={cn('cursor-pointer')}
-                  onClick={() => {
-                    setCompanyId(item?.company_id);
-                    setValueICP(item?.icp_name);
-                    setIsOpenICP(true);
-                  }}
-                >
-                  {shortenName(item?.icp_name, 20) || '-'}
                 </TextBody1>
               </div>
             </Tooltip>

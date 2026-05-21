@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import type { FCC } from '@/types';
 
 import { Show } from '../../../../../../components/ui/Utilities';
-import AddICP from './AddICP';
 import CompanyInfomation from './CompanyInfomation';
 import GuestsMetion from './GuestsMetion';
 
@@ -18,7 +17,6 @@ interface IStepAddWatchListProps {
 }
 const StepAddWatchList: FCC<IStepAddWatchListProps> = ({ children, companyId, isOpen, setIsOpen, refetch }) => {
   const [activeStep, setActiveStep] = useState(1);
-  const [icpId, setIcpId] = useState('');
   const toggleDialog = () => {
     setActiveStep(1);
     setIsOpen?.(!isOpen);
@@ -32,7 +30,7 @@ const StepAddWatchList: FCC<IStepAddWatchListProps> = ({ children, companyId, is
       <DialogContent className="flex max-h-[90vh] max-w-xl flex-col overflow-auto sm:max-h-[95vh]">
         <DialogHeader>
           <DialogTitle>
-            <Tag classNameContent="text-xl">{activeStep === 3 ? 'Contact' : 'Company Information'}</Tag>
+            <Tag classNameContent="text-xl">{activeStep === 2 ? 'Contact' : 'Company Information'}</Tag>
           </DialogTitle>
         </DialogHeader>
         <Show when={activeStep === 1}>
@@ -44,21 +42,11 @@ const StepAddWatchList: FCC<IStepAddWatchListProps> = ({ children, companyId, is
           />
         </Show>
         <Show when={activeStep === 2}>
-          <AddICP
-            companyId={companyId}
-            active={activeStep}
-            setActive={setActiveStep}
-            handleToggle={toggleDialog}
-            setIcpId={setIcpId}
-          />
-        </Show>
-        <Show when={activeStep === 3}>
           <GuestsMetion
             companyId={companyId}
             active={activeStep}
             handleToggle={toggleDialog}
             refetch={refetch}
-            icpId={icpId}
           />
         </Show>
       </DialogContent>

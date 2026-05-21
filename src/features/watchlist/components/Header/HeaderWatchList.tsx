@@ -12,7 +12,6 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { HStack } from '@/components/ui/Utilities';
 
-import NewsAllWatchlist from './NewsAllWatchlist';
 
 interface IProps {
   openModal: () => void;

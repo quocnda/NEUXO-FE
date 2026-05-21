@@ -157,23 +157,6 @@ const SideBarSearch = (props: IProps) => {
         >
           {tabs.find((t) => t.value === activeTab)?.label}
         </Tag>
-
-        <div
-          className="border-neutral-30 flex h-8 w-fit cursor-pointer items-center justify-center gap-2 rounded-md border-2 px-4 py-2 text-xs font-medium"
-          onClick={() => setActiveTab(activeTab === 'search' ? 'save-icp' : 'search')}
-        >
-          {activeTab === 'search' ? (
-            <>
-              Saved Search
-              <Icons.icp className="h-4 w-4" />
-            </>
-          ) : (
-            <>
-              Filter
-              <Filter className="h-4 w-4" color="#6F767E" />
-            </>
-          )}
-        </div>
       </HStack>
       <Show when={activeTab === 'search'}>
         <VStack spacing={12}>
@@ -281,9 +264,6 @@ const SideBarSearch = (props: IProps) => {
             setIsDataCustomFilter={setIsDataCustomFilter}
             isDataCustomFilter={isDataCustomFilter}
           >
-            <Button variant={'outline'} className="text-neutral-70 h-8 text-xs font-semibold">
-              Save Search
-            </Button>
           </ModalCreateFilter>
           <Separator />
           <div className="flex w-full items-center justify-center gap-2">

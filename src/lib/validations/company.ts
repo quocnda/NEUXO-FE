@@ -39,12 +39,7 @@ export const schemaUpdateProfile = z.object({
     .nullish(),
 });
 
-export const schemaAddICPWatchlist = z.object({
-  icp_id: z.string().nonempty(validationMessages.required()),
-});
-
 export type SchemaCreateCompany = z.infer<typeof createCompanySchema>;
-export type SchemaAddICPWatchlist = z.infer<typeof schemaAddICPWatchlist>;
 
 const schemaAddGuestMentionType = schemaAddGuestMention();
 export type SchemaAddGuestMention = z.infer<typeof schemaAddGuestMentionType>;

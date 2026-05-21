@@ -46,7 +46,6 @@ const TableWatchList = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isShowUpload, setIsShowUpload] = useState<boolean>(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false);
-  const { data: listICP } = useListICPWatchlist();
   const { data: listCountry } = useListCountry();
   const { data, refetch, isFetching } = useListWatchList({
     variables: paramsQuery,

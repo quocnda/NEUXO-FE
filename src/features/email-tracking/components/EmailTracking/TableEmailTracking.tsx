@@ -9,13 +9,7 @@ import { TablePagination, TableSkeleton } from '@/components/ui/table';
 import CommonTable from '@/components/ui/tableV2/commonTable';
 import { Show, VStack } from '@/components/ui/Utilities';
 
-import {
-  dataEmailStatus,
-  dataFollowUpStatus,
-  dataPriority,
-  listHeaderAccount,
-  tabs_email_tracking,
-} from '../../utils/const';
+import { dataEmailStatus, listHeaderAccount, tabs_email_tracking } from '../../utils/const';
 import FilterEmailTracking from './FilterEmailTracking';
 import ActionBar from './PopUpAction';
 import RowTableList from './RowTableList';
@@ -87,29 +81,10 @@ const TableEmailTracking = ({ tabs }: { tabs: string | number }) => {
           value: c.value,
         })) || [],
     },
-    {
-      name: 'follow_up_status',
-      value:
-        (dataFollowUpStatus as any)?.map((c: { value: string; label: string }) => ({
-          label: c.label,
-          value: c.value,
-        })) || [],
-    },
-    {
-      name: 'priority',
-      value:
-        (dataPriority as any)?.map((c: { value: string; label: string }) => ({
-          label: c.label,
-          value: c.value,
-        })) || [],
-    },
   ];
 
   const columnsCustom = listHeaderAccount?.flatMap((item: any) => {
-    if (
-      tabs !== tabs_email_tracking[0].value &&
-      ['follow_up_date', 'email_status', 'follow_up_status', 'priority'].includes(item.key)
-    ) {
+    if (tabs !== tabs_email_tracking[0].value && ['email_status'].includes(item.key)) {
       return [];
     }
 
